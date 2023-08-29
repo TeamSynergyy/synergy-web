@@ -2,11 +2,13 @@ import { configureStore } from "@reduxjs/toolkit";
 import { api } from "./api";
 import stompReducer from "./stompSlice";
 import { useDispatch } from "react-redux";
+import authReducer from "./authSlice";
 
 export const store = configureStore({
   reducer: {
     [api.reducerPath]: api.reducer,
     stomp: stompReducer,
+    auth: authReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(api.middleware),

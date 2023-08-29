@@ -22,8 +22,8 @@ export default function NewProject() {
       name: "",
       content: "",
       field: [],
-      createDate: "",
-      endDate: "",
+      startAt: "",
+      endAt: "",
     },
   });
 
@@ -76,16 +76,16 @@ export default function NewProject() {
         <DateInput
           required
           valueFormat="YYYY-MM-DD"
-          label="createDate"
+          label="startAt"
           placeholder="시작일"
-          {...form.getInputProps("createDate")}
+          {...form.getInputProps("startAt")}
         />
 
         <DateInput
           valueFormat="YYYY-MM-DD"
-          label="endDate"
+          label="endAt"
           placeholder="종료예정일"
-          {...form.getInputProps("endDate")}
+          {...form.getInputProps("endAt")}
         />
 
         <Group position="right" mt="md">

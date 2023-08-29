@@ -9,7 +9,6 @@ import {
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { api } from "app/api";
-import Layout from "components/ui/Layout";
 import { useNavigate } from "react-router-dom";
 
 export default function NewPost() {

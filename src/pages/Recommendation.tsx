@@ -1,8 +1,5 @@
-import { Button, Group, Stack } from "@mantine/core";
+import { Button, Group, Stack, Text } from "@mantine/core";
 import { Link } from "react-router-dom";
-import PostList from "components/post/PostList";
-import ProjectList from "components/project/ProjectList";
-
 export default function Recommendation() {
   return (
     <Stack
@@ -22,8 +19,7 @@ export default function Recommendation() {
         </Link>
       </Group>
 
-      <PostList />
-      <ProjectList />
+      <Text> 개발중 </Text>
     </Stack>
   );
 }

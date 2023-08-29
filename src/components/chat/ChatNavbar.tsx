@@ -4,7 +4,7 @@ import { UserButton } from "components/user/UserButton";
 import { Link } from "react-router-dom";
 
 const ChatNavbar = () => {
-  const { data: myId } = api.useGetMyIdQuery(null);
+  const { data } = api.useGetMyInfoQuery(null);
   const {
     data: chatRooms,
     isLoading,
@@ -22,7 +22,7 @@ const ChatNavbar = () => {
   } else if (isSuccess) {
     // 차후 신규 메세지 순으로 정렬하도록 기능 추가
     content = chatRooms.map(({ roomId, participantIds }, i) => {
-      const partnerId = participantIds.find((id) => id !== myId);
+      const partnerId = participantIds.find((id) => id !== data?.id);
       if (!partnerId)
         return <p key={i}>대화 상대방의 데이터를 불러오지 못했습니다.</p>;
 

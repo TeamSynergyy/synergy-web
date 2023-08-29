@@ -23,11 +23,14 @@ import {
 import { api } from "app/api";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setCredentials } from "app/authSlice";
 
 export default function Auth(props: PaperProps) {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const setRegister = api.useRegisterMutation()[0];
-  const setLogin = api.useLoginMutation()[0];
+  const [login, { isLoading }] = api.useLoginMutation();
   const { height } = useViewportSize();
   const [type, toggle] = useToggle(["login", "register"]);
   const [loadingOverlayVisible, { open, close }] = useDisclosure(false);
@@ -38,14 +41,7 @@ export default function Auth(props: PaperProps) {
     initialValues: {
       email: "",
       password: "",
-    },
-
-    validate: {
-      email: (val) => (/^\S+@\S+$/.test(val) ? null : "Invalid email"),
-      password: (val) =>
-        val.length <= 6
-          ? "Password should include at least 6 characters"
-          : null,
+      name: "",
     },
   });
 
@@ -77,8 +73,8 @@ export default function Auth(props: PaperProps) {
               }
               if (type === "login") {
                 try {
-                  await setLogin(credentials).unwrap();
-
+                  const token = await login(credentials).unwrap();
+                  dispatch(setCredentials({ token }));
                   return navigate("/");
                 } catch (error) {
                   setDialogMessage("❌ 로그인 실패");

@@ -17,7 +17,7 @@ import { StompProvider } from "app/StompContext";
 
 const headerLinks = [
   {
-    link: "/",
+    link: "/home",
     label: "홈",
   },
   {
