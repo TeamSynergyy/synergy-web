@@ -8,10 +8,14 @@ import {
   ActionIcon,
   Avatar,
   Menu,
+  Modal,
 } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { IconSearch } from "@tabler/icons-react";
 import { ReactComponent as Logo } from "assets/logo.svg";
 import { Link, useLocation } from "react-router-dom";
+import { SearchInput } from "../search/SearchInput";
+import { api } from "app/api";
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -65,8 +69,11 @@ interface HeaderSearchProps {
 
 export function HeaderSearch({ links, children }: HeaderSearchProps) {
   const activePage = useLocation().pathname.split("/")[1];
-  console.log(activePage);
   const { classes, cx } = useStyles();
+  const [opened, { open, close }] = useDisclosure(false);
+  const isSearchPage = activePage === "search";
+
+  const { data } = api.useGetMyInfoQuery(null);
 
   const items = links.map((link) => (
     <Link
@@ -84,14 +91,19 @@ export function HeaderSearch({ links, children }: HeaderSearchProps) {
     <Header height={56} className={classes.header}>
       <div className={classes.inner}>
         {children}
-        <Group>
-          <Logo width={28} />
-          <Title size={"h3"}>Synergy</Title>
-        </Group>
+        <Link
+          to="/home"
+          style={{ color: "inherit", textDecoration: "inherit" }}
+        >
+          <Group mx="sm">
+            <Logo width={28} />
+            <Title size={"h3"}>Synergy</Title>
+          </Group>
+        </Link>
 
         <Group>
-          <ActionIcon>
-            <IconSearch size="1.25rem" stroke={1.5} />
+          <ActionIcon onClick={open} disabled={isSearchPage}>
+            <IconSearch size="1.3rem" stroke={1.5} />
           </ActionIcon>
 
           <MediaQuery smallerThan="sm" styles={{ display: "none" }}>
@@ -99,12 +111,19 @@ export function HeaderSearch({ links, children }: HeaderSearchProps) {
               {items}
               <Menu shadow="md" width={200} withinPortal>
                 <Menu.Target>
-                  <Avatar radius="xl" />
+                  <ActionIcon mx="sm">
+                    <Avatar src={data?.avatar} size={32} radius="xl" />
+                  </ActionIcon>
                 </Menu.Target>
 
                 <Menu.Dropdown>
                   <Menu.Label>Account</Menu.Label>
-                  <Menu.Item>내 프로필</Menu.Item>
+                  <Link
+                    to={`/people/${data?.id}`}
+                    style={{ color: "inherit", textDecoration: "inherit" }}
+                  >
+                    <Menu.Item>내 프로필</Menu.Item>
+                  </Link>
                   <Menu.Item>로그아웃</Menu.Item>
                 </Menu.Dropdown>
               </Menu>
@@ -112,6 +131,15 @@ export function HeaderSearch({ links, children }: HeaderSearchProps) {
           </MediaQuery>
         </Group>
       </div>
+      <Modal
+        opened={opened}
+        onClose={close}
+        title="검색"
+        size="100%"
+        onSubmit={close}
+      >
+        <SearchInput />
+      </Modal>
     </Header>
   );
 }

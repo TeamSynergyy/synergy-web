@@ -1,36 +1,102 @@
 // src/mocks/handlers.js
 import { rest } from "msw";
 
+const users = [
+  {
+    id: 0,
+    name: "yeoularu",
+    backgroundImage: "https://source.unsplash.com/random",
+    avatar:
+      "https://publy.imgix.net/user-uploaded/582076/2023.02/6684b7fd0476e498edc264ef5674f70645cdbf31c36bd4ab8157eca7bb49b0f2.png?w=400&h=400&auto=format&fm=png",
+    email: "yeoularu@gmail.com",
+    temperature: 36.8,
+    major: "전기정보공학과",
+    bio: "biobiobiobiobiobio자기소개",
+  },
+  {
+    id: 1,
+    backgroundImage: "https://source.unsplash.com/random",
+    avatar:
+      "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=255&q=80",
+    name: "시너지유저1",
+    email: "hspoonlicker@outlook.com",
+    temperature: 36.5,
+    major: "기계자동차공학과",
+    bio: "biobiobiobiobiobio자기소개",
+  },
+  {
+    id: 2,
+    backgroundImage: "https://source.unsplash.com/random",
+    avatar: "https://avatars.githubusercontent.com/u/109144975?v=4",
+    name: "이종훈",
+    email: "dfjidjfi@gmail.com",
+    temperature: 73,
+    major: "컴퓨터공학과",
+    bio: "biobiobiobiobiobio자기소개",
+  },
+  {
+    id: 3,
+    backgroundImage: "https://source.unsplash.com/random",
+    avatar: "https://avatars.githubusercontent.com/u/69510981?v=4",
+    name: "삼삼삼",
+    email: "3333333333@gmail.com",
+    temperature: 20.0,
+    major: "안경광학과, 전자IT미디어공학과",
+    bio: "biobiobiobiobiobio자기소개",
+  },
+  {
+    id: 4,
+    backgroundImage: "https://source.unsplash.com/random",
+    avatar: "https://avatars.githubusercontent.com/u/69510444?v=4",
+    name: "사사사사",
+    email: "4444@gmail.com",
+    temperature: 44.4,
+    major: "안경광학과, 전자IT미디어공학과",
+    bio: "biobiobiobiobiobio자기소개",
+  },
+];
+
 const posts = [
   {
     id: 0,
     title: "First post",
     content: "Hello!",
-    author: "Yihua",
+    authorId: 0,
     likes: 0,
   },
   {
     id: 1,
     title: "Second post",
     content: "Hello!",
-    author: "Yihua",
+    authorId: 1,
     likes: 1,
   },
   {
     id: 2,
     title: "",
     content: "Third post with no title",
-    author: "Yihua",
+    authorId: 2,
     likes: 33,
   },
   {
     id: 3,
     title: "4 post",
     content: "4!",
-    author: "12345",
+    authorId: 3,
     likes: 0,
   },
-];
+  {
+    id: 4,
+    title: "4ddsfdsfasdf",
+    content: " ",
+    authorId: 4,
+    likes: 0,
+  },
+].map((post) => ({
+  ...post,
+  author: users.find(({ id }) => id === post.authorId)?.name,
+  authorAvatar: users.find(({ id }) => id === post.authorId)?.avatar,
+}));
 
 const projects = [
   {
@@ -38,18 +104,20 @@ const projects = [
     name: "First project",
     content: "Hello!",
     field: ["AI", "IT서비스"],
-    createDate: "2023-09-01",
-    endDate: "2023-09-30",
+    startAt: "2023-09-01",
+    endAt: "2023-09-30",
     likes: 0,
+    teamMemberIds: [0, 1],
   },
   {
     id: 1,
     name: "Second project",
     content: "전기전자 프로젝트입니다.",
     field: ["전기전자"],
-    createDate: "2022-11-11",
-    endDate: "2023-01-12",
+    startAt: "2022-11-11",
+    endAt: "2023-01-12",
     likes: 21,
+    teamMemberIds: [0, 2, 3],
   },
 ];
 
@@ -124,41 +192,18 @@ const chatRooms = [
   },
 ];
 
-const users = [
-  {
-    id: 1,
-    image:
-      "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=255&q=80",
-    name: "시너지유저1",
-    email: "hspoonlicker@outlook.com",
-  },
-  {
-    id: 2,
-    image: "https://avatars.githubusercontent.com/u/109144975?v=4",
-    name: "이종훈",
-    email: "dfjidjfi@gmail.com",
-  },
-  {
-    id: 3,
-    image: "https://avatars.githubusercontent.com/u/69510981?v=4",
-    name: "삼삼삼",
-    email: "3333333333@gmail.com",
-  },
-];
-
 const user = {
-  id: 0,
-  name: "yeoularu",
-  image: "https://avatars.githubusercontent.com/u/48755175?v=4",
-  email: "yeoularu@gmail.com",
+  ...users[0],
   likedPosts: [1, 2],
-  likedProjects: [0],
+  likedProjects: [1],
+  following: [2, 3],
+  followers: [1],
   chatRooms: chatRooms,
 };
 
 export const handlers = [
   // User
-  rest.post("/api/v1/members/join", async (req, res, ctx) => {
+  rest.post("/api/v1/members/signup", async (req, res, ctx) => {
     // error test
     const { email } = await req.json();
     if (email === "error@test.com") return res(ctx.status(400));
@@ -189,12 +234,8 @@ export const handlers = [
     return res(ctx.status(200));
   }),
 
-  rest.get("/members/me", (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json(user));
-  }),
-
-  rest.get("/me/id", (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json(user.id));
+  rest.get("/me/info", (_, res, ctx) => {
+    return res(ctx.status(200), ctx.json(users[0]));
   }),
 
   rest.get("/me/like/post", (_, res, ctx) => {
@@ -203,8 +244,22 @@ export const handlers = [
   rest.get("/me/like/project", (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(user.likedProjects));
   }),
+  rest.get("/me/following", (_, res, ctx) => {
+    return res(ctx.status(200), ctx.json(user.following));
+  }),
+  rest.get("/me/followers", (_, res, ctx) => {
+    return res(ctx.status(200), ctx.json(user.followers));
+  }),
   rest.get("/me/chatrooms", (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(user.chatRooms));
+  }),
+
+  rest.patch("/me/info", async (req, res, ctx) => {
+    const body = await req.json();
+    const updatedUser = { ...users[0], ...body };
+    console.log(updatedUser);
+    users[0] = updatedUser;
+    return res(ctx.status(200));
   }),
 
   rest.get("/members/:id", (req, res, ctx) => {
@@ -212,6 +267,26 @@ export const handlers = [
     const user = users.find((user) => user.id === Number(id));
     if (!user) return res(ctx.status(404));
     return res(ctx.status(200), ctx.json(user));
+  }),
+
+  rest.get("/members?ids=:ids", (req, res, ctx) => {
+    const { ids } = req.params as { ids: string };
+    const idList = ids.split(",").map((id) => Number(id));
+    const userList = users.filter((user) => idList.includes(user.id));
+    return res(ctx.status(200), ctx.json(userList));
+  }),
+
+  rest.put("/members/follow/:id", (req, res, ctx) => {
+    const { id } = req.params as { id: string };
+    if (!id || !users.find((user) => user.id === Number(id)))
+      return res(ctx.status(400));
+    if (user.following.includes(Number(id))) {
+      user.following = user.following.filter((userId) => userId !== Number(id));
+    } else {
+      user.following.push(Number(id));
+    }
+
+    return res(ctx.status(200));
   }),
 
   rest.put("/chat/create/:id", (req, res, ctx) => {
@@ -228,26 +303,55 @@ export const handlers = [
 
   // Post
 
-  rest.post("/post/create", async (req, res, ctx) => {
-    const { subject, content } = await req.json();
-    if (subject === "error") return res(ctx.status(400));
-
+  rest.post("/post", async (req, res, ctx) => {
+    const { title, content } = await req.json();
+    if (title === "error") return res(ctx.status(400));
+    console.log(title, content);
     posts.push({
       id: posts.at(-1)?.id ? posts.at(-1)!.id + 1 : 0,
-      title: subject,
+      title,
       content,
-      author: "new user",
+      authorId: user.id,
       likes: 0,
+      author: user.name,
+      authorAvatar: user.avatar,
     });
     console.log(posts);
     return res(ctx.status(200));
   }),
 
-  rest.get("/post/postAll", (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json({ data: posts }));
+  rest.get("/post/recent", (req, res, ctx) => {
+    const page = req.url.searchParams.get("page");
+    console.log("recentPost", page, posts);
+    return res(
+      ctx.status(200),
+      ctx.json({
+        contents: [
+          {
+            id: 999,
+            title: "this is front of page" + page,
+            content: page,
+            authorId: 999,
+            author: "page master",
+            authorAvatar: "",
+            likes: 0,
+          },
+          ...posts,
+        ],
+        totalPages: 10,
+      })
+    );
   }),
 
-  rest.delete("/post/delete/:id", (req, res, ctx) => {
+  rest.get("/post/:id", (req, res, ctx) => {
+    const { id } = req.params as { id: string };
+    return res(
+      ctx.status(200),
+      ctx.json(posts.find((post) => post.id === parseInt(id)))
+    );
+  }),
+
+  rest.delete("/post/:id", (req, res, ctx) => {
     const { id } = req.params as { id: string };
     const index = posts.findIndex((post) => post.id === parseInt(id));
     if (index === -1) return res(ctx.status(400));
@@ -256,15 +360,7 @@ export const handlers = [
     return res(ctx.status(200));
   }),
 
-  rest.get("/post/:id", (req, res, ctx) => {
-    const { id } = req.params as { id: string };
-    return res(
-      ctx.status(200),
-      ctx.json({ data: posts.find((post) => post.id === parseInt(id)) })
-    );
-  }),
-
-  rest.put("/post/like/:id", (req, res, ctx) => {
+  rest.put("/post/:id/like", (req, res, ctx) => {
     const { id } = req.params as { id: string };
     const index = user.likedPosts.findIndex(
       (PostId) => PostId === parseInt(id)
@@ -277,12 +373,15 @@ export const handlers = [
       posts.find((post) => post.id === parseInt(id))!.likes++;
     }
 
-    return res(ctx.status(200));
+    return res(
+      ctx.status(200),
+      ctx.json({ data: posts.find((post) => post.id === parseInt(id)) })
+    );
   }),
 
   // Project
-  rest.post("/project/create", async (req, res, ctx) => {
-    const { name, content, field, createDate, endDate } = await req.json();
+  rest.post("/project", async (req, res, ctx) => {
+    const { name, content, field, startAt, endAt } = await req.json();
     if (name === "error") return res(ctx.status(400));
 
     const id = projects.at(-1)?.id ? projects.at(-1)!.id + 1 : 0;
@@ -292,29 +391,47 @@ export const handlers = [
       name,
       content,
       field,
-      createDate,
-      endDate,
+      startAt,
+      endAt,
       likes: 0,
+      teamMemberIds: [0],
     });
 
     return res(ctx.status(200), ctx.json(id));
   }),
 
-  rest.get("/project/projectAll", (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json({ data: projects }));
+  rest.get("/project/recent", (req, res, ctx) => {
+    const page = req.url.searchParams.get("page");
+    console.log(page);
+    return res(
+      ctx.status(200),
+      ctx.json({
+        contents: [
+          {
+            id: 1000 + Number(page),
+            name: "프로젝트 page" + page,
+            content: "Hello!",
+            field: ["AI", "IT서비스"],
+            startAt: "2023-09-01",
+            endAt: "2023-09-30",
+            likes: 0,
+          },
+          ...projects,
+        ],
+        totalPages: 10,
+      })
+    );
   }),
 
   rest.get("/project/:id", (req, res, ctx) => {
     const { id } = req.params as { id: string };
     return res(
       ctx.status(200),
-      ctx.json({
-        data: projects.find((project) => project.id === parseInt(id)),
-      })
+      ctx.json(projects.find((project) => project.id === parseInt(id)))
     );
   }),
 
-  rest.delete("/project/delete/:id", (req, res, ctx) => {
+  rest.delete("/project/:id", (req, res, ctx) => {
     const { id } = req.params as { id: string };
     const index = projects.findIndex((project) => project.id === parseInt(id));
     if (index === -1) return res(ctx.status(400));
@@ -323,16 +440,7 @@ export const handlers = [
     return res(ctx.status(200));
   }),
 
-  rest.get("/project/search/:id", (req, res, ctx) => {
-    const { id } = req.params as { id: string };
-    const index = projects.findIndex((project) => project.id === parseInt(id));
-    if (index === -1) return res(ctx.status(400));
-    console.log(projects);
-
-    return res(ctx.status(200), ctx.json({ data: projects[index] }));
-  }),
-
-  rest.put("/project/like/:id", (req, res, ctx) => {
+  rest.put("/project/:id/like", (req, res, ctx) => {
     const { id } = req.params as { id: string };
     console.log(id);
     const index = user.likedProjects.findIndex(
@@ -347,5 +455,119 @@ export const handlers = [
     }
 
     return res(ctx.status(200));
+  }),
+
+  // Search
+  rest.get("/search", (req, res, ctx) => {
+    const keyword = req.url.searchParams.get("keyword");
+
+    if (!keyword) return res(ctx.status(400));
+    const pos = posts.filter((post) => post.content.includes(keyword));
+    const proj = projects.filter((project) => project.name.includes(keyword));
+    const usr = users.filter((user) => user.name.includes(keyword));
+    const result = {
+      posts: pos,
+      projects: proj,
+      users: usr,
+      totalElements: pos.length + proj.length + usr.length,
+    };
+    console.log(result);
+    return res(ctx.status(200), ctx.json(result));
+  }),
+
+  rest.get("/search/post", (req, res, ctx) => {
+    const keyword = req.url.searchParams.get("keyword");
+    const page = req.url.searchParams.get("page");
+
+    if (!keyword) return res(ctx.status(400));
+    const pos = posts.filter((post) => post.content.includes(keyword));
+    const result = {
+      contents: [
+        {
+          id: 999,
+          title: "this is front of page" + page,
+          content: page,
+          authorId: 999,
+          author: "page master",
+          authorAvatar: "",
+          likes: 0,
+        },
+        ...pos,
+      ],
+      totalElements: 100,
+      totalPages: 10,
+    };
+    return res(ctx.status(200), ctx.json(result));
+  }),
+  rest.get("/search/project", (req, res, ctx) => {
+    const keyword = req.url.searchParams.get("keyword");
+    const page = req.url.searchParams.get("page");
+
+    if (!keyword) return res(ctx.status(400));
+    const proj = projects.filter((project) => project.name.includes(keyword));
+    const result = {
+      contents: [
+        {
+          id: 1000 + Number(page),
+          name: "프로젝트 page" + page,
+          content: "Hello!",
+          field: ["AI", "IT서비스"],
+          startAt: "2023-09-01",
+          endAt: "2023-09-30",
+          likes: 0,
+        },
+        ...proj,
+      ],
+      totalElements: 100,
+      totalPages: 10,
+    };
+    return res(ctx.status(200), ctx.json(result));
+  }),
+
+  rest.get("/search/user", async (req, res, ctx) => {
+    const keyword = req.url.searchParams.get("keyword");
+    const page = req.url.searchParams.get("page");
+
+    if (!keyword) return res(ctx.status(400));
+    const usr = users.filter((user) => user.name.includes(keyword));
+    const result = {
+      contents: [
+        {
+          id: 999,
+          backgroundImage: "https://source.unsplash.com/random",
+          avatar: "https://avatars.githubusercontent.com/u/69510411?v=4",
+          name: "page master" + page,
+          email: "page@gmail.com",
+          temperature: 44.4,
+          major: "안경광학과, 전자IT미디어공학과",
+        },
+        ...usr,
+      ],
+      totalElements: 100,
+      totalPages: 10,
+    };
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    return res(ctx.status(200), ctx.json(result));
+  }),
+
+  rest.get("/user/:id/posts", (req, res, ctx) => {
+    const { id } = req.params as { id: string };
+    return res(
+      ctx.status(200),
+      ctx.json({
+        contents: posts.filter((post) => post.authorId === Number(id)),
+        totalPages: 13,
+      })
+    );
+  }),
+
+  rest.get("/user/:id/projects", (req, res, ctx) => {
+    const { id } = req.params as { id: string };
+    return res(
+      ctx.status(200),
+      ctx.json(
+        projects.filter((project) => project.teamMemberIds.includes(Number(id)))
+      )
+    );
   }),
 ];

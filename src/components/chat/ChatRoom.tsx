@@ -6,7 +6,7 @@ import { redirect, useParams } from "react-router-dom";
 import { api } from "app/api";
 import ChatMessageCard from "./ChatMessageCard";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ChatMessage } from "types";
+import { ChatMessage, ChatRoom } from "types";
 import dayjs from "dayjs";
 import { ChatHeader } from "./ChatHeader";
 
@@ -15,7 +15,7 @@ export default function ChatRoom() {
   if (!id) {
     redirect("/chat");
   }
-  const { data: myId } = api.useGetMyIdQuery(null);
+  const { data: myInfo } = api.useGetMyInfoQuery(null);
   const { data, isSuccess, isError, error } = api.useGetMyChatRoomsQuery(null);
 
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
@@ -23,7 +23,9 @@ export default function ChatRoom() {
   const [oldMessages, setOldMessages] = useState<ChatMessage[]>([]);
   useEffect(() => {
     if (isSuccess) {
-      const chatRoom = data.find((chatRoom) => chatRoom.roomId === Number(id));
+      const chatRoom = data.find(
+        (chatRoom: ChatRoom) => chatRoom.roomId === Number(id)
+      );
       if (chatRoom) {
         setOldMessages([...chatRoom.messages]);
       }
@@ -39,7 +41,7 @@ export default function ChatRoom() {
     });
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView();
   };
 
   useEffect(scrollToBottom, [newMessages]);
@@ -48,7 +50,7 @@ export default function ChatRoom() {
   const content = allMessages.reduce((acc, cur, i) => {
     const next = allMessages[i + 1];
     const { text, senderId, sendTime } = cur;
-    const fromMe = senderId === myId;
+    const fromMe = senderId === myInfo?.id;
 
     const isLast =
       !next ||

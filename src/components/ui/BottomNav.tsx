@@ -1,4 +1,5 @@
-import { createStyles, Group, rem } from "@mantine/core";
+import { Avatar, createStyles, Group, rem } from "@mantine/core";
+import { api } from "app/api";
 import { ChatInput } from "components/chat/ChatInput";
 import { Link, useLocation } from "react-router-dom";
 
@@ -51,6 +52,8 @@ export function BottomNav({ links }: BottomNavProps) {
   const activePage = useLocation().pathname.split("/")[1];
   const { classes, cx } = useStyles();
 
+  const { data } = api.useGetMyInfoQuery(null);
+
   const items = links.map((link) => (
     <Link
       key={link.label}
@@ -67,6 +70,9 @@ export function BottomNav({ links }: BottomNavProps) {
     <div className={classes.inner}>
       <Group w="100%" grow spacing={0}>
         {items}
+        <Link to={`/people/${data?.id}`} className={cx(classes.link)}>
+          <Avatar src={data?.avatar} size="sm" radius="xl" />
+        </Link>
       </Group>
     </div>
   );

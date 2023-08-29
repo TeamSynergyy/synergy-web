@@ -3,6 +3,8 @@ interface Post {
   title: string;
   content: string;
   author: string;
+  authorId: number;
+  authorAvatar: string;
   likes: number;
 }
 
@@ -11,16 +13,21 @@ interface Project {
   name: string;
   content: string;
   field: string[];
-  createDate: string;
-  endDate: string;
+  startAt: string;
+  endAt: string;
   likes: number;
+  teamMemberIds: number[];
 }
 
 interface User {
   id: number;
   name: string;
   email: string;
-  image: string;
+  avatar: string;
+  backgroundImage: string;
+  major: string;
+  temperature: number;
+  bio: string;
 }
 
 interface ChatRoom {
@@ -38,4 +45,11 @@ interface ChatMessage {
   sendTime: string;
 }
 
-export type { Post, Project, User, ChatMessage, ChatRoom };
+interface SearchResponse {
+  totalElements: number;
+  posts: Post[];
+  projects: Project[];
+  users: User[];
+}
+
+export type { Post, Project, User, ChatMessage, ChatRoom, SearchResponse };

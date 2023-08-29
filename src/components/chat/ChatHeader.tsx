@@ -4,14 +4,14 @@ import { api } from "app/api";
 import { Link } from "react-router-dom";
 
 export function ChatHeader({ roomId }: { roomId: number }) {
-  const { data: myId } = api.useGetMyIdQuery(null);
+  const { data } = api.useGetMyInfoQuery(null);
   const { data: chatRooms } = api.useGetMyChatRoomsQuery(null);
 
   const chatRoom = chatRooms?.find(
     (chatRoom: { roomId: number }) => chatRoom.roomId === roomId
   );
 
-  const partnerId = chatRoom?.participantIds.find((id) => id !== myId);
+  const partnerId = chatRoom?.participantIds.find((id) => id !== data?.id);
 
   const { data: partnerData } = api.useGetUserQuery(partnerId || 0); // 0은 임시값. 차후 수정 필요
 

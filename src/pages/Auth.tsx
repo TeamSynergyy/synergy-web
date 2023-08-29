@@ -38,6 +38,7 @@ export default function Auth(props: PaperProps) {
     initialValues: {
       email: "",
       password: "",
+      name: "",
     },
 
     validate: {

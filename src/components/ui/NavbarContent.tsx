@@ -9,7 +9,9 @@ export function NavbarContent() {
   switch (page) {
     case "chat":
       return <ChatNavbar />;
-    default:
+    case "home":
       return <ContentCategory />;
+    default:
+      return <></>;
   }
 }

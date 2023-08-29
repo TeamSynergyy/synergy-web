@@ -11,6 +11,7 @@ import {
 } from "@mantine/core";
 import { api } from "app/api";
 import { Link } from "react-router-dom";
+import { Project } from "types";
 
 const avatars = [
   "https://avatars.githubusercontent.com/u/10353856?s=460&u=88394dfd67727327c1f7670a1764dc38a8a24831&v=4",
@@ -29,21 +30,15 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-export default function ProjectCard({ id }: { id: number }) {
+export default function ProjectCard({ project }: { project: Project }) {
   const { classes } = useStyles();
-
-  const { project } = api.useGetAllProjectsQuery(null, {
-    selectFromResult: ({ data }) => ({
-      project: data?.data.find((project) => project.id === id),
-    }),
-  });
 
   if (!project) return null;
 
-  const { name, content, field, createDate, endDate, likes } = project;
+  const { id, name, content, field, startAt, endAt, likes } = project;
 
   const today = new Date();
-  const createDay = new Date(createDate);
+  const createDay = new Date(startAt);
   const dday = Math.floor(
     (today.getTime() - createDay.getTime()) / 1000 / 60 / 60 / 24
   );
@@ -73,7 +68,7 @@ export default function ProjectCard({ id }: { id: number }) {
       </Text>
 
       <Text>
-        {createDate.split("T")[0]} ~ {endDate.split("T")[0]}
+        {startAt.split("T")[0]} ~ {endAt.split("T")[0]}
       </Text>
 
       <Progress value={(23 / 36) * 100} mt={5} />
