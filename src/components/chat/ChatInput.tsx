@@ -14,7 +14,7 @@ import dayjs from "dayjs";
 import { StompContext } from "app/StompContext";
 
 export function ChatInput({ roomId }: { roomId: number }) {
-  const { data } = api.useGetMyInfoQuery(null);
+  const { data: myId } = api.useGetMyIdQuery(null);
 
   const theme = useMantineTheme();
 
@@ -32,7 +32,7 @@ export function ChatInput({ roomId }: { roomId: number }) {
         type: "TALK",
         roomId,
         text,
-        senderId: data?.id,
+        senderId: myId,
         sendTime: dayjs().toISOString(),
       };
 

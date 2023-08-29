@@ -15,8 +15,8 @@ const ChatMessageCard: React.FC<{
     <Group spacing="xs">
       {fromMe ? null : data && isLast ? (
         <Box mt="auto">
-          <Link to={`/people/${data.id}`}>
-            <Avatar src={data.avatar} radius="xl" />
+          <Link to={`/profile/${data.id}`}>
+            <Avatar src={data.image} radius="xl" />
           </Link>
         </Box>
       ) : (
@@ -31,14 +31,13 @@ const ChatMessageCard: React.FC<{
             width: "fit-content",
             maxWidth: "80%",
             overflowWrap: "anywhere",
-            padding: `${theme.spacing.sm} ${theme.spacing.md}`,
-
+            padding: theme.spacing.sm,
             marginLeft: fromMe ? "auto" : 0,
             borderRadius: isLast
               ? `${theme.radius.xl} ${theme.radius.xl} ${
                   fromMe
-                    ? `${theme.radius.sm} ${theme.radius.xl}`
-                    : `${theme.radius.xl} ${theme.radius.sm}`
+                    ? `${theme.radius.xs} ${theme.radius.xl}`
+                    : `${theme.radius.xl} ${theme.radius.xs}`
                 }`
               : theme.radius.xl,
             transition: "border-radius 0.5s ease",

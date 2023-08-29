@@ -42,12 +42,12 @@ export function UserButton({ userId, icon, ...others }: UserButtonProps) {
   }
   if (!data) return <p>대화 상대방의 데이터를 불러오지 못했습니다.</p>;
 
-  const { name, avatar } = data;
+  const { name, image } = data;
 
   return (
     <UnstyledButton className={classes.user} {...others}>
       <Group spacing="xs">
-        <Avatar src={avatar} radius="xl" />
+        <Avatar src={image} radius="xl" />
         <div style={{ flex: 1 }}>
           <Text size="sm" weight={500}>
             {name}

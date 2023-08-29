@@ -10,9 +10,7 @@ import {
   rem,
 } from "@mantine/core";
 import { api } from "app/api";
-import { Link } from "react-router-dom";
-import { Post } from "types";
-import PostLike from "./PostLike";
+import PostLikeSection from "./PostLike";
 
 const useStyles = createStyles((theme) => ({
   card: {
@@ -35,13 +33,19 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-export default function PostCard({ post }: { post: Post }) {
+export default function PostCard({ id }: { id: number }) {
   const { classes } = useStyles();
+  const { post } = api.useGetAllPostsQuery(null, {
+    selectFromResult: ({ data }) => ({
+      post: data?.data.find((post) => post.id === id),
+    }),
+  });
+
   const setDeletePost = api.useDeletePostMutation()[0];
 
   const handleDelete = async () => {
     try {
-      await setDeletePost(post.id).unwrap();
+      await setDeletePost({ id }).unwrap();
     } catch (e) {
       console.error(e);
     }
@@ -54,9 +58,7 @@ export default function PostCard({ post }: { post: Post }) {
       <Card.Section className={classes.section}>
         <Group position="apart">
           <Group>
-            <Link to={`/people/${post.authorId}`}>
-              <Avatar src={post.authorAvatar} radius="xl" />
-            </Link>
+            <Avatar radius="xl" />
             <Text>{post.author}</Text>
           </Group>
 
@@ -90,7 +92,7 @@ export default function PostCard({ post }: { post: Post }) {
       </Card.Section>
 
       <Card.Section className={classes.section}>
-        <PostLike {...post} />
+        <PostLikeSection {...{ id, likes: post.likes }} />
       </Card.Section>
     </Card>
   );

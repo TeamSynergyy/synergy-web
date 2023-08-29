@@ -1,18 +1,18 @@
 import { Avatar, Text, Button, Paper } from "@mantine/core";
 
-interface UserCardProps {
+interface UserInfoActionProps {
   avatar: string;
   name: string;
   email: string;
-  major: string;
+  job: string;
 }
 
-export default function UserCard({
+export function UserInfoAction({
   avatar,
   name,
   email,
-  major,
-}: UserCardProps) {
+  job,
+}: UserInfoActionProps) {
   return (
     <Paper
       radius="md"
@@ -28,11 +28,11 @@ export default function UserCard({
         {name}
       </Text>
       <Text ta="center" c="dimmed" fz="sm">
-        {email} • {major}
+        {email} • {job}
       </Text>
 
       <Button variant="default" fullWidth mt="md">
-        프로필 보기
+        Send message
       </Button>
     </Paper>
   );

@@ -36,11 +36,11 @@ export default function ProjectDetail() {
   const [opened, { open, close }] = useDisclosure(false);
   if (isFetching) return <div>loading...</div>;
   if (!data) return <div>프로젝트 데이터를 불러오지 못했습니다.</div>;
-  const project = data;
+  const project = data.data;
   const today = new Date();
-  const startAt = new Date(project.startAt);
+  const createDate = new Date(project.createDate);
   const dday = Math.floor(
-    (today.getTime() - startAt.getTime()) / 1000 / 60 / 60 / 24
+    (today.getTime() - createDate.getTime()) / 1000 / 60 / 60 / 24
   );
 
   const handleDelete = async () => {
@@ -102,7 +102,7 @@ export default function ProjectDetail() {
         </Text>
 
         <Text>
-          {project.startAt.split("T")[0]} ~ {project.endAt.split("T")[0]}
+          {project.createDate.split("T")[0]} ~ {project.endDate.split("T")[0]}
         </Text>
 
         <Progress value={(23 / 36) * 100} mt={5} />
