@@ -15,7 +15,7 @@ import {
   Dialog,
   Flex,
 } from "@mantine/core";
-import { IconDots, IconHeart, IconTrash } from "@tabler/icons-react";
+import { IconDots, IconTrash } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 import { useDisclosure } from "@mantine/hooks";
 import { useState } from "react";

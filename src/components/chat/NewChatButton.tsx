@@ -16,7 +16,7 @@ const NewChatButton = () => {
             placeholder="상대 유저 ID"
             variant="filled"
             required
-            onChange={(e) => {
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               setUserId(parseInt(e.currentTarget.value));
               console.log(userId);
             }}

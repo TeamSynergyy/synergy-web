@@ -1,5 +1,4 @@
-import PostCard from "components/post/PostCard";
-import { Box, Button, Stack } from "@mantine/core";
+import { Button, Stack } from "@mantine/core";
 import { api } from "app/api";
 import { useEffect, useState } from "react";
 import { useIntersection } from "@mantine/hooks";

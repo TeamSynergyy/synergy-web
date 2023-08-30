@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import type { User } from "types";
 import { RootState } from "./store";
 
 const slice = createSlice({

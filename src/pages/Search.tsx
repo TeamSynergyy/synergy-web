@@ -1,5 +1,4 @@
 import { Box, Paper, Tabs } from "@mantine/core";
-import { useWindowScroll } from "@mantine/hooks";
 import { SearchInput } from "components/search/SearchInput";
 import SearchPostsResult from "components/search/SearchPostsResult";
 import SearchProjectsResult from "components/search/SearchProjectsResult";
