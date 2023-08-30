@@ -92,6 +92,14 @@ const posts = [
     authorId: 4,
     likes: 0,
   },
+  {
+    id: 5,
+    title: "4ddsfdsfasdf",
+    content:
+      "long longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong long",
+    authorId: 4,
+    likes: 0,
+  },
 ].map((post) => ({
   ...post,
   author: users.find(({ id }) => id === post.authorId)?.name,

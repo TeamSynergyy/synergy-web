@@ -8,11 +8,13 @@ import {
   Avatar,
   Menu,
   rem,
+  Spoiler,
 } from "@mantine/core";
 import { api } from "app/api";
 import { Link } from "react-router-dom";
 import { Post } from "types";
 import PostLike from "./PostLike";
+import { useRef } from "react";
 
 const useStyles = createStyles((theme) => ({
   card: {
@@ -38,7 +40,17 @@ const useStyles = createStyles((theme) => ({
 export default function PostCard({ post }: { post: Post }) {
   const { classes } = useStyles();
   const setDeletePost = api.useDeletePostMutation()[0];
+  const spoilerControlRef = useRef<HTMLButtonElement>(null);
 
+  const closeSpoilerText = "Hide";
+  const openSpoiler = () => {
+    if (
+      spoilerControlRef.current &&
+      spoilerControlRef.current.textContent !== closeSpoilerText
+    ) {
+      spoilerControlRef.current.click();
+    }
+  };
   const handleDelete = async () => {
     try {
       await setDeletePost(post.id).unwrap();
@@ -86,7 +98,16 @@ export default function PostCard({ post }: { post: Post }) {
             {post.title}
           </Text>
         </Group>
-        <Text mt="xs">{post.content}</Text>
+        <Spoiler
+          maxHeight={110}
+          showLabel="Show more"
+          hideLabel={closeSpoilerText}
+          controlRef={spoilerControlRef}
+        >
+          <Text mt="xs" onClick={openSpoiler}>
+            {post.content}
+          </Text>
+        </Spoiler>
       </Card.Section>
 
       <Card.Section className={classes.section}>
