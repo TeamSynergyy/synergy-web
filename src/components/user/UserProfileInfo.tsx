@@ -3,7 +3,7 @@ import { api } from "app/api";
 import ProjectCard from "components/project/ProjectCard";
 import { Project } from "types";
 
-export default function UserProfileInfo({ userId }: { userId: number }) {
+export default function UserProfileInfo({ userId }: { userId: string }) {
   const { data: projects } = api.useGetProjectsByUserQuery(userId);
 
   return (

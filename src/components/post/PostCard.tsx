@@ -69,7 +69,7 @@ export default function PostCard({ post }: { post: Post }) {
             <Link to={`/people/${post.authorId}`}>
               <Avatar src={post.authorAvatar} radius="xl" />
             </Link>
-            <Text>{post.author}</Text>
+            <Text>{post.authorName}</Text>
           </Group>
 
           <Menu withinPortal position="bottom-end" shadow="sm">

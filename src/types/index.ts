@@ -2,8 +2,8 @@ interface Post {
   id: number;
   title: string;
   content: string;
-  author: string;
-  authorId: number;
+  authorId: string;
+  authorName: string;
   authorAvatar: string;
   likes: number;
 }
@@ -16,11 +16,11 @@ interface Project {
   startAt: string;
   endAt: string;
   likes: number;
-  teamMemberIds: number[];
+  teamMemberIds: string[];
 }
 
 interface User {
-  id: number;
+  id: string;
   name: string;
   email: string;
   avatar: string;
@@ -28,11 +28,13 @@ interface User {
   major: string;
   temperature: number;
   bio: string;
+  followerIds: string[];
+  followingIds: string[];
 }
 
 interface ChatRoom {
   roomId: number;
-  participantIds: number[];
+  participantIds: string[];
   messages: ChatMessage[];
 }
 
@@ -41,15 +43,8 @@ interface ChatMessage {
   type: string;
   roomId: number;
   text: string;
-  senderId: number;
+  senderId: string;
   sendTime: string;
 }
 
-interface SearchResponse {
-  totalElements: number;
-  posts: Post[];
-  projects: Project[];
-  users: User[];
-}
-
-export type { Post, Project, User, ChatMessage, ChatRoom, SearchResponse };
+export type { Post, Project, User, ChatMessage, ChatRoom };

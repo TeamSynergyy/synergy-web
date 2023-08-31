@@ -35,7 +35,7 @@ const useStyles = createStyles((theme) => ({
 }));
 
 interface UserCardImageProps {
-  id: number;
+  id: string;
   backgroundImage: string;
   avatar: string;
   name: string;
@@ -55,7 +55,7 @@ export default function UserProfileCard({
 }: UserCardImageProps) {
   const { classes, theme } = useStyles();
   const { data: myInfo } = api.useGetMyInfoQuery(null);
-  const { data: myFollowing } = api.useGetMyFollowingQuery(null);
+  const myFollowing = api.useGetMyInfoQuery(null).data?.followingIds;
   const isFollowing = myFollowing?.includes(id);
   const editMyInfo = api.useEditMyInfoMutation()[0];
   const [opened, { open, close }] = useDisclosure(false);

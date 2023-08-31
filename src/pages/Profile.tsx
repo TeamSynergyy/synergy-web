@@ -10,7 +10,9 @@ import { useParams } from "react-router-dom";
 export default function Profile() {
   const [activeTab, setActiveTab] = useState<string | null>("info");
 
-  const id = Number(useParams().id as string);
+  const id = useParams().id;
+  if (!id) return <p>id가 없습니다.</p>;
+
   const { data: user, isFetching, isError, error } = api.useGetUserQuery(id);
 
   if (isFetching) return <LoadingOverlay visible />;

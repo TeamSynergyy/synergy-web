@@ -5,7 +5,7 @@ import { useState } from "react";
 
 const NewChatButton = () => {
   const [opened, { open, close }] = useDisclosure(false);
-  const [userId, setUserId] = useState<number | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
   const createNewChat = api.useCreateChatRoomMutation()[0];
 
   return (
@@ -17,7 +17,7 @@ const NewChatButton = () => {
             variant="filled"
             required
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              setUserId(parseInt(e.currentTarget.value));
+              setUserId(e.currentTarget.value);
               console.log(userId);
             }}
           />

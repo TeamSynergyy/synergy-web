@@ -73,7 +73,7 @@ export default function Auth(props: PaperProps) {
               }
               if (type === "login") {
                 try {
-                  const token = await login(credentials).unwrap();
+                  const { token } = await login(credentials).unwrap();
                   dispatch(setCredentials({ token }));
                   return navigate("/");
                 } catch (error) {

@@ -38,7 +38,10 @@ export const api = createApi({
       }),
     }),
 
-    login: build.mutation<string, { email: string; password: string }>({
+    login: build.mutation<
+      { token: string },
+      { email: string; password: string }
+    >({
       query: (credentials) => ({
         url: "/api/v1/members/login",
         method: "POST",
@@ -47,7 +50,7 @@ export const api = createApi({
     }),
 
     // MyInfo
-    getMyInfo: build.query<User & { followerIds: number[] }, null>({
+    getMyInfo: build.query<User, null>({
       query: () => "/me/info",
       providesTags: [{ type: "MyInfo" }],
     }),
@@ -62,9 +65,8 @@ export const api = createApi({
       providesTags: [{ type: "LikedProjectId", id: "LIST" }],
     }),
 
-    getMyFollowing: build.query<number[], null>({
-      query: () => "/me/following",
-      providesTags: [{ type: "FollowingId", id: "LIST" }],
+    getMyAppliedProjects: build.query<number[], null>({
+      query: () => "/me/apply",
     }),
 
     getMyChatRooms: build.query<ChatRoom[], null>({
@@ -117,7 +119,7 @@ export const api = createApi({
       ],
     }),
 
-    follow: build.mutation<void, number>({
+    follow: build.mutation<void, string>({
       query: (id) => ({
         url: `/members/follow/${id}`,
         method: "PUT",
@@ -128,7 +130,7 @@ export const api = createApi({
       ],
     }),
 
-    createChatRoom: build.mutation<void, number>({
+    createChatRoom: build.mutation<void, string>({
       query: (userId) => ({
         url: `/chat/create/${userId}`,
         method: "PUT",
@@ -139,12 +141,12 @@ export const api = createApi({
     }),
 
     // Users
-    getUser: build.query<User, number>({
+    getUser: build.query<User, string>({
       query: (id) => `/members/${id}`,
       providesTags: (result, error, arg) => [{ type: "User", id: String(arg) }],
     }),
 
-    getUsers: build.query<User[], number[]>({
+    getUsers: build.query<User[], string[]>({
       query: (ids) => `/members?ids=${ids.join(",")}`,
       providesTags: (result, error, arg) =>
         result
@@ -246,13 +248,19 @@ export const api = createApi({
       ],
     }),
 
+    applyProject: build.mutation<void, number>({
+      query: (id) => ({
+        url: `/apply?projectId=${id}`,
+      }),
+    }),
+
     // Search
     searchPosts: build.query<
       { contents: Post[]; totalPages: number; totalElements: number },
       [string, number]
     >({
       query: ([keyword, page]) =>
-        `/search/post?keyword=${keyword}&page=${page}`,
+        `/post/search?keyword=${keyword}&page=${page}`,
     }),
 
     searchProjects: build.query<
@@ -260,7 +268,7 @@ export const api = createApi({
       [string, number]
     >({
       query: ([keyword, page]) =>
-        `/search/project?keyword=${keyword}&page=${page}`,
+        `/project/search?keyword=${keyword}&page=${page}`,
     }),
 
     searchUsers: build.query<
@@ -268,14 +276,14 @@ export const api = createApi({
       [string, number]
     >({
       query: ([keyword, page]) =>
-        `/search/user?keyword=${keyword}&page=${page}`,
+        `members/search?keyword=${keyword}&page=${page}`,
     }),
 
     getPostsByUser: build.query<
       { contents: Post[]; totalPages: number },
-      [number, number]
+      [string, number]
     >({
-      query: ([userId, page]) => `/user/${userId}/posts?page=${page}`,
+      query: ([userId, page]) => `/members/${userId}/posts?page=${page}`,
       serializeQueryArgs: ({ queryArgs, endpointName }) => {
         return endpointName + queryArgs[0];
       },
@@ -287,8 +295,8 @@ export const api = createApi({
       },
     }),
 
-    getProjectsByUser: build.query<Project[], number>({
-      query: (userId) => `/user/${userId}/projects`,
+    getProjectsByUser: build.query<Project[], string>({
+      query: (userId) => `/members/${userId}/projects`,
     }),
   }),
 });

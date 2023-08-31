@@ -6,7 +6,7 @@ import { useIntersection } from "@mantine/hooks";
 import PostSkeleton from "components/post/PostSkeleton";
 import { useState, useEffect } from "react";
 
-export default function UserPostList({ userId }: { userId: number }) {
+export default function UserPostList({ userId }: { userId: string }) {
   const [page, setPage] = useState(0);
   const [isEnd, setIsEnd] = useState(false);
 
