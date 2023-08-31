@@ -9,7 +9,6 @@ import {
   Button,
   createStyles,
 } from "@mantine/core";
-import { api } from "app/api";
 import { Link } from "react-router-dom";
 import { Project } from "types";
 
@@ -39,8 +38,10 @@ export default function ProjectCard({ project }: { project: Project }) {
 
   const today = new Date();
   const createDay = new Date(startAt);
+
+  const millisecPerDay = 24 * 60 * 60 * 1000;
   const dday = Math.floor(
-    (today.getTime() - createDay.getTime()) / 1000 / 60 / 60 / 24
+    (today.getTime() - createDay.getTime()) / millisecPerDay
   );
 
   return (

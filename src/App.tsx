@@ -14,7 +14,7 @@ import Chat from "pages/Chat";
 import NewPost from "pages/NewPost";
 import NewProject from "pages/NewProject";
 import People from "pages/People";
-import ProjectDetail from "pages/ProjectDetail";
+import ProjectDetail from "components/project/ProjectDetail";
 import Recommendation from "pages/Recommendation";
 import Notification from "pages/Notification";
 import RecentPost from "pages/RecentPost";
@@ -40,7 +40,7 @@ export default function App() {
                 <Route index element={<Recommendation />} />
                 <Route path="recent">
                   <Route path="post" element={<RecentPost />} />
-                  <Route path="project" element={<RecentProject />} />R
+                  <Route path="project" element={<RecentProject />} />
                 </Route>
               </Route>
 

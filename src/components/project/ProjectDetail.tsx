@@ -28,24 +28,27 @@ const avatars = [
 ];
 
 export default function ProjectDetail() {
+  const navigate = useNavigate();
   const id = parseInt(useParams().id as string);
   const { data, isFetching } = api.useGetProjectQuery({ id });
-  const setDeleteProject = api.useDeleteProjectMutation()[0];
-  const navigate = useNavigate();
-  const [isApplied, setIsApplied] = useState(false);
+  const { data: appliedProjectIds } = api.useGetMyAppliedProjectsQuery(null);
+  const deleteProject = api.useDeleteProjectMutation()[0];
+  const applyProject = api.useApplyProjectMutation()[0];
+  const isApplied = appliedProjectIds?.includes(id);
   const [opened, { open, close }] = useDisclosure(false);
   if (isFetching) return <div>loading...</div>;
   if (!data) return <div>프로젝트 데이터를 불러오지 못했습니다.</div>;
   const project = data;
   const today = new Date();
   const startAt = new Date(project.startAt);
+  const millisecPerDay = 24 * 60 * 60 * 1000;
   const dday = Math.floor(
-    (today.getTime() - startAt.getTime()) / 1000 / 60 / 60 / 24
+    (today.getTime() - startAt.getTime()) / millisecPerDay
   );
 
   const handleDelete = async () => {
     try {
-      await setDeleteProject({ id }).unwrap();
+      await deleteProject({ id }).unwrap();
       navigate("/");
     } catch (e) {
       console.error(e);
@@ -53,8 +56,12 @@ export default function ProjectDetail() {
   };
 
   const handleApply = async () => {
-    open();
-    setIsApplied((prev) => !prev);
+    try {
+      await applyProject(id);
+      open();
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (

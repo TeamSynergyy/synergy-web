@@ -19,8 +19,7 @@ export const api = createApi({
     "Project",
     "LikedPostId",
     "LikedProjectId",
-    "FollowingId",
-    "FollowerId",
+    "AppliedProjectId",
     "ChatRoom",
     "User",
     "MyInfo",
@@ -67,6 +66,7 @@ export const api = createApi({
 
     getMyAppliedProjects: build.query<number[], null>({
       query: () => "/me/apply",
+      providesTags: [{ type: "AppliedProjectId", id: "LIST" }],
     }),
 
     getMyChatRooms: build.query<ChatRoom[], null>({
@@ -126,7 +126,6 @@ export const api = createApi({
       }),
       invalidatesTags: (result, error, arg) => [
         { type: "User", id: String(arg) },
-        { type: "FollowingId", id: "LIST" },
       ],
     }),
 
@@ -251,7 +250,9 @@ export const api = createApi({
     applyProject: build.mutation<void, number>({
       query: (id) => ({
         url: `/apply?projectId=${id}`,
+        method: "PUT",
       }),
+      invalidatesTags: [{ type: "AppliedProjectId", id: "LIST" }],
     }),
 
     // Search

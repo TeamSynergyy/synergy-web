@@ -74,6 +74,7 @@ export default function Auth(props: PaperProps) {
               if (type === "login") {
                 try {
                   const { token } = await login(credentials).unwrap();
+                  console.log(token);
                   dispatch(setCredentials({ token }));
                   return navigate("/");
                 } catch (error) {

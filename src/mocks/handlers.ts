@@ -3,7 +3,7 @@ import { rest } from "msw";
 
 const users = [
   {
-    id: 0,
+    id: "0",
     name: "yeoularu",
     backgroundImage: "https://source.unsplash.com/random",
     avatar:
@@ -14,7 +14,7 @@ const users = [
     bio: "biobiobiobiobiobio자기소개",
   },
   {
-    id: 1,
+    id: "1",
     backgroundImage: "https://source.unsplash.com/random",
     avatar:
       "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=255&q=80",
@@ -25,7 +25,7 @@ const users = [
     bio: "biobiobiobiobiobio자기소개",
   },
   {
-    id: 2,
+    id: "2",
     backgroundImage: "https://source.unsplash.com/random",
     avatar: "https://avatars.githubusercontent.com/u/109144975?v=4",
     name: "이종훈",
@@ -35,7 +35,7 @@ const users = [
     bio: "biobiobiobiobiobio자기소개",
   },
   {
-    id: 3,
+    id: "3",
     backgroundImage: "https://source.unsplash.com/random",
     avatar: "https://avatars.githubusercontent.com/u/69510981?v=4",
     name: "삼삼삼",
@@ -45,7 +45,7 @@ const users = [
     bio: "biobiobiobiobiobio자기소개",
   },
   {
-    id: 4,
+    id: "4",
     backgroundImage: "https://source.unsplash.com/random",
     avatar: "https://avatars.githubusercontent.com/u/69510444?v=4",
     name: "사사사사",
@@ -68,28 +68,28 @@ const posts = [
     id: 1,
     title: "Second post",
     content: "Hello!",
-    authorId: 1,
+    authorId: "1",
     likes: 1,
   },
   {
     id: 2,
     title: "",
     content: "Third post with no title",
-    authorId: 2,
+    authorId: "2",
     likes: 33,
   },
   {
     id: 3,
     title: "4 post",
     content: "4!",
-    authorId: 3,
+    authorId: "3",
     likes: 0,
   },
   {
     id: 4,
     title: "4ddsfdsfasdf",
     content: " ",
-    authorId: 4,
+    authorId: "4",
     likes: 0,
   },
   {
@@ -97,12 +97,12 @@ const posts = [
     title: "4ddsfdsfasdf",
     content:
       "long longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong long",
-    authorId: 4,
+    authorId: "4",
     likes: 0,
   },
 ].map((post) => ({
   ...post,
-  author: users.find(({ id }) => id === post.authorId)?.name,
+  authorName: users.find(({ id }) => id === post.authorId)?.name,
   authorAvatar: users.find(({ id }) => id === post.authorId)?.avatar,
 }));
 
@@ -115,7 +115,7 @@ const projects = [
     startAt: "2023-09-01",
     endAt: "2023-09-30",
     likes: 0,
-    teamMemberIds: [0, 1],
+    teamMemberIds: ["0", "1"],
   },
   {
     id: 1,
@@ -125,21 +125,21 @@ const projects = [
     startAt: "2022-11-11",
     endAt: "2023-01-12",
     likes: 21,
-    teamMemberIds: [0, 2, 3],
+    teamMemberIds: ["0", "2", "3"],
   },
 ];
 
 const chatRooms = [
   {
     roomId: 0,
-    participantIds: [0, 1],
+    participantIds: ["0", "1"],
     messages: [
       {
         id: 0,
         type: "TALK",
         roomId: 0,
         text: "hello",
-        senderId: 1,
+        senderId: "1",
         sendTime: "2021-09-01T04:56:55.074Z",
       },
       {
@@ -147,21 +147,21 @@ const chatRooms = [
         type: "TALK",
         roomId: 0,
         text: "hi",
-        senderId: 0,
+        senderId: "0",
         sendTime: "2023-07-25T16:23:55.074Z",
       },
     ],
   },
   {
     roomId: 1,
-    participantIds: [0, 2],
+    participantIds: ["0", "2"],
     messages: [
       {
         id: 2,
         type: "TALK",
         roomId: 1,
         text: "hello",
-        senderId: 0,
+        senderId: "0",
         sendTime: "2021-09-01T04:56:55.074Z",
       },
       {
@@ -169,7 +169,7 @@ const chatRooms = [
         type: "ENTER",
         roomId: 1,
         text: "hello",
-        senderId: 2,
+        senderId: "2",
         sendTime: "2022-09-01T04:56:55.074Z",
       },
       {
@@ -177,7 +177,7 @@ const chatRooms = [
         type: "TALK",
         roomId: 1,
         text: "yo",
-        senderId: 2,
+        senderId: "2",
         sendTime: "2022-01-01T04:56:55.074Z",
       },
       {
@@ -185,7 +185,7 @@ const chatRooms = [
         type: "TALK",
         roomId: 1,
         text: "yo",
-        senderId: 0,
+        senderId: "0",
         sendTime: "2023-07-23T17:56:55.074Z",
       },
       {
@@ -193,7 +193,7 @@ const chatRooms = [
         type: "TALK",
         roomId: 1,
         text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\nWhy do we use it?\nIt is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).",
-        senderId: 2,
+        senderId: "2",
         sendTime: "2023-07-24T17:56:55.074Z",
       },
     ],
@@ -204,9 +204,10 @@ const user = {
   ...users[0],
   likedPosts: [1, 2],
   likedProjects: [1],
-  following: [2, 3],
-  followers: [1],
+  following: ["2", "3"],
+  followers: ["1"],
   chatRooms: chatRooms,
+  appliedProjects: [1],
 };
 
 export const handlers = [
@@ -226,9 +227,10 @@ export const handlers = [
   rest.post("/api/v1/members/login", (_, res, ctx) => {
     return res(
       ctx.status(200),
-      ctx.json(
-        "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyTmFtZSI6InJpdnNAa2FrYW8uY29tIiwiaWF0IjoxNjkzMzE2ODUxLCJleHAiOjE2OTM0MDMyNTF9.VHDyjaOf-5iB0FerCb2XZK6uNvY_1tsYMOsq-7mG7ws"
-      )
+      ctx.json({
+        token:
+          "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyTmFtZSI6InJpdnNAa2FrYW8uY29tIiwiaWF0IjoxNjkzMzE2ODUxLCJleHAiOjE2OTM0MDMyNTF9.VHDyjaOf-5iB0FerCb2XZK6uNvY_1tsYMOsq-7mG7ws",
+      })
     );
   }),
 
@@ -242,11 +244,8 @@ export const handlers = [
   rest.get("/me/like/project", (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(user.likedProjects));
   }),
-  rest.get("/me/following", (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json(user.following));
-  }),
-  rest.get("/me/followers", (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json(user.followers));
+  rest.get("/me/apply", (_, res, ctx) => {
+    return res(ctx.status(200), ctx.json(user.appliedProjects));
   }),
   rest.get("/me/chatrooms", (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(user.chatRooms));
@@ -262,26 +261,26 @@ export const handlers = [
 
   rest.get("/members/:id", (req, res, ctx) => {
     const { id } = req.params as { id: string };
-    const user = users.find((user) => user.id === Number(id));
+    const user = users.find((user) => user.id === id);
     if (!user) return res(ctx.status(404));
     return res(ctx.status(200), ctx.json(user));
   }),
 
   rest.get("/members?ids=:ids", (req, res, ctx) => {
     const { ids } = req.params as { ids: string };
-    const idList = ids.split(",").map((id) => Number(id));
+    const idList = ids.split(",").map((id) => id);
     const userList = users.filter((user) => idList.includes(user.id));
     return res(ctx.status(200), ctx.json(userList));
   }),
 
   rest.put("/members/follow/:id", (req, res, ctx) => {
     const { id } = req.params as { id: string };
-    if (!id || !users.find((user) => user.id === Number(id)))
+    if (!id || !users.find((user) => user.id === id))
       return res(ctx.status(400));
-    if (user.following.includes(Number(id))) {
-      user.following = user.following.filter((userId) => userId !== Number(id));
+    if (user.following.includes(id)) {
+      user.following = user.following.filter((userId) => userId !== id);
     } else {
-      user.following.push(Number(id));
+      user.following.push(id);
     }
 
     return res(ctx.status(200));
@@ -289,11 +288,11 @@ export const handlers = [
 
   rest.put("/chat/create/:id", (req, res, ctx) => {
     const { id } = req.params as { id: string };
-    if (!id || !users.find((user) => user.id === Number(id)))
+    if (!id || !users.find((user) => user.id === id))
       return res(ctx.status(400));
     chatRooms.push({
       roomId: 3,
-      participantIds: [0, Number(id)],
+      participantIds: ["0", id],
       messages: [],
     });
     return res(ctx.status(200));
@@ -311,7 +310,7 @@ export const handlers = [
       content,
       authorId: user.id,
       likes: 0,
-      author: user.name,
+      authorName: user.name,
       authorAvatar: user.avatar,
     });
     console.log(posts);
@@ -392,7 +391,7 @@ export const handlers = [
       startAt,
       endAt,
       likes: 0,
-      teamMemberIds: [0],
+      teamMemberIds: ["0"],
     });
 
     return res(ctx.status(200), ctx.json(id));
@@ -450,6 +449,21 @@ export const handlers = [
     } else {
       user.likedProjects.push(parseInt(id));
       projects.find((project) => project.id === parseInt(id))!.likes++;
+    }
+
+    return res(ctx.status(200));
+  }),
+
+  rest.put("/apply", (req, res, ctx) => {
+    const projectId = req.url.searchParams.get("projectId");
+    if (projectId === null) return res(ctx.status(400));
+    const index = user.appliedProjects.findIndex(
+      (id) => id === parseInt(projectId)
+    );
+    if (index !== -1) {
+      user.appliedProjects.splice(index, 1);
+    } else {
+      user.appliedProjects.push(parseInt(projectId));
     }
 
     return res(ctx.status(200));
@@ -563,9 +577,7 @@ export const handlers = [
     const { id } = req.params as { id: string };
     return res(
       ctx.status(200),
-      ctx.json(
-        projects.filter((project) => project.teamMemberIds.includes(Number(id)))
-      )
+      ctx.json(projects.filter((project) => project.teamMemberIds.includes(id)))
     );
   }),
 ];
