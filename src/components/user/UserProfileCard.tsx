@@ -55,11 +55,11 @@ export default function UserProfileCard({
 }: UserCardImageProps) {
   const { classes, theme } = useStyles();
   const { data: myInfo } = api.useGetMyInfoQuery(null);
-  const myFollowing = api.useGetMyInfoQuery(null).data?.followingIds;
+  const myFollowing = myInfo?.followingIds;
   const isFollowing = myFollowing?.includes(id);
   const editMyInfo = api.useEditMyInfoMutation()[0];
   const [opened, { open, close }] = useDisclosure(false);
-
+  console.log(myFollowing);
   const follow = api.useFollowMutation()[0];
 
   const isMe = myInfo?.id !== id;

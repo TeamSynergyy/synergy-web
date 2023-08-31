@@ -12,6 +12,8 @@ const users = [
     temperature: 36.8,
     major: "전기정보공학과",
     bio: "biobiobiobiobiobio자기소개",
+    followingIds: ["2", "3"],
+    followersIds: ["1"],
   },
   {
     id: "1",
@@ -23,6 +25,8 @@ const users = [
     temperature: 36.5,
     major: "기계자동차공학과",
     bio: "biobiobiobiobiobio자기소개",
+    followingIds: ["0"],
+    followersIds: [],
   },
   {
     id: "2",
@@ -33,6 +37,8 @@ const users = [
     temperature: 73,
     major: "컴퓨터공학과",
     bio: "biobiobiobiobiobio자기소개",
+    followingIds: [],
+    followersIds: ["0"],
   },
   {
     id: "3",
@@ -43,6 +49,8 @@ const users = [
     temperature: 20.0,
     major: "안경광학과, 전자IT미디어공학과",
     bio: "biobiobiobiobiobio자기소개",
+    followingIds: [],
+    followersIds: ["0"],
   },
   {
     id: "4",
@@ -53,6 +61,8 @@ const users = [
     temperature: 44.4,
     major: "안경광학과, 전자IT미디어공학과",
     bio: "biobiobiobiobiobio자기소개",
+    followingIds: [],
+    followersIds: [],
   },
 ];
 
@@ -204,8 +214,6 @@ const user = {
   ...users[0],
   likedPosts: [1, 2],
   likedProjects: [1],
-  following: ["2", "3"],
-  followers: ["1"],
   chatRooms: chatRooms,
   appliedProjects: [1],
 };
@@ -277,10 +285,12 @@ export const handlers = [
     const { id } = req.params as { id: string };
     if (!id || !users.find((user) => user.id === id))
       return res(ctx.status(400));
-    if (user.following.includes(id)) {
-      user.following = user.following.filter((userId) => userId !== id);
+    if (users[0].followingIds.includes(id)) {
+      users[0].followingIds = users[0].followingIds.filter(
+        (userId) => userId !== id
+      );
     } else {
-      user.following.push(id);
+      users[0].followingIds.push(id);
     }
 
     return res(ctx.status(200));

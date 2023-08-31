@@ -126,6 +126,7 @@ export const api = createApi({
       }),
       invalidatesTags: (result, error, arg) => [
         { type: "User", id: String(arg) },
+        { type: "MyInfo" },
       ],
     }),
 
