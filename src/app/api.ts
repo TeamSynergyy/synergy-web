@@ -95,10 +95,13 @@ export const api = createApi({
       ],
     }),
 
-    likePost: build.mutation<void, number>({
-      query: (id) => ({
+    likePost: build.mutation<void, [number, "like" | "unlike"]>({
+      query: ([id, likeType]) => ({
         url: `/post/${id}/like`,
         method: "PUT",
+        body: {
+          likeType,
+        },
       }),
 
       invalidatesTags: (result, error, arg) => [
@@ -107,10 +110,13 @@ export const api = createApi({
       ],
     }),
 
-    likeProject: build.mutation<void, number>({
-      query: (id) => ({
+    likeProject: build.mutation<void, [number, "like" | "unlike"]>({
+      query: ([id, likeType]) => ({
         url: `/project/${id}/like`,
         method: "PUT",
+        body: {
+          likeType,
+        },
       }),
 
       invalidatesTags: (result, error, arg) => [
@@ -119,10 +125,13 @@ export const api = createApi({
       ],
     }),
 
-    follow: build.mutation<void, string>({
-      query: (id) => ({
+    follow: build.mutation<void, [string, "follow" | "unfollow"]>({
+      query: ([id, followType]) => ({
         url: `/members/follow/${id}`,
         method: "PUT",
+        body: {
+          followType,
+        },
       }),
       invalidatesTags: (result, error, arg) => [
         { type: "User", id: String(arg) },

@@ -18,13 +18,14 @@ export default function PostLike({ id, likes }: { id: number; likes: number }) {
   const { classes } = useStyles();
 
   const isLiked = api.useGetMyLikedPostsQuery(null).data?.includes(id);
+  const likeType = isLiked ? "unlike" : "like";
 
-  const setToggleLike = api.useLikePostMutation()[0];
+  const like = api.useLikePostMutation()[0];
 
   const [tempLikes, setTempLikes] = useState(likes);
   const handleLike = () => {
     isLiked ? setTempLikes(tempLikes - 1) : setTempLikes(tempLikes + 1);
-    setToggleLike(id);
+    like([id, likeType]);
   };
 
   return (

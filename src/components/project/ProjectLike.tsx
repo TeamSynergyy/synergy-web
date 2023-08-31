@@ -24,13 +24,14 @@ export default function ProjectLike({
   const { classes } = useStyles();
 
   const isLiked = api.useGetMyLikedProjectsQuery(null).data?.includes(id);
+  const likeType = isLiked ? "unlike" : "like";
 
-  const setToggleLike = api.useLikeProjectMutation()[0];
+  const like = api.useLikeProjectMutation()[0];
 
   const [tempLikes, setTempLikes] = useState(likes);
   const handleLike = () => {
     isLiked ? setTempLikes(tempLikes - 1) : setTempLikes(tempLikes + 1);
-    setToggleLike(id);
+    like([id, likeType]);
   };
   return (
     <Group>
