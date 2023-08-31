@@ -12,6 +12,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { api } from "app/api";
 import { useNavigate } from "react-router-dom";
 import { DateInput } from "@mantine/dates";
+import dayjs from "dayjs";
 
 export default function NewProject() {
   const setCreateProject = api.useCreateProjectMutation()[0];
@@ -24,6 +25,12 @@ export default function NewProject() {
       field: [],
       startAt: "",
       endAt: "",
+    },
+    validate: {
+      endAt: (endAt, values) =>
+        dayjs(values.startAt) > dayjs(endAt)
+          ? "시작일이 종료일보다 늦습니다."
+          : null,
     },
   });
 
@@ -43,7 +50,17 @@ export default function NewProject() {
       <form
         onSubmit={form.onSubmit(async (values) => {
           try {
-            const id = await setCreateProject(values).unwrap();
+            const startAt =
+              dayjs(values.startAt).format("YYYY-MM-DD") + "T00:00:00.000";
+            const endAt = values.endAt
+              ? dayjs(values.startAt).format("YYYY-MM-DD") + "T00:00:00.000"
+              : "";
+            const id = await setCreateProject({
+              ...values,
+              startAt,
+              endAt,
+            }).unwrap();
+            console.log(values);
             navigate(`/project/${id}`);
           } catch (e) {
             open();
