@@ -35,10 +35,6 @@ export const StompProvider = ({ children }: { children: JSX.Element }) => {
       console.log("create new client");
       clientRef.current = new Client({
         brokerURL,
-        debug: (str) => {
-          console.log(str);
-        },
-
         reconnectDelay: 5000,
       });
 
