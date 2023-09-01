@@ -58,7 +58,7 @@ export default function NewProject() {
               ? dayjs(values.startAt).format("YYYY-MM-DD") + "T00:00:00.000"
               : "";
             const field = values.field.join(", ");
-            const id = await setCreateProject({
+            await setCreateProject({
               ...values,
               startAt,
               endAt,
@@ -66,7 +66,7 @@ export default function NewProject() {
             }).unwrap();
             console.log(values);
             initPage("recentProject");
-            navigate(`/project/${id}`);
+            navigate(`/home/recent/project`);
           } catch (e) {
             open();
             console.error(e);

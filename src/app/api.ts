@@ -227,7 +227,7 @@ export const api = createApi({
 
     // Project
     createProject: build.mutation<
-      number,
+      void,
       Omit<Project, "id" | "likes" | "teamMemberIds">
     >({
       query: (project) => ({
