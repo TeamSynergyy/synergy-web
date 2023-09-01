@@ -107,7 +107,8 @@ export default function ProjectDetail() {
         </Text>
 
         <Text>
-          {project.startAt.split("T")[0]} ~ {project.endAt.split("T")[0]}
+          {project.startAt?.split("T")[0]} ~{" "}
+          {project.endAt ? project.endAt.split("T")[0] : ""}
         </Text>
 
         <Progress value={(23 / 36) * 100} mt={5} />

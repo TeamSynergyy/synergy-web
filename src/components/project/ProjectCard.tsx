@@ -65,7 +65,7 @@ export default function ProjectCard({ project }: { project: Project }) {
       </Text>
 
       <Text>
-        {startAt.split("T")[0]} ~ {endAt.split("T")[0]}
+        {startAt?.split("T")[0]} ~ {endAt ? endAt.split("T")[0] : ""}
       </Text>
 
       <Progress value={(23 / 36) * 100} mt={5} />
