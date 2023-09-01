@@ -33,9 +33,9 @@ export default function SearchTotalResult({
       postsData.totalElements +
       projectData.totalElements +
       usersData.totalElements,
-    posts: postsData.contents.slice(0, 3),
-    projects: projectData.contents.slice(0, 3),
-    users: usersData.contents.slice(0, 3),
+    posts: postsData.content.slice(0, 3),
+    projects: projectData.content.slice(0, 3),
+    users: usersData.content.slice(0, 3),
   };
 
   if (!data?.totalElements) return <Text>검색 결과가 없습니다.</Text>;

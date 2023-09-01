@@ -333,7 +333,7 @@ export const handlers = [
     return res(
       ctx.status(200),
       ctx.json({
-        contents: [
+        content: [
           {
             id: 999,
             title: "this is front of page" + page,
@@ -413,7 +413,7 @@ export const handlers = [
     return res(
       ctx.status(200),
       ctx.json({
-        contents: [
+        content: [
           {
             id: 1000 + Number(page),
             name: "프로젝트 page" + page,
@@ -504,7 +504,7 @@ export const handlers = [
     if (!keyword) return res(ctx.status(400));
     const pos = posts.filter((post) => post.content.includes(keyword));
     const result = {
-      contents: [
+      content: [
         {
           id: 999,
           title: "this is front of page" + page,
@@ -528,7 +528,7 @@ export const handlers = [
     if (!keyword) return res(ctx.status(400));
     const proj = projects.filter((project) => project.name.includes(keyword));
     const result = {
-      contents: [
+      content: [
         {
           id: 1000 + Number(page),
           name: "프로젝트 page" + page,
@@ -553,7 +553,7 @@ export const handlers = [
     if (!keyword) return res(ctx.status(400));
     const usr = users.filter((user) => user.name.includes(keyword));
     const result = {
-      contents: [
+      content: [
         {
           id: 999,
           backgroundImage: "https://source.unsplash.com/random",
@@ -577,7 +577,7 @@ export const handlers = [
     return res(
       ctx.status(200),
       ctx.json({
-        contents: posts.filter((post) => post.authorId === Number(id)),
+        content: posts.filter((post) => post.authorId === Number(id)),
         totalPages: 13,
       })
     );

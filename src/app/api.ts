@@ -185,7 +185,7 @@ export const api = createApi({
     }),
 
     getRecentPosts: build.query<
-      { contents: Post[]; totalPages: number },
+      { content: Post[]; totalPages: number },
       number
     >({
       query: (page) => `/post/recent?page=${page}`,
@@ -193,7 +193,7 @@ export const api = createApi({
         return endpointName;
       },
       merge: (currentCache, newItems) => {
-        currentCache.contents.push(...newItems.contents);
+        currentCache.content.push(...newItems.content);
       },
       forceRefetch({ currentArg, previousArg }) {
         return currentArg !== previousArg;
@@ -232,7 +232,7 @@ export const api = createApi({
     }),
 
     getRecentProjects: build.query<
-      { contents: Project[]; totalPages: number },
+      { content: Project[]; totalPages: number },
       number
     >({
       query: (page) => `/project/recent?page=${page}`,
@@ -240,7 +240,7 @@ export const api = createApi({
         return endpointName;
       },
       merge: (currentCache, newItems) => {
-        currentCache.contents.push(...newItems.contents);
+        currentCache.content.push(...newItems.content);
       },
       forceRefetch({ currentArg, previousArg }) {
         return currentArg !== previousArg;
@@ -267,7 +267,7 @@ export const api = createApi({
 
     // Search
     searchPosts: build.query<
-      { contents: Post[]; totalPages: number; totalElements: number },
+      { content: Post[]; totalPages: number; totalElements: number },
       [string, number]
     >({
       query: ([keyword, page]) =>
@@ -275,7 +275,7 @@ export const api = createApi({
     }),
 
     searchProjects: build.query<
-      { contents: Project[]; totalPages: number; totalElements: number },
+      { content: Project[]; totalPages: number; totalElements: number },
       [string, number]
     >({
       query: ([keyword, page]) =>
@@ -283,7 +283,7 @@ export const api = createApi({
     }),
 
     searchUsers: build.query<
-      { contents: User[]; totalPages: number; totalElements: number },
+      { content: User[]; totalPages: number; totalElements: number },
       [string, number]
     >({
       query: ([keyword, page]) =>
@@ -291,7 +291,7 @@ export const api = createApi({
     }),
 
     getPostsByUser: build.query<
-      { contents: Post[]; totalPages: number },
+      { content: Post[]; totalPages: number },
       [string, number]
     >({
       query: ([userId, page]) => `/members/${userId}/posts?page=${page}`,
@@ -299,7 +299,7 @@ export const api = createApi({
         return endpointName + queryArgs[0];
       },
       merge: (currentCache, newItems) => {
-        currentCache.contents.push(...newItems.contents);
+        currentCache.content.push(...newItems.content);
       },
       forceRefetch({ currentArg, previousArg }) {
         return currentArg !== previousArg;

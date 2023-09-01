@@ -21,7 +21,7 @@ export default function SearchUsersResult() {
   if (isLoading) {
     content = <p>"Loading..."</p>;
   } else if (isSuccess) {
-    content = data.contents?.map((user, i) => <UserCard key={i} {...user} />);
+    content = data.content?.map((user, i) => <UserCard key={i} {...user} />);
   } else if (isError) {
     console.error(error);
     content = <p>error! check the console message</p>;

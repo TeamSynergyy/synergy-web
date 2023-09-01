@@ -37,7 +37,7 @@ export default function RecentProject() {
   if (isLoading) {
     content = <p>"Loading..."</p>;
   } else if (isSuccess) {
-    content = data.contents.map((project, i) => (
+    content = data.content.map((project, i) => (
       <ProjectCard key={i} project={project} />
     ));
   } else if (isError) {

@@ -37,7 +37,7 @@ export default function RecentPost() {
   if (isLoading) {
     content = <p>"Loading..."</p>;
   } else if (isSuccess) {
-    content = data.contents.map((post, i) => <PostCard key={i} post={post} />);
+    content = data.content.map((post, i) => <PostCard key={i} post={post} />);
   } else if (isError) {
     console.error(error);
     content = <p>error! check the console message</p>;
