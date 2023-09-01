@@ -31,7 +31,7 @@ export const api = createApi({
       { email: string; password: string; name: string }
     >({
       query: (credentials) => ({
-        url: "/api/v1/members/signup",
+        url: "/members/signup",
         method: "POST",
         body: credentials,
       }),
@@ -42,7 +42,7 @@ export const api = createApi({
       { email: string; password: string }
     >({
       query: (credentials) => ({
-        url: "/api/v1/members/login",
+        url: "/members/login",
         method: "POST",
         body: credentials,
       }),
@@ -50,27 +50,27 @@ export const api = createApi({
 
     // MyInfo
     getMyInfo: build.query<User, null>({
-      query: () => "/me/info",
+      query: () => "/members/me/info",
       providesTags: [{ type: "MyInfo" }],
     }),
 
     getMyLikedPosts: build.query<number[], null>({
-      query: () => "/me/like/post",
+      query: () => "/members/me/like/post",
       providesTags: [{ type: "LikedPostId", id: "LIST" }],
     }),
 
     getMyLikedProjects: build.query<number[], null>({
-      query: () => "/me/like/project",
+      query: () => "/members/me/like/project",
       providesTags: [{ type: "LikedProjectId", id: "LIST" }],
     }),
 
     getMyAppliedProjects: build.query<number[], null>({
-      query: () => "/me/apply",
+      query: () => "/members/me/apply",
       providesTags: [{ type: "AppliedProjectId", id: "LIST" }],
     }),
 
     getMyChatRooms: build.query<ChatRoom[], null>({
-      query: () => "/me/chatrooms",
+      query: () => "/members/me/chatrooms",
       providesTags: (result, error, arg) =>
         result
           ? [
@@ -85,7 +85,7 @@ export const api = createApi({
 
     editMyInfo: build.mutation<void, Partial<User>>({
       query: (data) => ({
-        url: "/me/info",
+        url: "/members/me/info",
         method: "PATCH",
         body: data,
       }),

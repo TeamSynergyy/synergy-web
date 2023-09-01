@@ -220,7 +220,7 @@ const user = {
 
 export const handlers = [
   // User
-  rest.post("/api/v1/members/signup", async (req, res, ctx) => {
+  rest.post("/members/signup", async (req, res, ctx) => {
     // error test
     const { email } = await req.json();
     if (email === "error@test.com") return res(ctx.status(400));
@@ -232,7 +232,7 @@ export const handlers = [
     );
   }),
 
-  rest.post("/api/v1/members/login", (_, res, ctx) => {
+  rest.post("/members/login", (_, res, ctx) => {
     return res(
       ctx.status(200),
       ctx.json({
@@ -242,24 +242,24 @@ export const handlers = [
     );
   }),
 
-  rest.get("/me/info", (_, res, ctx) => {
+  rest.get("/members/me/info", (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(users[0]));
   }),
 
-  rest.get("/me/like/post", (_, res, ctx) => {
+  rest.get("/members/me/like/post", (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(user.likedPosts));
   }),
-  rest.get("/me/like/project", (_, res, ctx) => {
+  rest.get("/members/me/like/project", (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(user.likedProjects));
   }),
-  rest.get("/me/apply", (_, res, ctx) => {
+  rest.get("/members/me/apply", (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(user.appliedProjects));
   }),
-  rest.get("/me/chatrooms", (_, res, ctx) => {
+  rest.get("/members/me/chatrooms", (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(user.chatRooms));
   }),
 
-  rest.patch("/me/info", async (req, res, ctx) => {
+  rest.patch("/members/me/info", async (req, res, ctx) => {
     const body = await req.json();
     const updatedUser = { ...users[0], ...body };
     console.log(updatedUser);
