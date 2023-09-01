@@ -9,6 +9,7 @@ import {
   Button,
   createStyles,
 } from "@mantine/core";
+import dayjs from "dayjs";
 import { Link } from "react-router-dom";
 import { Project } from "types";
 
@@ -36,13 +37,8 @@ export default function ProjectCard({ project }: { project: Project }) {
 
   const { id, name, content, field, startAt, endAt, likes } = project;
 
-  const today = new Date();
-  const createDay = new Date(startAt);
-
-  const millisecPerDay = 24 * 60 * 60 * 1000;
-  const dday = Math.floor(
-    (today.getTime() - createDay.getTime()) / millisecPerDay
-  );
+  const today = dayjs();
+  const dday = Math.floor(today.diff(dayjs(project.startAt), "day", true));
 
   return (
     <Card withBorder padding="lg" radius="md" w="100%">
@@ -64,7 +60,7 @@ export default function ProjectCard({ project }: { project: Project }) {
             color: theme.colorScheme === "dark" ? theme.white : theme.black,
           })}
         >
-          {field.join(", ")}
+          {field}
         </Text>
       </Text>
 

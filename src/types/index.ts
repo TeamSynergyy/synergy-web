@@ -13,7 +13,7 @@ interface Project {
   id: number;
   name: string;
   content: string;
-  field: string[];
+  field: string;
   startAt: string;
   endAt: string;
   likes: number;

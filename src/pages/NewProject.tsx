@@ -15,6 +15,17 @@ import { DateInput } from "@mantine/dates";
 import dayjs from "dayjs";
 import usePage from "hooks/usePage";
 
+const data = [
+  "기계자동차",
+  "전기전자",
+  "IT서비스",
+  "AI",
+  "인문학",
+  "어학",
+  "창업",
+  "기타",
+];
+
 export default function NewProject() {
   const setCreateProject = api.useCreateProjectMutation()[0];
   const { initPage } = usePage();
@@ -36,17 +47,6 @@ export default function NewProject() {
     },
   });
 
-  const data = [
-    { value: "기계자동차", label: "기계자동차" },
-    { value: "전기전자", label: "전기전자" },
-    { value: "IT서비스", label: "IT서비스" },
-    { value: "AI", label: "AI" },
-    { value: "인문학", label: "인문학" },
-    { value: "어학", label: "어학" },
-    { value: "창업", label: "창업" },
-    { value: "기타", label: "기타" },
-  ];
-
   return (
     <>
       <form
@@ -57,10 +57,12 @@ export default function NewProject() {
             const endAt = values.endAt
               ? dayjs(values.startAt).format("YYYY-MM-DD") + "T00:00:00.000"
               : "";
+            const field = values.field.join(", ");
             const id = await setCreateProject({
               ...values,
               startAt,
               endAt,
+              field,
             }).unwrap();
             console.log(values);
             initPage("recentProject");

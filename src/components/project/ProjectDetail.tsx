@@ -20,6 +20,7 @@ import { useNavigate } from "react-router-dom";
 import { useDisclosure } from "@mantine/hooks";
 import { useState } from "react";
 import ProjectLike from "components/project/ProjectLike";
+import dayjs from "dayjs";
 
 const avatars = [
   "https://avatars.githubusercontent.com/u/10353856?s=460&u=88394dfd67727327c1f7670a1764dc38a8a24831&v=4",
@@ -39,12 +40,9 @@ export default function ProjectDetail() {
   if (isFetching) return <div>loading...</div>;
   if (!data) return <div>프로젝트 데이터를 불러오지 못했습니다.</div>;
   const project = data;
-  const today = new Date();
-  const startAt = new Date(project.startAt);
-  const millisecPerDay = 24 * 60 * 60 * 1000;
-  const dday = Math.floor(
-    (today.getTime() - startAt.getTime()) / millisecPerDay
-  );
+  const today = dayjs();
+  const startAt = dayjs(project.startAt);
+  const dday = Math.floor(today.diff(startAt, "day", true));
 
   const handleDelete = async () => {
     try {
@@ -104,7 +102,7 @@ export default function ProjectDetail() {
               color: theme.colorScheme === "dark" ? theme.white : theme.black,
             })}
           >
-            {project.field.join(", ")}
+            {project.field}
           </Text>
         </Text>
 
