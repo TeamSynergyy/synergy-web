@@ -246,10 +246,10 @@ export const handlers = [
     return res(ctx.status(200), ctx.json(users[0]));
   }),
 
-  rest.get("/members/me/like/post", (_, res, ctx) => {
+  rest.get("/members/me/post/likes", (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(user.likedPosts));
   }),
-  rest.get("/members/me/like/project", (_, res, ctx) => {
+  rest.get("/members/me/project/likes", (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(user.likedProjects));
   }),
   rest.get("/members/me/apply", (_, res, ctx) => {
