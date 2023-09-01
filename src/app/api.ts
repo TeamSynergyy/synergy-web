@@ -15,6 +15,7 @@ export const api = createApi({
   }),
 
   tagTypes: [
+    "MyInfo",
     "Post",
     "Project",
     "LikedPostId",
@@ -22,7 +23,8 @@ export const api = createApi({
     "AppliedProjectId",
     "ChatRoom",
     "User",
-    "MyInfo",
+    "RecentPosts",
+    "RecentProjects",
   ],
   endpoints: (build) => ({
     // Auth
@@ -176,7 +178,10 @@ export const api = createApi({
         method: "POST",
         body: post,
       }),
-      invalidatesTags: [{ type: "Post", id: "LIST" }],
+      invalidatesTags: [
+        { type: "Post", id: "LIST" },
+        { type: "RecentPosts", id: "LIST" },
+      ],
     }),
 
     getPost: build.query<Post, number>({
@@ -198,6 +203,16 @@ export const api = createApi({
       forceRefetch({ currentArg, previousArg }) {
         return currentArg !== previousArg;
       },
+      providesTags: (result, error, arg) =>
+        result
+          ? [
+              ...result.content.map(({ id }) => ({
+                type: "RecentPosts" as const,
+                id: String(id),
+              })),
+              { type: "RecentPosts", id: "LIST" },
+            ]
+          : [{ type: "RecentPosts", id: "LIST" }],
     }),
 
     deletePost: build.mutation<void, number>({
@@ -220,7 +235,10 @@ export const api = createApi({
         method: "POST",
         body: project,
       }),
-      invalidatesTags: [{ type: "Project", id: "LIST" }],
+      invalidatesTags: [
+        { type: "Project", id: "LIST" },
+        { type: "RecentProjects", id: "LIST" },
+      ],
     }),
 
     getProject: build.query<Project, { id: number }>({
@@ -245,6 +263,16 @@ export const api = createApi({
       forceRefetch({ currentArg, previousArg }) {
         return currentArg !== previousArg;
       },
+      providesTags: (result, error, arg) =>
+        result
+          ? [
+              ...result.content.map(({ id }) => ({
+                type: "RecentProjects" as const,
+                id: String(id),
+              })),
+              { type: "RecentProjects", id: "LIST" },
+            ]
+          : [{ type: "RecentProjects", id: "LIST" }],
     }),
 
     deleteProject: build.mutation<void, { id: number }>({

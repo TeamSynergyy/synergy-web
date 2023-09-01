@@ -13,9 +13,11 @@ import { api } from "app/api";
 import { useNavigate } from "react-router-dom";
 import { DateInput } from "@mantine/dates";
 import dayjs from "dayjs";
+import usePage from "hooks/usePage";
 
 export default function NewProject() {
   const setCreateProject = api.useCreateProjectMutation()[0];
+  const { initPage } = usePage();
   const navigate = useNavigate();
   const [opened, { open, close }] = useDisclosure(false);
   const form = useForm({
@@ -61,6 +63,7 @@ export default function NewProject() {
               endAt,
             }).unwrap();
             console.log(values);
+            initPage("recentProject");
             navigate(`/project/${id}`);
           } catch (e) {
             open();

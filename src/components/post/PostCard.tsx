@@ -15,6 +15,8 @@ import { Link } from "react-router-dom";
 import { Post } from "types";
 import PostLike from "./PostLike";
 import { useRef } from "react";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 
 const useStyles = createStyles((theme) => ({
   card: {
@@ -61,6 +63,7 @@ export default function PostCard({ post }: { post: Post }) {
 
   if (!post) return null;
 
+  dayjs.extend(relativeTime);
   return (
     <Card withBorder radius="md" p="md" className={classes.card}>
       <Card.Section className={classes.section}>
@@ -70,6 +73,10 @@ export default function PostCard({ post }: { post: Post }) {
               <Avatar src={post.authorAvatar} radius="xl" />
             </Link>
             <Text>{post.authorName}</Text>
+
+            <Text fz="sm" c="gray">
+              {dayjs(post.createAt).fromNow()}
+            </Text>
           </Group>
 
           <Menu withinPortal position="bottom-end" shadow="sm">

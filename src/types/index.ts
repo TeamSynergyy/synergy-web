@@ -6,6 +6,7 @@ interface Post {
   authorName: string;
   authorAvatar: string;
   likes: number;
+  createAt: string;
 }
 
 interface Project {

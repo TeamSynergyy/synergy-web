@@ -73,6 +73,7 @@ const posts = [
     content: "Hello!",
     authorId: 0,
     likes: 0,
+    createAt: "2021-09-01T04:56:55.074",
   },
   {
     id: 1,
@@ -80,6 +81,7 @@ const posts = [
     content: "Hello!",
     authorId: "1",
     likes: 1,
+    createAt: "2022-01-31T04:56:55.074",
   },
   {
     id: 2,
@@ -87,6 +89,7 @@ const posts = [
     content: "Third post with no title",
     authorId: "2",
     likes: 33,
+    createAt: "2022-01-31T04:56:55.074",
   },
   {
     id: 3,
@@ -94,6 +97,7 @@ const posts = [
     content: "4!",
     authorId: "3",
     likes: 0,
+    createAt: "2022-01-31T04:56:55.074",
   },
   {
     id: 4,
@@ -101,6 +105,7 @@ const posts = [
     content: " ",
     authorId: "4",
     likes: 0,
+    createAt: "2022-01-31T04:56:55.074",
   },
   {
     id: 5,
@@ -109,6 +114,7 @@ const posts = [
       "long longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong longlong long",
     authorId: "4",
     likes: 0,
+    createAt: "2022-01-31T04:56:55.074",
   },
 ].map((post) => ({
   ...post,
@@ -322,6 +328,7 @@ export const handlers = [
       likes: 0,
       authorName: user.name,
       authorAvatar: user.avatar,
+      createAt: new Date().toISOString().slice(0, -1),
     });
     console.log(posts);
     return res(ctx.status(200));
