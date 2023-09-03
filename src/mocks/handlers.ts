@@ -553,7 +553,7 @@ export const handlers = [
     return res(ctx.status(200), ctx.json(result));
   }),
 
-  rest.get("/search/user", async (req, res, ctx) => {
+  rest.get("/search/members", async (req, res, ctx) => {
     const keyword = req.url.searchParams.get("keyword");
     const page = req.url.searchParams.get("page");
 
@@ -579,18 +579,18 @@ export const handlers = [
     return res(ctx.status(200), ctx.json(result));
   }),
 
-  rest.get("/user/:id/posts", (req, res, ctx) => {
+  rest.get("/members/:id/posts", (req, res, ctx) => {
     const { id } = req.params as { id: string };
     return res(
       ctx.status(200),
       ctx.json({
-        content: posts.filter((post) => post.authorId === Number(id)),
+        content: posts.filter((post) => post.authorId === id),
         totalPages: 13,
       })
     );
   }),
 
-  rest.get("/user/:id/projects", (req, res, ctx) => {
+  rest.get("/members/:id/projects", (req, res, ctx) => {
     const { id } = req.params as { id: string };
     return res(
       ctx.status(200),
