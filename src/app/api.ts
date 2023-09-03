@@ -315,7 +315,7 @@ export const api = createApi({
       [string, number]
     >({
       query: ([keyword, page]) =>
-        `members/search?keyword=${keyword}&page=${page}`,
+        `/members/search?keyword=${keyword}&page=${page}`,
     }),
 
     getPostsByUser: build.query<
