@@ -25,6 +25,7 @@ export const api = createApi({
     "User",
     "RecentPosts",
     "RecentProjects",
+    "ApplicantsIds",
   ],
   endpoints: (build) => ({
     // Auth
@@ -228,7 +229,10 @@ export const api = createApi({
     // Project
     createProject: build.mutation<
       void,
-      Omit<Project, "id" | "likes" | "teamMemberIds">
+      Omit<
+        Project,
+        "id" | "likes" | "teamMemberIds" | "leader" | "membersCount"
+      >
     >({
       query: (project) => ({
         url: "/project",
@@ -287,10 +291,55 @@ export const api = createApi({
 
     applyProject: build.mutation<void, number>({
       query: (id) => ({
-        url: `/apply?projectId=${id}`,
-        method: "PUT",
+        url: `/apply/${id}`,
+        method: "POST",
       }),
       invalidatesTags: [{ type: "AppliedProjectId", id: "LIST" }],
+    }),
+
+    cancelApplyProject: build.mutation<void, number>({
+      query: (id) => ({
+        url: `/apply/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: [{ type: "AppliedProjectId", id: "LIST" }],
+    }),
+
+    getApplicantsIds: build.query<string[], number>({
+      query: (projectId) => ({
+        url: `/apply/${projectId}`,
+      }),
+      providesTags: (result, error, arg) => [
+        { type: "ApplicantsIds", id: String(arg) },
+      ],
+    }),
+
+    acceptApplicant: build.mutation<void, [number, string]>({
+      query: ([projectId, memberId]) => ({
+        url: `/apply/accept`,
+        method: "POST",
+        body: {
+          projectId,
+          memberId,
+        },
+      }),
+      invalidatesTags: (result, error, arg) => [
+        { type: "ApplicantsIds", id: String(arg[0]) },
+      ],
+    }),
+
+    rejectApplicant: build.mutation<void, [number, string]>({
+      query: ([projectId, memberId]) => ({
+        url: `/apply/reject`,
+        method: "DELETE",
+        body: {
+          projectId,
+          memberId,
+        },
+      }),
+      invalidatesTags: (result, error, arg) => [
+        { type: "ApplicantsIds", id: String(arg[0]) },
+      ],
     }),
 
     // Search

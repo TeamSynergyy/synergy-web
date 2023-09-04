@@ -2,8 +2,8 @@ interface Post {
   id: number;
   title: string;
   content: string;
-  authorId: string;
   authorName: string;
+  authorId: number;
   authorAvatar: string;
   likes: number;
   createAt: string;
@@ -18,6 +18,8 @@ interface Project {
   endAt: string;
   likes: number;
   teamMemberIds: string[];
+  leader: string;
+  membersCount: number;
 }
 
 interface User {

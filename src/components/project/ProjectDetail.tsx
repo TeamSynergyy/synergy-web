@@ -14,13 +14,17 @@ import {
   rem,
   Dialog,
   Flex,
+  Table,
+  ScrollArea,
+  Stack,
 } from "@mantine/core";
 import { IconDots, IconTrash } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 import { useDisclosure } from "@mantine/hooks";
-import { useState } from "react";
+
 import ProjectLike from "components/project/ProjectLike";
 import dayjs from "dayjs";
+import ApplicantBar from "components/user/ApplicantBar";
 
 const avatars = [
   "https://avatars.githubusercontent.com/u/10353856?s=460&u=88394dfd67727327c1f7670a1764dc38a8a24831&v=4",
@@ -31,18 +35,25 @@ const avatars = [
 export default function ProjectDetail() {
   const navigate = useNavigate();
   const id = parseInt(useParams().id as string);
-  const { data, isFetching } = api.useGetProjectQuery({ id });
-  const { data: appliedProjectIds } = api.useGetMyAppliedProjectsQuery(null);
+  const { data: project, isFetching } = api.useGetProjectQuery({ id });
+  const [opened, { open, close }] = useDisclosure(false);
+
+  const myId = api.useGetMyInfoQuery(null).data?.id;
   const deleteProject = api.useDeleteProjectMutation()[0];
+
+  const { data: appliedProjectIds } = api.useGetMyAppliedProjectsQuery(null);
   const applyProject = api.useApplyProjectMutation()[0];
   const isApplied = appliedProjectIds?.includes(id);
-  const [opened, { open, close }] = useDisclosure(false);
-  if (isFetching) return <div>loading...</div>;
-  if (!data) return <div>프로젝트 데이터를 불러오지 못했습니다.</div>;
-  const project = data;
+
+  const isLeader = project?.leader === myId;
+  const isTeamMember = project?.teamMemberIds.includes(myId || "");
+  const applicantsIdsQuery = api.useGetApplicantsIdsQuery(project?.id || 0);
+  const applicantIds = isLeader ? applicantsIdsQuery.data : [];
+
   const today = dayjs();
-  const startAt = dayjs(project.startAt);
+  const startAt = dayjs(project?.startAt);
   const dday = Math.floor(today.diff(startAt, "day", true));
+  console.log(applicantIds);
 
   const handleDelete = async () => {
     try {
@@ -61,6 +72,9 @@ export default function ProjectDetail() {
       console.error(e);
     }
   };
+
+  if (!project) return <div>프로젝트 데이터를 불러오지 못했습니다.</div>;
+  if (isFetching) return <div>loading...</div>;
 
   return (
     <>
@@ -123,11 +137,26 @@ export default function ProjectDetail() {
             <Avatar radius="xl">+5</Avatar>
           </Avatar.Group>
         </Group>
-        <Flex justify="right" mt={10}>
-          <Button onClick={handleApply}>
-            {isApplied ? "신청 취소하기" : "신청하기"}
-          </Button>
-        </Flex>
+
+        {!isTeamMember && (
+          <Flex justify="right" mt={10}>
+            <Button onClick={handleApply}>
+              {isApplied ? "신청 취소하기" : "신청하기"}
+            </Button>
+          </Flex>
+        )}
+
+        {isLeader && (
+          <Stack>
+            <Text size="lg" weight={500} mt="xl">
+              {applicantIds?.length !== 0 ? "팀 신청자" : ""}
+            </Text>
+
+            {applicantIds?.map((id) => (
+              <ApplicantBar key={id} projectId={project.id} userId={id} />
+            ))}
+          </Stack>
+        )}
       </Box>
       <Dialog
         opened={opened}

@@ -132,6 +132,9 @@ const projects = [
     endAt: "2024-09-30T00:00:000",
     likes: 0,
     teamMemberIds: ["0", "1"],
+    leader: "0",
+    membersCount: 2,
+    applicants: ["2", "3"],
   },
   {
     id: 1,
@@ -139,9 +142,25 @@ const projects = [
     content: "전기전자 프로젝트입니다.",
     field: "전기전자",
     startAt: "2023-08-30T00:00:000",
-    endAt: "2023-01-12T00:00:000",
+    endAt: "2024-01-12T00:00:000",
     likes: 21,
     teamMemberIds: ["0", "2", "3"],
+    leader: "2",
+    membersCount: 3,
+    applicants: [],
+  },
+  {
+    id: 2,
+    name: "third project",
+    content: "",
+    field: "전기전자",
+    startAt: "2024-08-30T00:00:000",
+    endAt: "2025-01-12T00:00:000",
+    likes: 21,
+    teamMemberIds: ["2", "3"],
+    leader: "3",
+    membersCount: 2,
+    applicants: [],
   },
 ];
 
@@ -470,6 +489,9 @@ export const handlers = [
       endAt,
       likes: 0,
       teamMemberIds: ["0"],
+      leader: "0",
+      membersCount: 1,
+      applicants: [],
     });
 
     return res(ctx.status(200), ctx.json(id));
@@ -532,8 +554,62 @@ export const handlers = [
     return res(ctx.status(200));
   }),
 
-  rest.put("/apply", (req, res, ctx) => {
-    const projectId = req.url.searchParams.get("projectId");
+  rest.post("/apply/accept", async (req, res, ctx) => {
+    const { projectId, memberId } = await req.json();
+    console.log(projectId, memberId);
+    if (projectId === null || memberId === null) return res(ctx.status(400));
+    const proj = projects.find((project) => project.id === parseInt(projectId));
+    if (proj === undefined) return res(ctx.status(400));
+    const index = proj.applicants.findIndex((id) => id === memberId);
+    if (index === -1) return res(ctx.status(400));
+    proj.applicants.splice(index, 1);
+    proj.teamMemberIds.push(memberId);
+    return res(ctx.status(200));
+  }),
+
+  rest.delete("/apply/reject", async (req, res, ctx) => {
+    const { projectId, memberId } = await req.json();
+    if (projectId === null || memberId === null) return res(ctx.status(400));
+    const proj = projects.find((project) => project.id === parseInt(projectId));
+    if (proj === undefined) return res(ctx.status(400));
+    const index = proj.applicants.findIndex((id) => id === memberId);
+    if (index === -1) return res(ctx.status(400));
+    proj.applicants.splice(index, 1);
+    proj.teamMemberIds.splice(
+      proj.teamMemberIds.findIndex((id) => id === memberId),
+      1
+    );
+    return res(ctx.status(200));
+  }),
+
+  rest.get("/apply/:projectId", (req, res, ctx) => {
+    const { projectId } = req.params as { projectId: string };
+
+    if (projectId === null) return res(ctx.status(400));
+
+    const applicants = projects.find(
+      (project) => project.id === parseInt(projectId)
+    )?.applicants;
+    return res(ctx.status(200), ctx.json(applicants));
+  }),
+
+  rest.post("/apply/:projectId", (req, res, ctx) => {
+    const { projectId } = req.params as { projectId: string };
+    if (projectId === null) return res(ctx.status(400));
+    const index = user.appliedProjects.findIndex(
+      (id) => id === parseInt(projectId)
+    );
+    if (index !== -1) {
+      user.appliedProjects.splice(index, 1);
+    } else {
+      user.appliedProjects.push(parseInt(projectId));
+    }
+
+    return res(ctx.status(200));
+  }),
+
+  rest.delete("/apply/:projectId", (req, res, ctx) => {
+    const { projectId } = req.params as { projectId: string };
     if (projectId === null) return res(ctx.status(400));
     const index = user.appliedProjects.findIndex(
       (id) => id === parseInt(projectId)
@@ -574,8 +650,9 @@ export const handlers = [
     return res(ctx.status(200), ctx.json(user));
   }),
 
-  rest.get("/members?ids=:ids", (req, res, ctx) => {
-    const { ids } = req.params as { ids: string };
+  rest.get("/members", (req, res, ctx) => {
+    const ids = req.url.searchParams.get("ids");
+    if (!ids) return res(ctx.status(400));
     const idList = ids.split(",").map((id) => id);
     const userList = users.filter((user) => idList.includes(user.id));
     return res(ctx.status(200), ctx.json(userList));
