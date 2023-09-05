@@ -95,7 +95,7 @@ export const api = createApi({
       }),
       invalidatesTags: (result, error, arg) => [
         { type: "MyInfo" },
-        { type: "User", id: String(arg.id) },
+        { type: "User", id: String(arg.memberId) },
       ],
     }),
 
@@ -164,9 +164,9 @@ export const api = createApi({
       providesTags: (result, error, arg) =>
         result
           ? [
-              ...result.map(({ id }) => ({
+              ...result.map(({ memberId }) => ({
                 type: "User" as const,
-                id: String(id),
+                id: memberId,
               })),
               { type: "User", id: "LIST" },
             ]

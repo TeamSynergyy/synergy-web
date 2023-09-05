@@ -23,7 +23,7 @@ interface Project {
 }
 
 interface User {
-  id: string;
+  memberId: string;
   name: string;
   email: string;
   avatar: string;

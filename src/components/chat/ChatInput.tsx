@@ -32,7 +32,7 @@ export function ChatInput({ roomId }: { roomId: number }) {
         type: "TALK",
         roomId,
         text,
-        senderId: data?.id,
+        senderId: data?.memberId,
         sendTime: dayjs().toISOString(),
       };
 

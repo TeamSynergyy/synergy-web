@@ -11,7 +11,9 @@ export function ChatHeader({ roomId }: { roomId: number }) {
     (chatRoom: { roomId: number }) => chatRoom.roomId === roomId
   );
 
-  const partnerId = chatRoom?.participantIds.find((id) => id !== data?.id);
+  const partnerId = chatRoom?.participantIds.find(
+    (id) => id !== data?.memberId
+  );
 
   const { data: partnerData } = api.useGetUserQuery(partnerId || ""); // ""은 임시값. 차후 수정 필요
 

@@ -3,7 +3,7 @@ import { rest } from "msw";
 
 const users = [
   {
-    id: "0",
+    memberId: "0",
     name: "yeoularu",
     backgroundImage: "https://source.unsplash.com/random",
     avatar:
@@ -16,7 +16,7 @@ const users = [
     followersIds: ["1"],
   },
   {
-    id: "1",
+    memberId: "1",
     backgroundImage: "https://source.unsplash.com/random",
     avatar:
       "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=255&q=80",
@@ -29,7 +29,7 @@ const users = [
     followersIds: [],
   },
   {
-    id: "2",
+    memberId: "2",
     backgroundImage: "https://source.unsplash.com/random",
     avatar: "https://avatars.githubusercontent.com/u/109144975?v=4",
     name: "이종훈",
@@ -41,7 +41,7 @@ const users = [
     followersIds: ["0"],
   },
   {
-    id: "3",
+    memberId: "3",
     backgroundImage: "https://source.unsplash.com/random",
     avatar: "https://avatars.githubusercontent.com/u/69510981?v=4",
     name: "삼삼삼",
@@ -53,7 +53,7 @@ const users = [
     followersIds: ["0"],
   },
   {
-    id: "4",
+    memberId: "4",
     backgroundImage: "https://source.unsplash.com/random",
     avatar: "https://avatars.githubusercontent.com/u/69510444?v=4",
     name: "사사사사",
@@ -118,8 +118,9 @@ const posts = [
   },
 ].map((post) => ({
   ...post,
-  authorName: users.find(({ id }) => id === post.authorId)?.name,
-  authorAvatar: users.find(({ id }) => id === post.authorId)?.avatar,
+  authorName: users.find(({ memberId }) => memberId === post.authorId)?.name,
+  authorAvatar: users.find(({ memberId }) => memberId === post.authorId)
+    ?.avatar,
 }));
 
 const projects = [
@@ -294,7 +295,7 @@ export const handlers = [
 
   rest.put("/members/follow/:id", (req, res, ctx) => {
     const { id } = req.params as { id: string };
-    if (!id || !users.find((user) => user.id === id))
+    if (!id || !users.find((user) => user.memberId === id))
       return res(ctx.status(400));
     if (users[0].followingIds.includes(id)) {
       users[0].followingIds = users[0].followingIds.filter(
@@ -309,7 +310,7 @@ export const handlers = [
 
   rest.put("/chat/create/:id", (req, res, ctx) => {
     const { id } = req.params as { id: string };
-    if (!id || !users.find((user) => user.id === id))
+    if (!id || !users.find((user) => user.memberId === id))
       return res(ctx.status(400));
     chatRooms.push({
       roomId: 3,
@@ -404,7 +405,7 @@ export const handlers = [
       id: posts.at(-1)?.id ? posts.at(-1)!.id + 1 : 0,
       title,
       content,
-      authorId: user.id,
+      authorId: user.memberId,
       likes: 0,
       authorName: user.name,
       authorAvatar: user.avatar,
@@ -645,7 +646,7 @@ export const handlers = [
   // Get User
   rest.get("/members/:id", (req, res, ctx) => {
     const { id } = req.params as { id: string };
-    const user = users.find((user) => user.id === id);
+    const user = users.find((user) => user.memberId === id);
     if (!user) return res(ctx.status(404));
     return res(ctx.status(200), ctx.json(user));
   }),
@@ -654,7 +655,7 @@ export const handlers = [
     const ids = req.url.searchParams.get("ids");
     if (!ids) return res(ctx.status(400));
     const idList = ids.split(",").map((id) => id);
-    const userList = users.filter((user) => idList.includes(user.id));
+    const userList = users.filter((user) => idList.includes(user.memberId));
     return res(ctx.status(200), ctx.json(userList));
   }),
 ];

@@ -38,7 +38,7 @@ export default function ProjectDetail() {
   const { data: project, isFetching } = api.useGetProjectQuery({ id });
   const [opened, { open, close }] = useDisclosure(false);
 
-  const myId = api.useGetMyInfoQuery(null).data?.id;
+  const myId = api.useGetMyInfoQuery(null).data?.memberId;
   const deleteProject = api.useDeleteProjectMutation()[0];
 
   const { data: appliedProjectIds } = api.useGetMyAppliedProjectsQuery(null);

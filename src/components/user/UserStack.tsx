@@ -19,7 +19,7 @@ export function UsersStack({ userIds, elements }: UsersStackProps) {
   if (!data) return <div>데이터를 불러오지 못했습니다.</div>;
 
   const rows = data.map((item) => (
-    <tr key={item.id}>
+    <tr key={item.memberId}>
       <td>
         <Group spacing="sm">
           <Avatar size={40} src={item.avatar} radius={40} />
