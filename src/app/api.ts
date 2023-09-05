@@ -68,7 +68,7 @@ export const api = createApi({
       providesTags: [{ type: "LikedProjectId", id: "LIST" }],
     }),
 
-    getMyAppliedProjects: build.query<number[], null>({
+    getMyAppliedProjects: build.query<{ projectIds: number[] }, null>({
       query: () => "/applies/me",
       providesTags: [{ type: "AppliedProjectId", id: "LIST" }],
     }),

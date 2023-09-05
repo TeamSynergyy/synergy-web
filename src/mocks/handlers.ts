@@ -278,7 +278,7 @@ export const handlers = [
     return res(ctx.status(200), ctx.json(user.likedProjects));
   }),
   rest.get("/applies/me", (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json(user.appliedProjects));
+    return res(ctx.status(200), ctx.json({ projectIds: user.appliedProjects }));
   }),
   rest.get("/members/me/chatrooms", (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(user.chatRooms));
