@@ -55,7 +55,7 @@ export default function UserProfileCard({
 }: UserCardImageProps) {
   const { classes, theme } = useStyles();
   const { data: myInfo } = api.useGetMyInfoQuery(null);
-  const myFollowing = myInfo?.followingIds;
+  const myFollowing = api.useGetMyFollowsQuery(null)?.data?.followings;
   const isFollowing = myFollowing?.includes(memberId);
   const followType = isFollowing ? "unfollow" : "follow";
   const editMyInfo = api.useEditMyInfoMutation()[0];

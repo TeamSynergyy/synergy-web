@@ -293,7 +293,7 @@ export const handlers = [
     return res(ctx.status(200));
   }),
 
-  rest.put("/members/follow/:id", (req, res, ctx) => {
+  rest.put("/follows/:id", (req, res, ctx) => {
     const { id } = req.params as { id: string };
     if (!id || !users.find((user) => user.memberId === id))
       return res(ctx.status(400));
@@ -306,6 +306,30 @@ export const handlers = [
     }
 
     return res(ctx.status(200));
+  }),
+
+  rest.get("/follows", (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json({
+        followings: users[0].followingIds,
+        followers: users[0].followersIds,
+      })
+    );
+  }),
+
+  rest.get("/follows/:id", (req, res, ctx) => {
+    const { id } = req.params as { id: string };
+    if (!id || !users.find((user) => user.memberId === id))
+      return res(ctx.status(400));
+    const user = users.find((user) => user.memberId === id);
+    return res(
+      ctx.status(200),
+      ctx.json({
+        followings: user?.followingIds,
+        followers: user?.followersIds,
+      })
+    );
   }),
 
   rest.put("/chat/create/:id", (req, res, ctx) => {

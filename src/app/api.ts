@@ -18,8 +18,9 @@ export const api = createApi({
     "MyInfo",
     "Post",
     "Project",
-    "LikedPostId",
-    "LikedProjectId",
+    "LikedPostIds",
+    "LikedProjectIds",
+    "Follows",
     "AppliedProjectId",
     "ChatRoom",
     "User",
@@ -60,12 +61,20 @@ export const api = createApi({
 
     getMyLikedPosts: build.query<number[], null>({
       query: () => "/members/me/post/likes",
-      providesTags: [{ type: "LikedPostId", id: "LIST" }],
+      providesTags: [{ type: "LikedPostIds", id: "LIST" }],
     }),
 
     getMyLikedProjects: build.query<number[], null>({
       query: () => "/members/me/project/likes",
-      providesTags: [{ type: "LikedProjectId", id: "LIST" }],
+      providesTags: [{ type: "LikedProjectIds", id: "LIST" }],
+    }),
+
+    getMyFollows: build.query<
+      { followers: string[]; followings: string[] },
+      null
+    >({
+      query: () => "/follows",
+      providesTags: [{ type: "Follows", id: "me" }],
     }),
 
     getMyAppliedProjects: build.query<{ projectIds: number[] }, null>({
@@ -110,7 +119,7 @@ export const api = createApi({
 
       invalidatesTags: (result, error, arg) => [
         { type: "Post", id: String(arg) },
-        { type: "LikedPostId", id: "LIST" },
+        { type: "LikedPostIds", id: "LIST" },
       ],
     }),
 
@@ -125,7 +134,7 @@ export const api = createApi({
 
       invalidatesTags: (result, error, arg) => [
         { type: "Project", id: String(arg) },
-        { type: "LikedProjectId", id: "LIST" },
+        { type: "LikedProjectIds", id: "LIST" },
       ],
     }),
 
@@ -138,9 +147,17 @@ export const api = createApi({
         },
       }),
       invalidatesTags: (result, error, arg) => [
-        { type: "User", id: String(arg) },
-        { type: "MyInfo" },
+        { type: "Follows", id: "me" },
+        { type: "Follows", id: String(arg) },
       ],
+    }),
+
+    getFollows: build.query<
+      { followers: string[]; followings: string[] },
+      string
+    >({
+      query: (id) => `/follows/${id}`,
+      providesTags: (result, error, arg) => [{ type: "Follows", id: arg }],
     }),
 
     createChatRoom: build.mutation<void, string>({
