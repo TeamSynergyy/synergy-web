@@ -22,7 +22,7 @@ interface Project {
   membersCount: number;
 }
 
-interface User {
+interface Member {
   memberId: string;
   name: string;
   email: string;
@@ -50,4 +50,4 @@ interface ChatMessage {
   sendTime: string;
 }
 
-export type { Post, Project, User, ChatMessage, ChatRoom };
+export type { Post, Project, Member, ChatMessage, ChatRoom };

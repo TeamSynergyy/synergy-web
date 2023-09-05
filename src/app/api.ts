@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { Post, Project, User, ChatRoom } from "types";
+import { Post, Project, Member, ChatRoom } from "types";
 import { RootState } from "./store";
 
 export const api = createApi({
@@ -54,7 +54,7 @@ export const api = createApi({
     }),
 
     // MyInfo
-    getMyInfo: build.query<User, null>({
+    getMyInfo: build.query<Member, null>({
       query: () => "/members/me/info",
       providesTags: [{ type: "MyInfo" }],
     }),
@@ -96,7 +96,7 @@ export const api = createApi({
           : [{ type: "ChatRoom", id: "LIST" }],
     }),
 
-    editMyInfo: build.mutation<void, Partial<User>>({
+    editMyInfo: build.mutation<void, Partial<Member>>({
       query: (data) => ({
         url: "/members/me/info",
         method: "PATCH",
@@ -171,12 +171,12 @@ export const api = createApi({
     }),
 
     // Users
-    getUser: build.query<User, string>({
+    getUser: build.query<Member, string>({
       query: (id) => `/members/${id}`,
       providesTags: (result, error, arg) => [{ type: "User", id: String(arg) }],
     }),
 
-    getUsers: build.query<User[], string[]>({
+    getUsers: build.query<Member[], string[]>({
       query: (ids) => `/members?ids=${ids.join(",")}`,
       providesTags: (result, error, arg) =>
         result
@@ -402,7 +402,7 @@ export const api = createApi({
     }),
 
     searchUsers: build.query<
-      { content: User[]; totalPages: number; totalElements: number },
+      { content: Member[]; totalPages: number; totalElements: number },
       [string, number]
     >({
       query: ([keyword, page]) =>

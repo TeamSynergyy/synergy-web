@@ -10,6 +10,7 @@ const slice = createSlice({
       state,
       { payload: { token } }: PayloadAction<{ token: string }>
     ) => {
+      localStorage.setItem("token", token); // 임시 로그인
       state.token = token;
     },
   },

@@ -24,9 +24,14 @@ import { selectCurrentToken } from "app/authSlice";
 import { useSelector } from "react-redux";
 import PostDetail from "pages/PostDetail";
 
+import useAuth from "hooks/useAuth";
+import { useEffect } from "react";
+
 const PrivateRoutes = () => {
-  const auth = useSelector(selectCurrentToken);
-  return auth ? <Outlet /> : <Navigate to="/auth" />;
+  // const auth = useSelector(selectCurrentToken);
+  const { auth } = useAuth();
+
+  return localStorage.getItem("token") ? <Outlet /> : <Navigate to="/auth" />;
 };
 
 export default function App() {

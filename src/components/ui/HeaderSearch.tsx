@@ -16,6 +16,7 @@ import { ReactComponent as Logo } from "assets/logo.svg";
 import { Link, useLocation } from "react-router-dom";
 import { SearchInput } from "../search/SearchInput";
 import { api } from "app/api";
+import useAuth from "hooks/useAuth";
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -70,6 +71,8 @@ interface HeaderSearchProps {
 export function HeaderSearch({ links, children }: HeaderSearchProps) {
   const activePage = useLocation().pathname.split("/")[1];
   const { classes, cx } = useStyles();
+  const { removeAuth } = useAuth();
+
   const [opened, { open, close }] = useDisclosure(false);
   const isSearchPage = activePage === "search";
 
@@ -124,7 +127,12 @@ export function HeaderSearch({ links, children }: HeaderSearchProps) {
                   >
                     <Menu.Item>내 프로필</Menu.Item>
                   </Link>
-                  <Menu.Item>로그아웃</Menu.Item>
+                  <Link
+                    to={`/`}
+                    style={{ color: "inherit", textDecoration: "inherit" }}
+                  >
+                    <Menu.Item onClick={removeAuth}>로그아웃</Menu.Item>
+                  </Link>
                 </Menu.Dropdown>
               </Menu>
             </Group>
