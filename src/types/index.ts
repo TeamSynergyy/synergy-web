@@ -1,5 +1,5 @@
 interface Post {
-  id: number;
+  postId: number;
   title: string;
   content: string;
   authorName: string;
@@ -10,7 +10,7 @@ interface Post {
 }
 
 interface Project {
-  id: number;
+  projectId: number;
   name: string;
   content: string;
   field: string;
@@ -18,8 +18,7 @@ interface Project {
   endAt: string;
   likes: number;
   teamMemberIds: string[];
-  leader: string;
-  membersCount: number;
+  leaderId: string;
 }
 
 interface Member {
@@ -31,8 +30,6 @@ interface Member {
   major: string;
   temperature: number;
   bio: string;
-  followerIds: string[];
-  followingIds: string[];
 }
 
 interface ChatRoom {

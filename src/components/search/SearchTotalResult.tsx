@@ -50,7 +50,7 @@ export default function SearchTotalResult({
 
       <Stack spacing="md" my="xl">
         {posts.map((post) => (
-          <PostCard key={post.id} post={post} />
+          <PostCard key={post.postId} post={post} />
         ))}
         <Button m="auto" onClick={() => handleTabChange("post")}>
           게시글 더 보기
@@ -59,7 +59,7 @@ export default function SearchTotalResult({
       <Space h="md" />
       <Stack spacing="md" my="xl">
         {projects.map((project) => (
-          <ProjectCard key={project.id} project={project} />
+          <ProjectCard key={project.projectId} project={project} />
         ))}
         <Button m="auto" onClick={() => handleTabChange("project")}>
           프로젝트 더 보기

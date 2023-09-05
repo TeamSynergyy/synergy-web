@@ -14,7 +14,7 @@ export default function UserProfileInfo({ userId }: { userId: string }) {
             프로젝트
           </Text>
           {projects.map((project: Project) => (
-            <ProjectCard key={project.id} project={project} />
+            <ProjectCard key={project.projectId} project={project} />
           ))}
         </>
       )}

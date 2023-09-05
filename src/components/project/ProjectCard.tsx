@@ -35,7 +35,7 @@ export default function ProjectCard({ project }: { project: Project }) {
 
   if (!project) return null;
 
-  const { id, name, content, field, startAt, endAt, likes } = project;
+  const { projectId, name, content, field, startAt, endAt, likes } = project;
 
   const today = dayjs();
   const dday = Math.floor(today.diff(dayjs(project.startAt), "day", true));
@@ -82,7 +82,7 @@ export default function ProjectCard({ project }: { project: Project }) {
           {likes > 0 ? (
             <Text className={classes.likesNumber}>좋아요 {likes}</Text>
           ) : null}
-          <Link to={`/project/${id}`}>
+          <Link to={`/project/${projectId}`}>
             <Button>자세히 보기</Button>
           </Link>
         </Group>

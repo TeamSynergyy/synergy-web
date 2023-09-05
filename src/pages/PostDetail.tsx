@@ -52,7 +52,7 @@ export default function PostDetail() {
 
   const handleDelete = async () => {
     try {
-      await setDeletePost(post.id).unwrap();
+      await setDeletePost(post.postId).unwrap();
     } catch (e) {
       console.error(e);
     }

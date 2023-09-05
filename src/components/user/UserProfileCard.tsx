@@ -55,19 +55,20 @@ export default function UserProfileCard({
 }: UserCardImageProps) {
   const { classes, theme } = useStyles();
   const { data: myInfo } = api.useGetMyInfoQuery(null);
-  const myFollowing = api.useGetMyFollowsQuery(null)?.data?.followings;
+  const myId = myInfo?.memberId || "";
+  const myFollowing = api.useGetFollowsQuery(myId)?.data?.followings;
   const isFollowing = myFollowing?.includes(memberId);
   const followType = isFollowing ? "unfollow" : "follow";
   const editMyInfo = api.useEditMyInfoMutation()[0];
   const [opened, { open, close }] = useDisclosure(false);
   const follow = api.useFollowMutation()[0];
   const handleFollow = () => {
-    follow([memberId, followType]);
+    follow([memberId, followType, myId]);
   };
 
   const isMe = myInfo?.memberId !== memberId;
   const form = useForm({
-    initialValues: { ...myInfo },
+    initialValues: myInfo,
 
     validate: {
       name: (value) =>

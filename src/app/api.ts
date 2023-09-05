@@ -69,14 +69,6 @@ export const api = createApi({
       providesTags: [{ type: "LikedProjectIds", id: "LIST" }],
     }),
 
-    getMyFollows: build.query<
-      { followers: string[]; followings: string[] },
-      null
-    >({
-      query: () => "/follows",
-      providesTags: [{ type: "Follows", id: "me" }],
-    }),
-
     getMyAppliedProjects: build.query<{ projectIds: number[] }, null>({
       query: () => "/applies/me",
       providesTags: [{ type: "AppliedProjectId", id: "LIST" }],
@@ -96,10 +88,10 @@ export const api = createApi({
           : [{ type: "ChatRoom", id: "LIST" }],
     }),
 
-    editMyInfo: build.mutation<void, Partial<Member>>({
+    editMyInfo: build.mutation<void, Member>({
       query: (data) => ({
         url: "/members/me/info",
-        method: "PATCH",
+        method: "PUT",
         body: data,
       }),
       invalidatesTags: (result, error, arg) => [
@@ -138,8 +130,8 @@ export const api = createApi({
       ],
     }),
 
-    follow: build.mutation<void, [string, "follow" | "unfollow"]>({
-      query: ([id, followType]) => ({
+    follow: build.mutation<void, [string, "follow" | "unfollow", string]>({
+      query: ([id, followType, myId]) => ({
         url: `/follows/${id}`,
         method: "PUT",
         body: {
@@ -147,8 +139,8 @@ export const api = createApi({
         },
       }),
       invalidatesTags: (result, error, arg) => [
-        { type: "Follows", id: "me" },
-        { type: "Follows", id: String(arg) },
+        { type: "Follows", id: arg[2] },
+        { type: "Follows", id: String(arg[0]) },
       ],
     }),
 
@@ -174,20 +166,6 @@ export const api = createApi({
     getUser: build.query<Member, string>({
       query: (id) => `/members/${id}`,
       providesTags: (result, error, arg) => [{ type: "User", id: String(arg) }],
-    }),
-
-    getUsers: build.query<Member[], string[]>({
-      query: (ids) => `/members?ids=${ids.join(",")}`,
-      providesTags: (result, error, arg) =>
-        result
-          ? [
-              ...result.map(({ memberId }) => ({
-                type: "User" as const,
-                id: memberId,
-              })),
-              { type: "User", id: "LIST" },
-            ]
-          : [{ type: "User", id: "LIST" }],
     }),
 
     // Post
@@ -225,9 +203,9 @@ export const api = createApi({
       providesTags: (result, error, arg) =>
         result
           ? [
-              ...result.content.map(({ id }) => ({
+              ...result.content.map(({ postId }) => ({
                 type: "RecentPosts" as const,
-                id: String(id),
+                id: String(postId),
               })),
               { type: "RecentPosts", id: "LIST" },
             ]
@@ -244,7 +222,7 @@ export const api = createApi({
       ],
     }),
 
-    getPostComments: build.query<Comment[], number>({
+    getPostComments: build.query<{ comments: Comment[] }, number>({
       query: (postId) => `/comments/${postId}`,
       providesTags: (result, error, arg) =>
         result
@@ -271,10 +249,13 @@ export const api = createApi({
     // Project
     createProject: build.mutation<
       void,
-      Omit<
-        Project,
-        "id" | "likes" | "teamMemberIds" | "leader" | "membersCount"
-      >
+      {
+        name: string;
+        content: string;
+        field: string;
+        startAt: string;
+        endAt: string;
+      }
     >({
       query: (project) => ({
         url: "/projects",
@@ -291,7 +272,7 @@ export const api = createApi({
       query: ({ id }) => `/projects/${id}`,
       providesTags: (result) =>
         result
-          ? [{ type: "Project", id: String(result.id) }]
+          ? [{ type: "Project", id: String(result.projectId) }]
           : [{ type: "Project", id: "LIST" }],
     }),
 
@@ -312,9 +293,9 @@ export const api = createApi({
       providesTags: (result, error, arg) =>
         result
           ? [
-              ...result.content.map(({ id }) => ({
+              ...result.content.map(({ projectId }) => ({
                 type: "RecentProjects" as const,
-                id: String(id),
+                id: String(projectId),
               })),
               { type: "RecentProjects", id: "LIST" },
             ]

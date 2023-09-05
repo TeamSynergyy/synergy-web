@@ -45,9 +45,11 @@ export default function ProjectDetail() {
   const applyProject = api.useApplyProjectMutation()[0];
   const isApplied = appliedProjectIds?.projectIds.includes(id);
 
-  const isLeader = project?.leader === myId;
+  const isLeader = project?.leaderId === myId;
   const isTeamMember = project?.teamMemberIds.includes(myId || "");
-  const applicantsIdsQuery = api.useGetApplicantsIdsQuery(project?.id || 0);
+  const applicantsIdsQuery = api.useGetApplicantsIdsQuery(
+    project?.projectId || 0
+  );
   const applicantIds = isLeader ? applicantsIdsQuery.data?.memberIds : [];
 
   const today = dayjs();
@@ -153,7 +155,11 @@ export default function ProjectDetail() {
             </Text>
 
             {applicantIds?.map((id) => (
-              <ApplicantBar key={id} projectId={project.id} userId={id} />
+              <ApplicantBar
+                key={id}
+                projectId={project.projectId}
+                userId={id}
+              />
             ))}
           </Stack>
         )}
