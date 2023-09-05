@@ -131,7 +131,7 @@ export const api = createApi({
 
     follow: build.mutation<void, [string, "follow" | "unfollow"]>({
       query: ([id, followType]) => ({
-        url: `/members/follow/${id}`,
+        url: `/follows/${id}`,
         method: "PUT",
         body: {
           followType,
@@ -176,7 +176,7 @@ export const api = createApi({
     // Post
     createPost: build.mutation<void, { title: string; content: string }>({
       query: (post) => ({
-        url: "/post",
+        url: "/posts",
         method: "POST",
         body: post,
       }),
@@ -187,7 +187,7 @@ export const api = createApi({
     }),
 
     getPost: build.query<Post, number>({
-      query: (id) => `/post/${id}`,
+      query: (id) => `/posts/${id}`,
       providesTags: (result, error, arg) => [{ type: "Post", id: String(arg) }],
     }),
 
