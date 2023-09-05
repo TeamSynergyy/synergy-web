@@ -14,7 +14,7 @@ import Chat from "pages/Chat";
 import NewPost from "pages/NewPost";
 import NewProject from "pages/NewProject";
 import People from "pages/People";
-import ProjectDetail from "components/project/ProjectDetail";
+import ProjectDetail from "pages/ProjectDetail";
 import Recommendation from "pages/Recommendation";
 import Notification from "pages/Notification";
 import RecentPost from "pages/RecentPost";
@@ -22,6 +22,7 @@ import RecentProject from "pages/RecentProject";
 import Search from "pages/Search";
 import { selectCurrentToken } from "app/authSlice";
 import { useSelector } from "react-redux";
+import PostDetail from "pages/PostDetail";
 
 const PrivateRoutes = () => {
   const auth = useSelector(selectCurrentToken);
@@ -56,6 +57,9 @@ export default function App() {
 
               <Route path="notification" element={<Notification />} />
 
+              <Route path="post">
+                <Route path=":id" element={<PostDetail />} />
+              </Route>
               <Route path="project">
                 <Route path=":id" element={<ProjectDetail />} />
               </Route>

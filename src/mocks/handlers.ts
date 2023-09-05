@@ -277,7 +277,7 @@ export const handlers = [
   rest.get("/members/me/project/likes", (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(user.likedProjects));
   }),
-  rest.get("/apply/me", (_, res, ctx) => {
+  rest.get("/applies/me", (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(user.appliedProjects));
   }),
   rest.get("/members/me/chatrooms", (_, res, ctx) => {
@@ -320,7 +320,7 @@ export const handlers = [
   }),
 
   // Search
-  rest.get("/post/search", (req, res, ctx) => {
+  rest.get("/posts/search", (req, res, ctx) => {
     const keyword = req.url.searchParams.get("keyword");
     const page = req.url.searchParams.get("page");
 
@@ -344,7 +344,7 @@ export const handlers = [
     };
     return res(ctx.status(200), ctx.json(result));
   }),
-  rest.get("/project/search", (req, res, ctx) => {
+  rest.get("/projects/search", (req, res, ctx) => {
     const keyword = req.url.searchParams.get("keyword");
     const page = req.url.searchParams.get("page");
 
@@ -396,7 +396,7 @@ export const handlers = [
   }),
 
   // Post
-  rest.post("/post", async (req, res, ctx) => {
+  rest.post("/posts", async (req, res, ctx) => {
     const { title, content } = await req.json();
     if (title === "error") return res(ctx.status(400));
     console.log(title, content);
@@ -414,7 +414,7 @@ export const handlers = [
     return res(ctx.status(200));
   }),
 
-  rest.get("/post/recent", (req, res, ctx) => {
+  rest.get("/posts/recent", (req, res, ctx) => {
     const page = req.url.searchParams.get("page");
     console.log("recentPost", page, posts);
     return res(
@@ -437,7 +437,7 @@ export const handlers = [
     );
   }),
 
-  rest.get("/post/:id", (req, res, ctx) => {
+  rest.get("/posts/:id", (req, res, ctx) => {
     const { id } = req.params as { id: string };
     return res(
       ctx.status(200),
@@ -445,7 +445,7 @@ export const handlers = [
     );
   }),
 
-  rest.delete("/post/:id", (req, res, ctx) => {
+  rest.delete("/posts/:id", (req, res, ctx) => {
     const { id } = req.params as { id: string };
     const index = posts.findIndex((post) => post.id === parseInt(id));
     if (index === -1) return res(ctx.status(400));
@@ -454,7 +454,7 @@ export const handlers = [
     return res(ctx.status(200));
   }),
 
-  rest.put("/post/:id/like", (req, res, ctx) => {
+  rest.put("/posts/:id/like", (req, res, ctx) => {
     const { id } = req.params as { id: string };
     const index = user.likedPosts.findIndex(
       (PostId) => PostId === parseInt(id)
@@ -474,7 +474,7 @@ export const handlers = [
   }),
 
   // Project
-  rest.post("/project", async (req, res, ctx) => {
+  rest.post("/projects", async (req, res, ctx) => {
     const { name, content, field, startAt, endAt } = await req.json();
     if (name === "error") return res(ctx.status(400));
 
@@ -497,7 +497,7 @@ export const handlers = [
     return res(ctx.status(200), ctx.json(id));
   }),
 
-  rest.get("/project/recent", (req, res, ctx) => {
+  rest.get("/projects/recent", (req, res, ctx) => {
     const page = req.url.searchParams.get("page");
     console.log(page);
     return res(
@@ -520,7 +520,7 @@ export const handlers = [
     );
   }),
 
-  rest.get("/project/:id", (req, res, ctx) => {
+  rest.get("/projects/:id", (req, res, ctx) => {
     const { id } = req.params as { id: string };
     return res(
       ctx.status(200),
@@ -528,7 +528,7 @@ export const handlers = [
     );
   }),
 
-  rest.delete("/project/:id", (req, res, ctx) => {
+  rest.delete("/projects/:id", (req, res, ctx) => {
     const { id } = req.params as { id: string };
     const index = projects.findIndex((project) => project.id === parseInt(id));
     if (index === -1) return res(ctx.status(400));
@@ -537,7 +537,7 @@ export const handlers = [
     return res(ctx.status(200));
   }),
 
-  rest.put("/project/:id/like", (req, res, ctx) => {
+  rest.put("/projects/:id/like", (req, res, ctx) => {
     const { id } = req.params as { id: string };
     console.log(id);
     const index = user.likedProjects.findIndex(
@@ -554,7 +554,7 @@ export const handlers = [
     return res(ctx.status(200));
   }),
 
-  rest.post("/apply/accept", async (req, res, ctx) => {
+  rest.post("/applies/accept", async (req, res, ctx) => {
     const { projectId, memberId } = await req.json();
     console.log(projectId, memberId);
     if (projectId === null || memberId === null) return res(ctx.status(400));
@@ -567,7 +567,7 @@ export const handlers = [
     return res(ctx.status(200));
   }),
 
-  rest.delete("/apply/reject", async (req, res, ctx) => {
+  rest.delete("/applies/reject", async (req, res, ctx) => {
     const { projectId, memberId } = await req.json();
     if (projectId === null || memberId === null) return res(ctx.status(400));
     const proj = projects.find((project) => project.id === parseInt(projectId));
@@ -582,7 +582,7 @@ export const handlers = [
     return res(ctx.status(200));
   }),
 
-  rest.get("/apply/:projectId", (req, res, ctx) => {
+  rest.get("/applies/:projectId", (req, res, ctx) => {
     const { projectId } = req.params as { projectId: string };
 
     if (projectId === null) return res(ctx.status(400));
@@ -593,7 +593,7 @@ export const handlers = [
     return res(ctx.status(200), ctx.json(applicants));
   }),
 
-  rest.post("/apply/:projectId", (req, res, ctx) => {
+  rest.post("/applies/:projectId", (req, res, ctx) => {
     const { projectId } = req.params as { projectId: string };
     if (projectId === null) return res(ctx.status(400));
     const index = user.appliedProjects.findIndex(
@@ -608,7 +608,7 @@ export const handlers = [
     return res(ctx.status(200));
   }),
 
-  rest.delete("/apply/:projectId", (req, res, ctx) => {
+  rest.delete("/applies/:projectId", (req, res, ctx) => {
     const { projectId } = req.params as { projectId: string };
     if (projectId === null) return res(ctx.status(400));
     const index = user.appliedProjects.findIndex(

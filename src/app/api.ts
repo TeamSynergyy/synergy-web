@@ -26,6 +26,7 @@ export const api = createApi({
     "RecentPosts",
     "RecentProjects",
     "ApplicantsIds",
+    "PostComments",
   ],
   endpoints: (build) => ({
     // Auth
@@ -68,7 +69,7 @@ export const api = createApi({
     }),
 
     getMyAppliedProjects: build.query<number[], null>({
-      query: () => "/apply/me",
+      query: () => "/applies/me",
       providesTags: [{ type: "AppliedProjectId", id: "LIST" }],
     }),
 
@@ -100,7 +101,7 @@ export const api = createApi({
 
     likePost: build.mutation<void, [number, "like" | "unlike"]>({
       query: ([id, likeType]) => ({
-        url: `/post/${id}/like`,
+        url: `/posts/${id}/like`,
         method: "PUT",
         body: {
           likeType,
@@ -115,7 +116,7 @@ export const api = createApi({
 
     likeProject: build.mutation<void, [number, "like" | "unlike"]>({
       query: ([id, likeType]) => ({
-        url: `/project/${id}/like`,
+        url: `/projects/${id}/like`,
         method: "PUT",
         body: {
           likeType,
@@ -194,7 +195,7 @@ export const api = createApi({
       { content: Post[]; totalPages: number },
       number
     >({
-      query: (page) => `/post/recent?page=${page}`,
+      query: (page) => `/posts/recent?page=${page}`,
       serializeQueryArgs: ({ endpointName }) => {
         return endpointName;
       },
@@ -218,13 +219,37 @@ export const api = createApi({
 
     deletePost: build.mutation<void, number>({
       query: (id) => ({
-        url: `/post/${id}`,
+        url: `/posts/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: (result, error, arg) => [
         { type: "Post", id: String(arg) },
       ],
     }),
+
+    getPostComments: build.query<Comment[], number>({
+      query: (postId) => `/comments/${postId}`,
+      providesTags: (result, error, arg) =>
+        result
+          ? [
+              { type: "PostComments", id: String(arg) },
+              { type: "PostComments", id: "LIST" },
+            ]
+          : [{ type: "PostComments", id: "LIST" }],
+    }),
+
+    writePostComment: build.mutation<void, { postId: number; comment: string }>(
+      {
+        query: (body) => ({
+          url: `/comments`,
+          method: "POST",
+          body,
+        }),
+        invalidatesTags: (result, error, arg) => [
+          { type: "Post", id: String(arg.postId) },
+        ],
+      }
+    ),
 
     // Project
     createProject: build.mutation<
@@ -235,7 +260,7 @@ export const api = createApi({
       >
     >({
       query: (project) => ({
-        url: "/project",
+        url: "/projects",
         method: "POST",
         body: project,
       }),
@@ -246,7 +271,7 @@ export const api = createApi({
     }),
 
     getProject: build.query<Project, { id: number }>({
-      query: ({ id }) => `/project/${id}`,
+      query: ({ id }) => `/projects/${id}`,
       providesTags: (result) =>
         result
           ? [{ type: "Project", id: String(result.id) }]
@@ -257,7 +282,7 @@ export const api = createApi({
       { content: Project[]; totalPages: number },
       number
     >({
-      query: (page) => `/project/recent?page=${page}`,
+      query: (page) => `/projects/recent?page=${page}`,
       serializeQueryArgs: ({ endpointName }) => {
         return endpointName;
       },
@@ -281,7 +306,7 @@ export const api = createApi({
 
     deleteProject: build.mutation<void, { id: number }>({
       query: ({ id }) => ({
-        url: `/project/${id}`,
+        url: `/projects/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: (result, error, arg) => [
@@ -291,7 +316,7 @@ export const api = createApi({
 
     applyProject: build.mutation<void, number>({
       query: (id) => ({
-        url: `/apply/${id}`,
+        url: `/applies/${id}`,
         method: "POST",
       }),
       invalidatesTags: [{ type: "AppliedProjectId", id: "LIST" }],
@@ -299,15 +324,15 @@ export const api = createApi({
 
     cancelApplyProject: build.mutation<void, number>({
       query: (id) => ({
-        url: `/apply/${id}`,
+        url: `/applies/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: [{ type: "AppliedProjectId", id: "LIST" }],
     }),
 
-    getApplicantsIds: build.query<string[], number>({
+    getApplicantsIds: build.query<{ memberIds: string[] }, number>({
       query: (projectId) => ({
-        url: `/apply/${projectId}`,
+        url: `/applies/${projectId}`,
       }),
       providesTags: (result, error, arg) => [
         { type: "ApplicantsIds", id: String(arg) },
@@ -316,7 +341,7 @@ export const api = createApi({
 
     acceptApplicant: build.mutation<void, [number, string]>({
       query: ([projectId, memberId]) => ({
-        url: `/apply/accept`,
+        url: `/applies/accept`,
         method: "POST",
         body: {
           projectId,
@@ -330,7 +355,7 @@ export const api = createApi({
 
     rejectApplicant: build.mutation<void, [number, string]>({
       query: ([projectId, memberId]) => ({
-        url: `/apply/reject`,
+        url: `/applies/reject`,
         method: "DELETE",
         body: {
           projectId,
@@ -348,7 +373,7 @@ export const api = createApi({
       [string, number]
     >({
       query: ([keyword, page]) =>
-        `/post/search?keyword=${keyword}&page=${page}`,
+        `/posts/search?keyword=${keyword}&page=${page}`,
     }),
 
     searchProjects: build.query<
@@ -356,7 +381,7 @@ export const api = createApi({
       [string, number]
     >({
       query: ([keyword, page]) =>
-        `/project/search?keyword=${keyword}&page=${page}`,
+        `/projects/search?keyword=${keyword}&page=${page}`,
     }),
 
     searchUsers: build.query<

@@ -1,4 +1,4 @@
-import { IconDots, IconHeart, IconTrash } from "@tabler/icons-react";
+import { IconDots, IconMessage, IconTrash } from "@tabler/icons-react";
 import {
   Card,
   Text,
@@ -9,9 +9,10 @@ import {
   Menu,
   rem,
   Spoiler,
+  Flex,
 } from "@mantine/core";
 import { api } from "app/api";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Post } from "types";
 import PostLike from "./PostLike";
 import { useRef } from "react";
@@ -40,6 +41,7 @@ const useStyles = createStyles((theme) => ({
 }));
 
 export default function PostCard({ post }: { post: Post }) {
+  const navigate = useNavigate();
   const { classes } = useStyles();
   const setDeletePost = api.useDeletePostMutation()[0];
   const spoilerControlRef = useRef<HTMLButtonElement>(null);
@@ -118,7 +120,12 @@ export default function PostCard({ post }: { post: Post }) {
       </Card.Section>
 
       <Card.Section className={classes.section}>
-        <PostLike {...post} />
+        <Flex w="100%" justify="space-between" align="center">
+          <PostLike {...post} />
+          <ActionIcon onClick={() => navigate(`/post/${post.id}`)}>
+            <IconMessage size="1.25rem" />
+          </ActionIcon>
+        </Flex>
       </Card.Section>
     </Card>
   );

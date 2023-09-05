@@ -48,7 +48,7 @@ export default function ProjectDetail() {
   const isLeader = project?.leader === myId;
   const isTeamMember = project?.teamMemberIds.includes(myId || "");
   const applicantsIdsQuery = api.useGetApplicantsIdsQuery(project?.id || 0);
-  const applicantIds = isLeader ? applicantsIdsQuery.data : [];
+  const applicantIds = isLeader ? applicantsIdsQuery.data?.memberIds : [];
 
   const today = dayjs();
   const startAt = dayjs(project?.startAt);
