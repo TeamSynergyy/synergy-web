@@ -123,6 +123,24 @@ const posts = [
     ?.avatar,
 }));
 
+const postComments = [
+  {
+    commentId: 0,
+    memberId: "0",
+    postId: 0,
+    content: "hello",
+    updateAt: "2021-09-01T04:56:55.074",
+  },
+  {
+    commentId: 1,
+    memberId: "1",
+    postId: 0,
+    content:
+      "hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22 hello22        hello22",
+    updateAt: "2021-09-01T04:56:55.074",
+  },
+];
+
 const projects = [
   {
     projectId: 0,
@@ -676,11 +694,30 @@ export const handlers = [
     return res(ctx.status(200), ctx.json(user));
   }),
 
-  rest.get("/members", (req, res, ctx) => {
-    const ids = req.url.searchParams.get("ids");
-    if (!ids) return res(ctx.status(400));
-    const idList = ids.split(",").map((id) => id);
-    const userList = users.filter((user) => idList.includes(user.memberId));
-    return res(ctx.status(200), ctx.json(userList));
+  // Comment
+  rest.get("/comments/:postId", (req, res, ctx) => {
+    const { postId } = req.params as { postId: string };
+    if (!postId) return res(ctx.status(400));
+    const comments = postComments.filter(
+      (comment) => comment.postId === parseInt(postId)
+    );
+    return res(ctx.status(200), ctx.json({ comments }));
+  }),
+
+  rest.post("/comments", async (req, res, ctx) => {
+    const { postId, comment } = await req.json();
+    console.log(postId, comment);
+
+    if (!String(postId) || !comment) return res(ctx.status(400));
+    postComments.push({
+      commentId: postComments.at(-1)?.commentId
+        ? postComments.at(-1)!.commentId + 1
+        : 0,
+      memberId: user.memberId,
+      postId,
+      content: comment,
+      updateAt: new Date().toISOString().slice(0, -1),
+    });
+    return res(ctx.status(200));
   }),
 ];

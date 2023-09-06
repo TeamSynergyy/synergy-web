@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { Post, Project, Member, ChatRoom } from "types";
+import { Post, Project, Member, ChatRoom, Comment } from "types";
 import { RootState } from "./store";
 
 export const api = createApi({
@@ -241,7 +241,7 @@ export const api = createApi({
           body,
         }),
         invalidatesTags: (result, error, arg) => [
-          { type: "Post", id: String(arg.postId) },
+          { type: "PostComments", id: String(arg.postId) },
         ],
       }
     ),

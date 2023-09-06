@@ -32,6 +32,14 @@ interface Member {
   bio: string;
 }
 
+interface Comment {
+  commentId: number;
+  memberId: string;
+  postId: number;
+  content: string;
+  updateAt: string; // date string
+}
+
 interface ChatRoom {
   roomId: number;
   participantIds: string[];
@@ -47,4 +55,4 @@ interface ChatMessage {
   sendTime: string;
 }
 
-export type { Post, Project, Member, ChatMessage, ChatRoom };
+export type { Post, Project, Member, Comment, ChatMessage, ChatRoom };

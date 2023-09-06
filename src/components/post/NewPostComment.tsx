@@ -13,6 +13,7 @@ export default function NewPostComment({ postId }: { postId: number }) {
     if (!comment) return;
     try {
       await writeComment({ postId, comment }).unwrap();
+      setValue("");
     } catch (e) {
       console.error(e);
     }

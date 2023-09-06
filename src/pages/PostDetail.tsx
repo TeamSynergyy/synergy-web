@@ -19,6 +19,10 @@ import PostLike from "components/post/PostLike";
 import dayjs from "dayjs";
 import { Link, useParams } from "react-router-dom";
 
+import relativeTime from "dayjs/plugin/relativeTime";
+import CommentStack from "components/comment/CommentStack";
+dayjs.extend(relativeTime);
+
 const useStyles = createStyles((theme) => ({
   card: {
     width: "100%",
@@ -107,13 +111,19 @@ export default function PostDetail() {
         <Card.Section className={classes.section}>
           <PostLike {...post} />
         </Card.Section>
+
         <Card.Section>
           <ActionIcon onClick={() => null}>
             <IconMessage size="1.25rem" />
           </ActionIcon>
         </Card.Section>
+
         <Card.Section>
           <NewPostComment postId={postId} />
+        </Card.Section>
+
+        <Card.Section>
+          <CommentStack postId={postId} />
         </Card.Section>
       </Card>
     </>
