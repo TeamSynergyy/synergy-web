@@ -10,12 +10,6 @@ import { Link, useParams } from "react-router-dom";
 const data = [
   {
     icon: IconGauge,
-    label: "For you",
-    rightSection: <IconChevronRight size="1rem" stroke={1.5} />,
-    path: "/home",
-  },
-  {
-    icon: IconGauge,
     label: "최신 글",
     rightSection: <IconChevronRight size="1rem" stroke={1.5} />,
     path: "/home/recent/post",

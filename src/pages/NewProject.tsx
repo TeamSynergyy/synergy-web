@@ -64,7 +64,6 @@ export default function NewProject() {
               endAt,
               field,
             }).unwrap();
-            console.log(values);
             initPage("recentProject");
             navigate(`/home/recent/project`);
           } catch (e) {

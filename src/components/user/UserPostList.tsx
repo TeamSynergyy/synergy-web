@@ -20,7 +20,6 @@ export default function UserPostList({ userId }: { userId: string }) {
     }
     if (page === data?.totalPages) return setIsEnd(true);
   }, [entry?.isIntersecting, isSuccess]);
-  console.log(entry?.isIntersecting);
 
   let content;
   if (isLoading) {

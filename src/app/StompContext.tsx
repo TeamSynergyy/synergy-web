@@ -32,7 +32,7 @@ export const StompProvider = ({ children }: { children: JSX.Element }) => {
 
   useEffect(() => {
     if (!clientRef.current) {
-      console.log("create new client");
+      ("create new client");
       clientRef.current = new Client({
         brokerURL,
         reconnectDelay: 5000,
@@ -57,7 +57,6 @@ export const StompProvider = ({ children }: { children: JSX.Element }) => {
 
       return () => {
         subscriptions.forEach((subscription) => {
-          console.log(subscription);
           subscription?.unsubscribe();
         });
       };

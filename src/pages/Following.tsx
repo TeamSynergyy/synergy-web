@@ -1,29 +1,31 @@
-import { Button, Stack } from "@mantine/core";
+import HomeTab from "components/ui/HomeTab";
+import PostCard from "components/post/PostCard";
+import { Box, Button, Stack } from "@mantine/core";
 import { api } from "app/api";
 import { useEffect, useState } from "react";
 import { useIntersection } from "@mantine/hooks";
 import PostSkeleton from "components/post/PostSkeleton";
-import ProjectCard from "components/project/ProjectCard";
 import usePage from "hooks/usePage";
 
-export default function RecentProject() {
+export default function Following() {
   const { initPage, getPage, increasePage } = usePage();
-  const [page, setPage] = useState(getPage("recentProject") || 0);
+  const pageKey = "following";
+  const [page, setPage] = useState(getPage(pageKey) || 0);
   const { data, isLoading, isSuccess, isError, error } =
-    api.useGetRecentProjectsQuery(page);
+    api.useGetFollowingContentsQuery(page);
 
   const { ref, entry } = useIntersection();
 
   const isEnd = data?.totalPages !== undefined && data?.totalPages <= page;
 
   const handlePage = () => {
-    increasePage("recentProject");
-    setPage(getPage("recentProject"));
+    increasePage(pageKey);
+    setPage(getPage(pageKey));
   };
 
   useEffect(() => {
-    if (getPage("recentProject") === undefined) {
-      initPage("recentProject");
+    if (getPage(pageKey) === undefined) {
+      initPage(pageKey);
     }
   }, []);
 
@@ -36,9 +38,7 @@ export default function RecentProject() {
   if (isLoading) {
     content = <p>"Loading..."</p>;
   } else if (isSuccess) {
-    content = data.content.map((project, i) => (
-      <ProjectCard key={i} project={project} />
-    ));
+    content = data.content.map((post, i) => <PostCard key={i} post={post} />);
   } else if (isError) {
     console.error(error);
     content = <p>error! check the console message</p>;
@@ -46,6 +46,7 @@ export default function RecentProject() {
 
   return (
     <>
+      <HomeTab />
       <Stack w="100%">{content}</Stack>
       <Stack ref={ref} w="100%" mt="md" display={isEnd ? "none" : "flex"}>
         <PostSkeleton />

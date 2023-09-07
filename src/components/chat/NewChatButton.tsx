@@ -18,7 +18,6 @@ const NewChatButton = () => {
             required
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               setUserId(e.currentTarget.value);
-              console.log(userId);
             }}
           />
 

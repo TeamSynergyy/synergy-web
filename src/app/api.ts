@@ -28,6 +28,7 @@ export const api = createApi({
     "RecentProjects",
     "ApplicantsIds",
     "PostComments",
+    "FollowingContents",
   ],
   endpoints: (build) => ({
     // Auth
@@ -150,6 +151,32 @@ export const api = createApi({
     >({
       query: (id) => `/follows/${id}`,
       providesTags: (result, error, arg) => [{ type: "Follows", id: arg }],
+    }),
+
+    getFollowingContents: build.query<
+      { content: Post[]; totalPages: number },
+      number
+    >({
+      query: (page) => `/posts/following?page=${page}`,
+      serializeQueryArgs: ({ endpointName }) => {
+        return endpointName;
+      },
+      merge: (currentCache, newItems) => {
+        currentCache.content.push(...newItems.content);
+      },
+      forceRefetch({ currentArg, previousArg }) {
+        return currentArg !== previousArg;
+      },
+      providesTags: (result, error, arg) =>
+        result
+          ? [
+              ...result.content.map(({ postId }) => ({
+                type: "FollowingContents" as const,
+                id: String(postId),
+              })),
+              { type: "FollowingContents", id: "LIST" },
+            ]
+          : [{ type: "FollowingContents", id: "LIST" }],
     }),
 
     createChatRoom: build.mutation<void, string>({

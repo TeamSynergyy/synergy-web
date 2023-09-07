@@ -6,7 +6,7 @@ export default function useAuth() {
     key: "token",
   });
   useEffect(() => {
-    console.log("useAuth is running");
+    return;
   }, []);
 
   return { auth, setAuth, removeAuth };

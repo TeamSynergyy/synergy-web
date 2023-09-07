@@ -28,7 +28,6 @@ export default function RecentPost() {
   }, []);
 
   useEffect(() => {
-    console.log(page);
     if (entry?.isIntersecting && isSuccess) handlePage();
     if (isEnd) return;
   }, [entry?.isIntersecting, isSuccess]);

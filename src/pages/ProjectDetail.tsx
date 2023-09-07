@@ -55,7 +55,6 @@ export default function ProjectDetail() {
   const today = dayjs();
   const startAt = dayjs(project?.startAt);
   const dday = Math.floor(today.diff(startAt, "day", true));
-  console.log(applicantIds);
 
   const handleDelete = async () => {
     try {

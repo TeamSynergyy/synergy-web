@@ -15,7 +15,7 @@ import NewPost from "pages/NewPost";
 import NewProject from "pages/NewProject";
 import People from "pages/People";
 import ProjectDetail from "pages/ProjectDetail";
-import Recommendation from "pages/Recommendation";
+import ForYou from "pages/ForYou";
 import Notification from "pages/Notification";
 import RecentPost from "pages/RecentPost";
 import RecentProject from "pages/RecentProject";
@@ -26,6 +26,7 @@ import PostDetail from "pages/PostDetail";
 
 import useAuth from "hooks/useAuth";
 import { useEffect } from "react";
+import Following from "pages/Following";
 
 const PrivateRoutes = () => {
   // const auth = useSelector(selectCurrentToken);
@@ -41,12 +42,14 @@ export default function App() {
         <Routes>
           <Route element={<PrivateRoutes />}>
             <Route path="/" element={<Layout />}>
-              <Route index element={<Navigate to="/home" />} />
+              <Route index element={<Navigate to="/home/foryou" />} />
               <Route path="home">
-                <Route index element={<Recommendation />} />
+                <Route index element={<Navigate to="foryou" />} />
+                <Route path="foryou" element={<ForYou />} />
+                <Route path="following" element={<Following />} />;
                 <Route path="recent">
                   <Route path="post" element={<RecentPost />} />
-                  <Route path="project" element={<RecentProject />} />
+                  <Route path="project" element={<RecentProject />} />R
                 </Route>
               </Route>
 

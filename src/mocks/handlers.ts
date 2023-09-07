@@ -71,7 +71,7 @@ const posts = [
     postId: 0,
     title: "First post",
     content: "Hello!",
-    authorId: 0,
+    authorId: "0",
     likes: 0,
     createAt: "2021-09-01T04:56:55.074",
   },
@@ -306,7 +306,6 @@ export const handlers = [
   rest.patch("/members/me/info", async (req, res, ctx) => {
     const body = await req.json();
     const updatedUser = { ...users[0], ...body };
-    console.log(updatedUser);
     users[0] = updatedUser;
     return res(ctx.status(200));
   }),
@@ -433,7 +432,6 @@ export const handlers = [
   rest.post("/posts", async (req, res, ctx) => {
     const { title, content } = await req.json();
     if (title === "error") return res(ctx.status(400));
-    console.log(title, content);
     posts.push({
       postId: posts.at(-1)?.postId ? posts.at(-1)!.postId + 1 : 0,
       title,
@@ -444,13 +442,26 @@ export const handlers = [
       authorAvatar: user.avatar,
       createAt: new Date().toISOString().slice(0, -1),
     });
-    console.log(posts);
     return res(ctx.status(200));
+  }),
+
+  rest.get("/posts/following", (req, res, ctx) => {
+    const page = req.url.searchParams.get("page");
+    const content = posts.filter((post) =>
+      user.followingIds.includes(post.authorId)
+    );
+
+    return res(
+      ctx.status(200),
+      ctx.json({
+        content,
+        totalPages: 10,
+      })
+    );
   }),
 
   rest.get("/posts/recent", (req, res, ctx) => {
     const page = req.url.searchParams.get("page");
-    console.log("recentPost", page, posts);
     return res(
       ctx.status(200),
       ctx.json({
@@ -515,7 +526,6 @@ export const handlers = [
     const projectId = projects.at(-1)?.projectId
       ? projects.at(-1)!.projectId + 1
       : 0;
-    console.log(startAt, endAt);
     projects.push({
       projectId,
       name,
@@ -535,7 +545,6 @@ export const handlers = [
 
   rest.get("/projects/recent", (req, res, ctx) => {
     const page = req.url.searchParams.get("page");
-    console.log(page);
     return res(
       ctx.status(200),
       ctx.json({
@@ -577,7 +586,6 @@ export const handlers = [
 
   rest.put("/projects/:id/like", (req, res, ctx) => {
     const { id } = req.params as { id: string };
-    console.log(id);
     const index = user.likedProjects.findIndex(
       (projectId) => projectId === parseInt(id)
     );
@@ -594,7 +602,6 @@ export const handlers = [
 
   rest.post("/applies/accept", async (req, res, ctx) => {
     const { projectId, memberId } = await req.json();
-    console.log(projectId, memberId);
     if (projectId === null || memberId === null) return res(ctx.status(400));
     const proj = projects.find(
       (project) => project.projectId === parseInt(projectId)
@@ -633,7 +640,6 @@ export const handlers = [
     const applicants = projects.find(
       (project) => project.projectId === parseInt(projectId)
     )?.applicants;
-    console.log(applicants);
     return res(ctx.status(200), ctx.json({ memberIds: applicants }));
   }),
 
@@ -708,7 +714,6 @@ export const handlers = [
 
   rest.post("/comments", async (req, res, ctx) => {
     const { postId, comment } = await req.json();
-    console.log(postId, comment);
 
     if (!String(postId) || !comment) return res(ctx.status(400));
     postComments.push({
