@@ -23,7 +23,9 @@ export default function PostLike({
 }) {
   const { classes } = useStyles();
 
-  const isLiked = api.useGetMyLikedPostsQuery(null).data?.includes(postId);
+  const isLiked = api
+    .useGetMyLikedPostsQuery(null)
+    .data?.postIds.includes(postId);
   const likeType = isLiked ? "unlike" : "like";
 
   const like = api.useLikePostMutation()[0];

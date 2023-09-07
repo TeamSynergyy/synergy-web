@@ -23,7 +23,9 @@ export default function ProjectLike({
 }) {
   const { classes } = useStyles();
 
-  const isLiked = api.useGetMyLikedProjectsQuery(null).data?.includes(id);
+  const isLiked = api
+    .useGetMyLikedProjectsQuery(null)
+    .data?.projectIds.includes(id);
   const likeType = isLiked ? "unlike" : "like";
 
   const like = api.useLikeProjectMutation()[0];

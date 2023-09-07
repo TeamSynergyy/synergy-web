@@ -290,11 +290,11 @@ export const handlers = [
     return res(ctx.status(200), ctx.json(users[0]));
   }),
 
-  rest.get("/members/me/post/likes", (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json(user.likedPosts));
+  rest.get("/posts/me/likes", (_, res, ctx) => {
+    return res(ctx.status(200), ctx.json({ postIds: user.likedPosts }));
   }),
-  rest.get("/members/me/project/likes", (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json(user.likedProjects));
+  rest.get("/projects/me/likes", (_, res, ctx) => {
+    return res(ctx.status(200), ctx.json({ projectIds: user.likedProjects }));
   }),
   rest.get("/applies/me", (_, res, ctx) => {
     return res(ctx.status(200), ctx.json({ projectIds: user.appliedProjects }));
