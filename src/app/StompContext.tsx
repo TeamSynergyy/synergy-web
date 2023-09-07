@@ -17,7 +17,8 @@ export const StompProvider = ({ children }: { children: JSX.Element }) => {
   const brokerURL = import.meta.env.VITE_WEBSOCKET_URL;
   const { data: chatRooms } = api.useGetMyChatRoomsQuery(null);
 
-  const topics = chatRooms?.map(({ roomId }) => `/topic/${roomId}`) || [];
+  const topics =
+    chatRooms?.map(({ roomId }) => `/sub/chat/room/${roomId}`) || [];
 
   const clientRef = useRef<Client | null>(null);
   const isConnected = clientRef.current?.connected;
@@ -38,7 +39,7 @@ export const StompProvider = ({ children }: { children: JSX.Element }) => {
         brokerURL,
         reconnectDelay: 5000,
         connectHeaders: {
-          Authorization: token,
+          Authorization: `Bearer ${token}`,
         },
       });
 

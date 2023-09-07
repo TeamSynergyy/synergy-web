@@ -39,7 +39,7 @@ export function ChatInput({ roomId }: { roomId: number }) {
       if (!client) return console.error("WebSocket is not connected");
 
       client.publish({
-        destination: "/topic/" + String(roomId),
+        destination: "/pub/chat/room/" + String(roomId),
         body: JSON.stringify(message),
       });
     }
