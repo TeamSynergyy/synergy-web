@@ -435,7 +435,7 @@ export const api = createApi({
     }),
 
     getProjectsByUser: build.query<Project[], string>({
-      query: (userId) => `/members/${userId}/projects`,
+      query: (userId) => `/projects/?memberId=${userId}`,
     }),
   }),
 });
