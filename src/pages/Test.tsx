@@ -4,7 +4,8 @@ export default function Test() {
   const [id, setId] = useState("");
   function login() {
     const eventSource = new EventSource(
-      `http://localhost:8080/subscribe/` + id
+      `http://localhost:8080/subscribe/` + id,
+      { withCredentials: true }
     );
 
     eventSource.addEventListener("sse", function (event) {
