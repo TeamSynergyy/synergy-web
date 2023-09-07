@@ -27,8 +27,9 @@ export const SseProvider = ({ children }: { children: JSX.Element }) => {
       withCredentials: true,
     });
 
-    es.onmessage = (message) => {
-      dispatch(sseMessageReceived(message));
+    es.onmessage = (event) => {
+      console.log("SSE message received", event);
+      dispatch(sseMessageReceived(event));
     };
 
     es.onerror = (err) => console.error(err);
