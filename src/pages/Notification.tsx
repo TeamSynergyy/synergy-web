@@ -13,9 +13,6 @@ export default function Notification() {
       {messageEvents.map((messageEvent, i) => (
         <NotificationCard key={i} messageEvent={messageEvent} />
       ))}
-      {mockData.map((data, i) => (
-        <NotificationCard key={i} messageEvent={data} />
-      ))}
     </Stack>
   );
 }
