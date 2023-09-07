@@ -7,6 +7,7 @@ interface Post {
   authorAvatar: string;
   likes: number;
   createAt: string;
+  updateAt: string;
 }
 
 interface Project {

@@ -6,6 +6,7 @@ import {
   Dialog,
   Text,
   MultiSelect,
+  Flex,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
@@ -49,6 +50,18 @@ export default function NewProject() {
 
   return (
     <>
+      <Flex justify="flex-end" align="center" gap="sm">
+        <Text size="sm" c="gray">
+          또는
+        </Text>
+        <Button
+          size="sm"
+          variant="subtle"
+          onClick={() => navigate("/new/post")}
+        >
+          새 글 쓰기
+        </Button>
+      </Flex>
       <form
         onSubmit={form.onSubmit(async (values) => {
           try {

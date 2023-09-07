@@ -445,7 +445,7 @@ export const handlers = [
     return res(ctx.status(200));
   }),
 
-  rest.get("/posts/following", (req, res, ctx) => {
+  rest.get("/posts/followings", (req, res, ctx) => {
     const page = req.url.searchParams.get("page");
     const content = posts.filter((post) =>
       user.followingIds.includes(post.authorId)

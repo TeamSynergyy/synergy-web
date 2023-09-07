@@ -157,7 +157,7 @@ export const api = createApi({
       { content: Post[]; totalPages: number },
       number
     >({
-      query: (page) => `/posts/following?page=${page}`,
+      query: (page) => `/posts/followings?page=${page}`,
       serializeQueryArgs: ({ endpointName }) => {
         return endpointName;
       },

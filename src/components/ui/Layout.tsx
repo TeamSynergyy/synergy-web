@@ -14,6 +14,7 @@ import { Outlet, useLocation } from "react-router-dom";
 import { NavbarContent } from "./NavbarContent";
 import AsideContent from "./AsideContent";
 import { StompProvider } from "app/StompContext";
+import FloatingActionButton from "./FloatingActionButton";
 
 const headerLinks = [
   {
@@ -110,6 +111,7 @@ export default function Layout() {
         }
       >
         <Outlet />
+        <FloatingActionButton />
       </AppShell>
     </StompProvider>
   );
