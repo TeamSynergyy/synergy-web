@@ -6,48 +6,45 @@ export default function NotificationCard({
 }: {
   messageEvent: MessageEvent;
 }) {
-  const { type, data } = messageEvent;
+  const { type, content } = messageEvent.data;
 
-  let content;
+  let body;
   switch (type) {
     case "COMMENT":
-      content = (
+      body = (
         <>
           <Text>게시글에 댓글이 달렸습니다.</Text>
-          <Link to={`/post/${Number(data)}`}>
+          <Link to={`/post/${Number(content)}`}>
             <Button>게시글 바로가기</Button>
           </Link>
         </>
       );
       break;
     case "FOLLOW":
-      content = (
+      body = (
         <>
           <Text>팔로우를 받았습니다.</Text>
-          <Link to={`/people/${data}`}>
+          <Link to={`/people/${content}`}>
             <Button>프로필 바로가기</Button>
           </Link>
         </>
       );
       break;
     case "APPLY":
-      content = (
+      body = (
         <>
           <Text>프로젝트에 지원자가 있습니다.</Text>
-          <Link to={`/project/${Number(data)}`}>
+          <Link to={`/project/${Number(content)}`}>
             <Button>지원자 확인하기</Button>
           </Link>
         </>
       );
       break;
-    default:
-      content = <Text>알 수 없는 알림입니다.</Text>;
-      break;
   }
   return (
     <Paper w="100%" withBorder>
       <Flex justify="space-between" align="center" p="sm">
-        {content}
+        {body}
       </Flex>
     </Paper>
   );
