@@ -122,7 +122,7 @@ export default function PostCard({ post }: { post: Post }) {
       <Card.Section className={classes.section}>
         <Flex w="100%" justify="space-between" align="center">
           <PostLike {...post} />
-          <ActionIcon onClick={() => navigate(`/posts/${post.postId}`)}>
+          <ActionIcon onClick={() => navigate(`/post/${post.postId}`)}>
             <IconMessage size="1.25rem" />
           </ActionIcon>
         </Flex>
