@@ -1,5 +1,9 @@
-import { createContext, useEffect, useRef, useState } from "react";
-import { Event, EventSourcePolyfill } from "event-source-polyfill";
+import { createContext, useEffect, useRef } from "react";
+import {
+  EventSourcePolyfill,
+  MessageEvent,
+  Event,
+} from "event-source-polyfill";
 import { useDispatch, useSelector } from "react-redux";
 import { selectCurrentToken } from "./authSlice";
 import { sseMessageReceived } from "./sseSlice";
@@ -19,9 +23,11 @@ export const SseProvider = ({ children }: { children: JSX.Element }) => {
   const esRef = useRef<EventSourcePolyfill | null>(null);
 
   const sseHandler = (event: Event) => {
-    console.log("SSE message received", event);
-    // dispatch(sseMessageReceived(event));
+    const messageEvent = event as unknown as MessageEvent;
+    console.log("SSE message received", messageEvent);
+    dispatch(sseMessageReceived(messageEvent));
   };
+
   useEffect(() => {
     if (!token) return;
 
@@ -31,20 +37,9 @@ export const SseProvider = ({ children }: { children: JSX.Element }) => {
       },
       withCredentials: true,
     });
-    /*
-      eventSource.onmessage = (event) => {
-        console.log("SSE message received", event);
-        dispatch(sseMessageReceived(event));
-      };
-      eventSource.onerror = (err) => console.error(err);
-    
-      addEventListener("sse", (event) => {
-        console.log("SSE message received", event);
-        dispatch(sseMessageReceived(event));
-      });
-      */
 
     eventSource.addEventListener("sse", sseHandler);
+
     return () => {
       eventSource.removeEventListener("sse", sseHandler);
     };

@@ -1,16 +1,20 @@
 import { useSelector } from "react-redux";
 import { RootState } from "app/store";
-import { Button, Paper, Stack, Text } from "@mantine/core";
+import { Paper, Stack, Text } from "@mantine/core";
+import NotificationCard from "components/notification/NotificationCard";
 
 export default function Notification() {
-  const notification = useSelector((state: RootState) => state.sse.messages);
+  const messageEvents = useSelector(
+    (state: RootState) => state.sse.messageEvents
+  );
 
   return (
     <Stack>
-      {notification.map((noti) => (
-        <Paper>
-          <Text>{noti.data}</Text>
-        </Paper>
+      {messageEvents.map((messageEvent, i) => (
+        <NotificationCard key={i} messageEvent={messageEvent} />
+      ))}
+      {mockData.map((data, i) => (
+        <NotificationCard key={i} messageEvent={data} />
       ))}
     </Stack>
   );

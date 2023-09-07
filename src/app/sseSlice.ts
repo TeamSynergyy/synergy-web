@@ -1,24 +1,20 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-interface NotificationMessage {
-  type: string;
-  data: string;
-}
+import { MessageEvent } from "event-source-polyfill";
 
 interface SseState {
-  messages: NotificationMessage[];
+  messageEvents: MessageEvent[];
 }
 
 const initialState: SseState = {
-  messages: [],
+  messageEvents: [],
 };
 
 export const sseSlice = createSlice({
   name: "sse",
   initialState,
   reducers: {
-    sseMessageReceived: (state, action: PayloadAction<NotificationMessage>) => {
-      state.messages.push(action.payload);
+    sseMessageReceived: (state, action: PayloadAction<MessageEvent>) => {
+      state.messageEvents.push(action.payload);
     },
   },
 });
