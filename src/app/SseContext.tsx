@@ -1,5 +1,5 @@
-import { createContext, useEffect, useRef } from "react";
-import { EventSourcePolyfill } from "event-source-polyfill";
+import { createContext, useEffect, useRef, useState } from "react";
+import { Event, EventSourcePolyfill } from "event-source-polyfill";
 import { useDispatch, useSelector } from "react-redux";
 import { selectCurrentToken } from "./authSlice";
 import { sseMessageReceived } from "./sseSlice";
@@ -18,26 +18,35 @@ export const SseProvider = ({ children }: { children: JSX.Element }) => {
   const token = useSelector(selectCurrentToken);
   const esRef = useRef<EventSourcePolyfill | null>(null);
 
+  const sseHandler = (event: Event) => {
+    console.log("SSE message received", event);
+    // dispatch(sseMessageReceived(event));
+  };
   useEffect(() => {
     if (!token) return;
-    const es = new EventSourcePolyfill(`${hostUrl}/subscribe`, {
+
+    const eventSource = new EventSourcePolyfill(`${hostUrl}/subscribe`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
       withCredentials: true,
     });
+    /*
+      eventSource.onmessage = (event) => {
+        console.log("SSE message received", event);
+        dispatch(sseMessageReceived(event));
+      };
+      eventSource.onerror = (err) => console.error(err);
+    
+      addEventListener("sse", (event) => {
+        console.log("SSE message received", event);
+        dispatch(sseMessageReceived(event));
+      });
+      */
 
-    es.onmessage = (event) => {
-      console.log("SSE message received", event);
-      dispatch(sseMessageReceived(event));
-    };
-
-    es.onerror = (err) => console.error(err);
-
-    esRef.current = es;
-
+    eventSource.addEventListener("sse", sseHandler);
     return () => {
-      es.close();
+      eventSource.removeEventListener("sse", sseHandler);
     };
   }, [hostUrl, token]);
 
