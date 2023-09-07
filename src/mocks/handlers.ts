@@ -543,6 +543,20 @@ export const handlers = [
     return res(ctx.status(200));
   }),
 
+  rest.get("/projects", (req, res, ctx) => {
+    const memberId = req.url.searchParams.get("memberId");
+    if (!memberId) return res(ctx.status(400));
+    console.log(memberId);
+    return res(
+      ctx.status(200),
+      ctx.json({
+        infoProjectResponses: projects.filter((project) =>
+          project.teamMemberIds.includes(memberId)
+        ),
+      })
+    );
+  }),
+
   rest.get("/projects/recent", (req, res, ctx) => {
     const page = req.url.searchParams.get("page");
     return res(
@@ -683,14 +697,6 @@ export const handlers = [
         content: posts.filter((post) => post.authorId === authorId),
         totalPages: 13,
       })
-    );
-  }),
-
-  rest.get("/members/:id/projects", (req, res, ctx) => {
-    const { id } = req.params as { id: string };
-    return res(
-      ctx.status(200),
-      ctx.json(projects.filter((project) => project.teamMemberIds.includes(id)))
     );
   }),
 

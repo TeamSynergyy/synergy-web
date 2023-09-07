@@ -437,8 +437,10 @@ export const api = createApi({
       },
     }),
 
-    getProjectsByUser: build.query<Project[], string>({
-      query: (userId) => `/projects?memberId=${userId}`,
-    }),
+    getProjectsByUser: build.query<{ infoProjectResponses: Project[] }, string>(
+      {
+        query: (userId) => `/projects?memberId=${userId}`,
+      }
+    ),
   }),
 });

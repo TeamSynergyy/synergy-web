@@ -4,8 +4,9 @@ import ProjectCard from "components/project/ProjectCard";
 import { Project } from "types";
 
 export default function UserProfileInfo({ userId }: { userId: string }) {
-  const { data: projects } = api.useGetProjectsByUserQuery(userId);
-
+  const { data } = api.useGetProjectsByUserQuery(userId);
+  const projects = data?.infoProjectResponses;
+  console.log(data);
   return (
     <Stack p="xs">
       {projects !== undefined && (
@@ -20,9 +21,6 @@ export default function UserProfileInfo({ userId }: { userId: string }) {
       )}
 
       <Space h="lg" />
-      <Text fz="xl" fw={600} ml="xs">
-        능력
-      </Text>
     </Stack>
   );
 }
