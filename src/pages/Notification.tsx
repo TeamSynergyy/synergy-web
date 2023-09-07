@@ -1,3 +1,17 @@
+import { useSelector } from "react-redux";
+import { RootState } from "app/store";
+import { Button, Paper, Stack, Text } from "@mantine/core";
+
 export default function Notification() {
-  return <p>개발중</p>;
+  const notification = useSelector((state: RootState) => state.sse.messages);
+
+  return (
+    <Stack>
+      {notification.map((noti) => (
+        <Paper>
+          <Text>{noti.message}</Text>
+        </Paper>
+      ))}
+    </Stack>
+  );
 }

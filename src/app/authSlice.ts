@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "./store";
 
-const slice = createSlice({
+const authSlice = createSlice({
   name: "auth",
   initialState: { token: null } as { token: string | null },
   reducers: {
@@ -16,8 +16,8 @@ const slice = createSlice({
   },
 });
 
-export const { setCredentials } = slice.actions;
+export const { setCredentials } = authSlice.actions;
 
-export default slice.reducer;
+export default authSlice.reducer;
 
 export const selectCurrentToken = (state: RootState) => state.auth.token;

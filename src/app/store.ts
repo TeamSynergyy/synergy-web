@@ -3,12 +3,14 @@ import { api } from "./api";
 import stompReducer from "./stompSlice";
 import { useDispatch } from "react-redux";
 import authReducer from "./authSlice";
+import sseReducer from "./SseSlice";
 
 export const store = configureStore({
   reducer: {
     [api.reducerPath]: api.reducer,
     stomp: stompReducer,
     auth: authReducer,
+    sse: sseReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(api.middleware),

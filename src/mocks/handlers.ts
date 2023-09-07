@@ -727,4 +727,6 @@ export const handlers = [
     });
     return res(ctx.status(200));
   }),
+
+  // Notification
 ];

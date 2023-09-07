@@ -1,12 +1,14 @@
 import { createContext, useEffect, useRef } from "react";
 import { EventSourcePolyfill } from "event-source-polyfill";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectCurrentToken } from "./authSlice";
+import { sseMessageReceived } from "./SseSlice";
 export const SseContext = createContext({
   es: null as EventSourcePolyfill | null,
 });
 
 export const SseProvider = ({ children }: { children: JSX.Element }) => {
+  const dispatch = useDispatch();
   const hostUrl = import.meta.env.VITE_API_URL;
   const token = useSelector(selectCurrentToken);
   const esRef = useRef<EventSourcePolyfill | null>(null);
@@ -20,9 +22,17 @@ export const SseProvider = ({ children }: { children: JSX.Element }) => {
       withCredentials: true,
     });
 
-    es.onmessage = (e) => console.log(e);
+    es.onmessage = (message) => {
+      dispatch(sseMessageReceived(message));
+    };
+
+    es.onerror = (err) => console.error(err);
 
     esRef.current = es;
+
+    return () => {
+      es.close();
+    };
   }, [hostUrl, token]);
 
   return (
