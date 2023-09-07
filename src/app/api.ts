@@ -102,7 +102,7 @@ export const api = createApi({
       ],
     }),
 
-    likePost: build.mutation<void, [number, "like" | "unlike"]>({
+    likePost: build.mutation<void, [number, "post_like" | "post_unlike"]>({
       query: ([id, likeType]) => ({
         url: `/posts/${id}/like`,
         method: "PUT",
@@ -117,7 +117,10 @@ export const api = createApi({
       ],
     }),
 
-    likeProject: build.mutation<void, [number, "like" | "unlike"]>({
+    likeProject: build.mutation<
+      void,
+      [number, "project_like" | "project_unlike"]
+    >({
       query: ([id, likeType]) => ({
         url: `/projects/${id}/like`,
         method: "PUT",

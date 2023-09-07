@@ -26,7 +26,7 @@ export default function ProjectLike({
   const isLiked = api
     .useGetMyLikedProjectsQuery(null)
     .data?.projectIds.includes(id);
-  const likeType = isLiked ? "unlike" : "like";
+  const likeType = isLiked ? "project_unlike" : "project_like";
 
   const like = api.useLikeProjectMutation()[0];
 
