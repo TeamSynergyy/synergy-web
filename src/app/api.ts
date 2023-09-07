@@ -6,7 +6,8 @@ export const api = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: import.meta.env.VITE_API_URL,
     prepareHeaders: (headers, { getState }) => {
-      const token = (getState() as RootState).auth.token;
+      const token =
+        (getState() as RootState).auth.token || localStorage.getItem("token"); // 임시로 토큰 헤더에 저장
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
       }
