@@ -46,7 +46,7 @@ export default function PostCard({ post }: { post: Post }) {
   const setDeletePost = api.useDeletePostMutation()[0];
   const spoilerControlRef = useRef<HTMLButtonElement>(null);
 
-  const closeSpoilerText = "Hide";
+  const closeSpoilerText = "숨기기";
   const openSpoiler = () => {
     if (
       spoilerControlRef.current &&
@@ -109,7 +109,7 @@ export default function PostCard({ post }: { post: Post }) {
         </Group>
         <Spoiler
           maxHeight={110}
-          showLabel="Show more"
+          showLabel="더 보기"
           hideLabel={closeSpoilerText}
           controlRef={spoilerControlRef}
         >
