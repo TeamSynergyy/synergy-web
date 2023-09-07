@@ -1,5 +1,6 @@
 import { Stack, Text } from "@mantine/core";
 import HomeTab from "components/ui/HomeTab";
+import { Link } from "react-router-dom";
 export default function ForYou() {
   return (
     <>
@@ -13,6 +14,7 @@ export default function ForYou() {
         align="center"
       >
         <Text> 개발중 </Text>
+        <Link to="/test">test</Link>
       </Stack>
     </>
   );
