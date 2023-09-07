@@ -26,7 +26,6 @@ import PostDetail from "pages/PostDetail";
 import useAuth from "hooks/useAuth";
 import { useEffect } from "react";
 import Following from "pages/Following";
-import Test from "pages/Test";
 
 const PrivateRoutes = () => {
   // const auth = useSelector(selectCurrentToken);
@@ -77,8 +76,6 @@ export default function App() {
               <Route path="new/post" element={<NewPost />} />
               <Route path="new/project" element={<NewProject />} />
             </Route>
-
-            <Route path="test" element={<Test />} />
           </Route>
 
           <Route path="/auth" element={<Auth />} />

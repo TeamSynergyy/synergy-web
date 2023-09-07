@@ -1,7 +1,11 @@
 import { Stack, Text } from "@mantine/core";
+import { SseContext } from "app/SseContext";
 import HomeTab from "components/ui/HomeTab";
+import { useContext } from "react";
 import { Link } from "react-router-dom";
 export default function ForYou() {
+  const es = useContext(SseContext);
+  console.log(es);
   return (
     <>
       <HomeTab />
@@ -14,7 +18,6 @@ export default function ForYou() {
         align="center"
       >
         <Text> 개발중 </Text>
-        <Link to="/test">test</Link>
       </Stack>
     </>
   );

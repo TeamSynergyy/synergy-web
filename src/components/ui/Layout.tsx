@@ -15,6 +15,7 @@ import { NavbarContent } from "./NavbarContent";
 import AsideContent from "./AsideContent";
 import { StompProvider } from "app/StompContext";
 import FloatingActionButton from "./FloatingActionButton";
+import { SseProvider } from "app/SseContext";
 
 const headerLinks = [
   {
@@ -44,38 +45,25 @@ export default function Layout() {
     location.pathname.split("/")[2] !== undefined;
 
   return (
-    <StompProvider>
-      <AppShell
-        styles={{
-          main: {
-            minHeight: 0,
-            background:
-              theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.white,
-          },
-        }}
-        navbarOffsetBreakpoint="sm"
-        asideOffsetBreakpoint="sm"
-        navbar={
-          <Navbar
-            p="md"
-            hiddenBreakpoint="sm"
-            hidden={!opened}
-            width={{ sm: 200, lg: 300 }}
-            bg={
-              theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.white
-            }
-            withBorder={false}
-          >
-            <Navbar.Section grow mt="md">
-              <NavbarContent />
-            </Navbar.Section>
-          </Navbar>
-        }
-        aside={
-          <MediaQuery smallerThan="sm" styles={{ display: "none" }}>
-            <Aside
+    <SseProvider>
+      <StompProvider>
+        <AppShell
+          styles={{
+            main: {
+              minHeight: 0,
+              background:
+                theme.colorScheme === "dark"
+                  ? theme.colors.dark[8]
+                  : theme.white,
+            },
+          }}
+          navbarOffsetBreakpoint="sm"
+          asideOffsetBreakpoint="sm"
+          navbar={
+            <Navbar
               p="md"
               hiddenBreakpoint="sm"
+              hidden={!opened}
               width={{ sm: 200, lg: 300 }}
               bg={
                 theme.colorScheme === "dark"
@@ -84,35 +72,54 @@ export default function Layout() {
               }
               withBorder={false}
             >
-              <AsideContent />
-            </Aside>
-          </MediaQuery>
-        }
-        footer={
-          isChatRoom ? undefined : (
-            <MediaQuery largerThan="sm" styles={{ display: "none" }}>
-              <Footer height={56}>
-                <BottomNav links={headerLinks} />
-              </Footer>
+              <Navbar.Section grow mt="md">
+                <NavbarContent />
+              </Navbar.Section>
+            </Navbar>
+          }
+          aside={
+            <MediaQuery smallerThan="sm" styles={{ display: "none" }}>
+              <Aside
+                p="md"
+                hiddenBreakpoint="sm"
+                width={{ sm: 200, lg: 300 }}
+                bg={
+                  theme.colorScheme === "dark"
+                    ? theme.colors.dark[8]
+                    : theme.white
+                }
+                withBorder={false}
+              >
+                <AsideContent />
+              </Aside>
             </MediaQuery>
-          )
-        }
-        header={
-          <HeaderSearch links={headerLinks}>
-            <MediaQuery largerThan="sm" styles={{ display: "none" }}>
-              <Burger
-                opened={opened}
-                onClick={() => setOpened((o) => !o)}
-                size="sm"
-                color={theme.colors.gray[6]}
-              />
-            </MediaQuery>
-          </HeaderSearch>
-        }
-      >
-        <Outlet />
-        <FloatingActionButton />
-      </AppShell>
-    </StompProvider>
+          }
+          footer={
+            isChatRoom ? undefined : (
+              <MediaQuery largerThan="sm" styles={{ display: "none" }}>
+                <Footer height={56}>
+                  <BottomNav links={headerLinks} />
+                </Footer>
+              </MediaQuery>
+            )
+          }
+          header={
+            <HeaderSearch links={headerLinks}>
+              <MediaQuery largerThan="sm" styles={{ display: "none" }}>
+                <Burger
+                  opened={opened}
+                  onClick={() => setOpened((o) => !o)}
+                  size="sm"
+                  color={theme.colors.gray[6]}
+                />
+              </MediaQuery>
+            </HeaderSearch>
+          }
+        >
+          <Outlet />
+          <FloatingActionButton />
+        </AppShell>
+      </StompProvider>
+    </SseProvider>
   );
 }
