@@ -19,7 +19,8 @@ export const SseContext = createContext<SseContextProps>({
 export const SseProvider = ({ children }: { children: JSX.Element }) => {
   const dispatch = useDispatch();
   const hostUrl = import.meta.env.VITE_API_URL;
-  const token = useSelector(selectCurrentToken);
+  const token =
+    useSelector(selectCurrentToken) || localStorage.getItem("token");
   const esRef = useRef<EventSourcePolyfill | null>(null);
 
   const sseHandler = (event: Event) => {

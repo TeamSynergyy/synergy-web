@@ -13,7 +13,8 @@ export const StompContext = createContext<StompContextProps>({ client: null });
 
 export const StompProvider = ({ children }: { children: JSX.Element }) => {
   const dispatch = useDispatch();
-  const token = useSelector(selectCurrentToken);
+  const token =
+    useSelector(selectCurrentToken) || localStorage.getItem("token");
   const brokerURL = import.meta.env.VITE_WEBSOCKET_URL;
   const { data: chatRooms } = api.useGetMyChatRoomsQuery(null);
 
@@ -34,12 +35,15 @@ export const StompProvider = ({ children }: { children: JSX.Element }) => {
     );
 
   useEffect(() => {
-    if (!clientRef.current && token) {
+    if (!clientRef.current) {
       clientRef.current = new Client({
         brokerURL,
         reconnectDelay: 5000,
         connectHeaders: {
           Authorization: `Bearer ${token}`,
+        },
+        debug: (str) => {
+          console.log(str);
         },
       });
 
@@ -47,7 +51,7 @@ export const StompProvider = ({ children }: { children: JSX.Element }) => {
       return;
     }
 
-    if (clientRef.current && !isConnected) {
+    if (!isConnected) {
       clientRef.current.onConnect = makeSubscriptions;
 
       return () => {
