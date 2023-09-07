@@ -667,12 +667,14 @@ export const handlers = [
     return res(ctx.status(200));
   }),
 
-  rest.get("/members/:id/posts", (req, res, ctx) => {
-    const { id } = req.params as { id: string };
+  rest.get("/posts", (req, res, ctx) => {
+    const authorId = req.url.searchParams.get("authorId");
+    const page = req.url.searchParams.get("page");
+
     return res(
       ctx.status(200),
       ctx.json({
-        content: posts.filter((post) => post.authorId === id),
+        content: posts.filter((post) => post.authorId === authorId),
         totalPages: 13,
       })
     );

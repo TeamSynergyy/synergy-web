@@ -394,7 +394,7 @@ export const api = createApi({
       { content: Post[]; totalPages: number },
       [string, number]
     >({
-      query: ([userId, page]) => `/members/${userId}/posts?page=${page}`,
+      query: ([userId, page]) => `/posts?authorId=${userId}&page=${page}`,
       serializeQueryArgs: ({ queryArgs, endpointName }) => {
         return endpointName + queryArgs[0];
       },
