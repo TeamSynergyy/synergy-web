@@ -6,7 +6,7 @@ export default function NotificationCard({
 }: {
   messageEvent: MessageEvent;
 }) {
-  const { type, content } = messageEvent.data;
+  const { type, content } = JSON.parse(messageEvent.data);
 
   let body;
   switch (type) {
