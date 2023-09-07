@@ -9,7 +9,7 @@ export default function Notification() {
     <Stack>
       {notification.map((noti) => (
         <Paper>
-          <Text>{noti.message}</Text>
+          <Text>{noti.data}</Text>
         </Paper>
       ))}
     </Stack>

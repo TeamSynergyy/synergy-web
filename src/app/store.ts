@@ -3,7 +3,7 @@ import { api } from "./api";
 import stompReducer from "./stompSlice";
 import { useDispatch } from "react-redux";
 import authReducer from "./authSlice";
-import sseReducer from "./SseSlice";
+import sseReducer from "./sseSlice";
 
 export const store = configureStore({
   reducer: {

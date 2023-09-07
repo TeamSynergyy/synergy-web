@@ -2,9 +2,14 @@ import { createContext, useEffect, useRef } from "react";
 import { EventSourcePolyfill } from "event-source-polyfill";
 import { useDispatch, useSelector } from "react-redux";
 import { selectCurrentToken } from "./authSlice";
-import { sseMessageReceived } from "./SseSlice";
-export const SseContext = createContext({
-  es: null as EventSourcePolyfill | null,
+import { sseMessageReceived } from "./sseSlice";
+
+interface SseContextProps {
+  es: EventSourcePolyfill | null;
+}
+
+export const SseContext = createContext<SseContextProps>({
+  es: null,
 });
 
 export const SseProvider = ({ children }: { children: JSX.Element }) => {
