@@ -6,12 +6,9 @@ const authSlice = createSlice({
   name: "auth",
   initialState: { token: null } as { token: string | null },
   reducers: {
-    setCredentials: (
-      state,
-      { payload: { token } }: PayloadAction<{ token: string }>
-    ) => {
-      localStorage.setItem("token", token); // 임시 로그인
+    setCredentials: (state, { payload: token }: PayloadAction<string>) => {
       state.token = token;
+      console.log("token", token);
     },
   },
 });

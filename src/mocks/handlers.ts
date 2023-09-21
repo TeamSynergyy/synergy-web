@@ -264,6 +264,17 @@ const user = {
 
 export const handlers = [
   // User
+  rest.post("/auth/google", async (req, res, ctx) => {
+    const { code } = await req.json();
+
+    console.log(code);
+    return res(
+      ctx.status(200),
+      ctx.json({
+        accessToken: "testAccessToken",
+      })
+    );
+  }),
   rest.post("/members/signup", async (req, res, ctx) => {
     // error test
     const { email } = await req.json();

@@ -26,9 +26,29 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "app/authSlice";
 
+import { useGoogleLogin } from "@react-oauth/google";
+
 export default function Auth(props: PaperProps) {
+  const getTokens = api.useGoogleLoginMutation()[0];
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const googleLogin = useGoogleLogin({
+    onSuccess: async ({ code }) => {
+      try {
+        const payload = await getTokens(code).unwrap();
+        console.log("fulfilled", payload);
+        dispatch(setCredentials(payload.accessToken));
+        navigate("/");
+      } catch (error) {
+        console.error("rejected", error);
+      }
+    },
+    flow: "auth-code",
+  });
+
+  return <Button onClick={googleLogin}>Login with Google</Button>;
+
   const setRegister = api.useRegisterMutation()[0];
   const [login, { isLoading }] = api.useLoginMutation();
   const { height } = useViewportSize();
@@ -74,7 +94,7 @@ export default function Auth(props: PaperProps) {
               if (type === "login") {
                 try {
                   const { token } = await login(credentials).unwrap();
-                  dispatch(setCredentials({ token }));
+                  dispatch(setCredentials(token));
                   return navigate("/");
                 } catch (error) {
                   setDialogMessage("❌ 로그인 실패");
@@ -87,6 +107,7 @@ export default function Auth(props: PaperProps) {
             })}
           >
             <LoadingOverlay visible={loadingOverlayVisible} overlayBlur={2} />
+
             <Stack>
               {type === "register" && (
                 <TextInput
@@ -137,7 +158,6 @@ export default function Auth(props: PaperProps) {
                 />
               )}
             </Stack>
-
             <Group position="apart" mt="xl">
               <Anchor
                 component="button"

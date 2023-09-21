@@ -27,60 +27,63 @@ import useAuth from "hooks/useAuth";
 import { useEffect } from "react";
 import Following from "pages/Following";
 
-const PrivateRoutes = () => {
-  // const auth = useSelector(selectCurrentToken);
-  const { auth } = useAuth();
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
-  return localStorage.getItem("token") ? <Outlet /> : <Navigate to="/auth" />;
+const PrivateRoutes = () => {
+  const auth = useSelector(selectCurrentToken);
+  console.log(auth);
+  return auth ? <Outlet /> : <Navigate to="/auth" />;
 };
 
 export default function App() {
   return (
-    <MantineProvider withGlobalStyles withNormalizeCSS>
-      <BrowserRouter>
-        <Routes>
-          <Route element={<PrivateRoutes />}>
-            <Route path="/" element={<Layout />}>
-              <Route index element={<Navigate to="/home/foryou" />} />
-              <Route path="home">
-                <Route index element={<Navigate to="foryou" />} />
-                <Route path="foryou" element={<ForYou />} />
-                <Route path="following" element={<Following />} />;
-                <Route path="recent">
-                  <Route path="post" element={<RecentPost />} />
-                  <Route path="project" element={<RecentProject />} />R
+    <GoogleOAuthProvider clientId="549774489404-tshvhml0mllpvberlhevmrlhdsb0492n.apps.googleusercontent.com">
+      <MantineProvider withGlobalStyles withNormalizeCSS>
+        <BrowserRouter>
+          <Routes>
+            <Route element={<PrivateRoutes />}>
+              <Route path="/" element={<Layout />}>
+                <Route index element={<Navigate to="/home/foryou" />} />
+                <Route path="home">
+                  <Route index element={<Navigate to="foryou" />} />
+                  <Route path="foryou" element={<ForYou />} />
+                  <Route path="following" element={<Following />} />;
+                  <Route path="recent">
+                    <Route path="post" element={<RecentPost />} />
+                    <Route path="project" element={<RecentProject />} />R
+                  </Route>
                 </Route>
+
+                <Route path="people">
+                  <Route index element={<People />} />
+                  <Route path=":id" element={<Profile />} />
+                </Route>
+
+                <Route path="chat">
+                  <Route index element={<Chat />} />
+                  <Route path=":id" element={<ChatRoom />} />R
+                </Route>
+
+                <Route path="notification" element={<Notification />} />
+
+                <Route path="post">
+                  <Route path=":id" element={<PostDetail />} />
+                </Route>
+                <Route path="project">
+                  <Route path=":id" element={<ProjectDetail />} />
+                </Route>
+
+                <Route path="search" element={<Search />} />
+
+                <Route path="new/post" element={<NewPost />} />
+                <Route path="new/project" element={<NewProject />} />
               </Route>
-
-              <Route path="people">
-                <Route index element={<People />} />
-                <Route path=":id" element={<Profile />} />
-              </Route>
-
-              <Route path="chat">
-                <Route index element={<Chat />} />
-                <Route path=":id" element={<ChatRoom />} />R
-              </Route>
-
-              <Route path="notification" element={<Notification />} />
-
-              <Route path="post">
-                <Route path=":id" element={<PostDetail />} />
-              </Route>
-              <Route path="project">
-                <Route path=":id" element={<ProjectDetail />} />
-              </Route>
-
-              <Route path="search" element={<Search />} />
-
-              <Route path="new/post" element={<NewPost />} />
-              <Route path="new/project" element={<NewProject />} />
             </Route>
-          </Route>
 
-          <Route path="/auth" element={<Auth />} />
-        </Routes>
-      </BrowserRouter>
-    </MantineProvider>
+            <Route path="/auth" element={<Auth />} />
+          </Routes>
+        </BrowserRouter>
+      </MantineProvider>
+    </GoogleOAuthProvider>
   );
 }

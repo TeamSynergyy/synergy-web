@@ -33,6 +33,16 @@ export const api = createApi({
   ],
   endpoints: (build) => ({
     // Auth
+    googleLogin: build.mutation<{ accessToken: string }, string>({
+      query: (code) => ({
+        url: `/auth/google`,
+        method: "POST",
+        body: {
+          code,
+        },
+      }),
+    }),
+
     register: build.mutation<
       void,
       { email: string; password: string; name: string }
