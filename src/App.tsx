@@ -36,8 +36,10 @@ const PrivateRoutes = () => {
 };
 
 export default function App() {
+  const googleClientId = import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_ID;
+
   return (
-    <GoogleOAuthProvider clientId="549774489404-tshvhml0mllpvberlhevmrlhdsb0492n.apps.googleusercontent.com">
+    <GoogleOAuthProvider clientId={googleClientId}>
       <MantineProvider withGlobalStyles withNormalizeCSS>
         <BrowserRouter>
           <Routes>
@@ -50,7 +52,7 @@ export default function App() {
                   <Route path="following" element={<Following />} />;
                   <Route path="recent">
                     <Route path="post" element={<RecentPost />} />
-                    <Route path="project" element={<RecentProject />} />R
+                    <Route path="project" element={<RecentProject />} />
                   </Route>
                 </Route>
 
@@ -61,7 +63,7 @@ export default function App() {
 
                 <Route path="chat">
                   <Route index element={<Chat />} />
-                  <Route path=":id" element={<ChatRoom />} />R
+                  <Route path=":id" element={<ChatRoom />} />
                 </Route>
 
                 <Route path="notification" element={<Notification />} />

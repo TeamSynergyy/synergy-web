@@ -264,7 +264,7 @@ const user = {
 
 export const handlers = [
   // User
-  rest.post("/auth/google", async (req, res, ctx) => {
+  rest.post("/members/login", async (req, res, ctx) => {
     const { code } = await req.json();
 
     console.log(code);
@@ -275,6 +275,7 @@ export const handlers = [
       })
     );
   }),
+
   rest.post("/members/signup", async (req, res, ctx) => {
     // error test
     const { email } = await req.json();
@@ -284,16 +285,6 @@ export const handlers = [
       // Respond with a 200 status code
       ctx.status(200),
       ctx.json("회원가입 성공")
-    );
-  }),
-
-  rest.post("/members/login", (_, res, ctx) => {
-    return res(
-      ctx.status(200),
-      ctx.json({
-        token:
-          "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyTmFtZSI6InJpdnNAa2FrYW8uY29tIiwiaWF0IjoxNjkzMzE2ODUxLCJleHAiOjE2OTM0MDMyNTF9.VHDyjaOf-5iB0FerCb2XZK6uNvY_1tsYMOsq-7mG7ws",
-      })
     );
   }),
 
