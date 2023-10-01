@@ -36,6 +36,7 @@ export default function Auth(props: PaperProps) {
   const googleLogin = useGoogleLogin({
     onSuccess: async ({ code }) => {
       try {
+        console.log("code: ", code);
         const payload = await getTokens(code).unwrap();
         console.log("fulfilled", payload);
         dispatch(setCredentials(payload.accessToken));
@@ -47,7 +48,11 @@ export default function Auth(props: PaperProps) {
     flow: "auth-code",
   });
 
-  return <Button onClick={googleLogin}>Login with Google</Button>;
+  return (
+    <Center h="100vh">
+      <Button onClick={googleLogin}>Login with Google</Button>
+    </Center>
+  );
 
   const setRegister = api.useRegisterMutation()[0];
   const [login, { isLoading }] = api.useLoginMutation();
