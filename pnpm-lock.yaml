@@ -22,7 +22,7 @@ specifiers:
   eslint-plugin-react-refresh: ^0.3.5
   event-source-polyfill: ^1.0.31
   msw: ^1.3.2
-  pnpm: ^8.9.0
+  pnpm: ^8.7.6
   react: ^18.2.0
   react-cookie: ^4.1.1
   react-dom: ^18.2.0
@@ -45,7 +45,7 @@ dependencies:
   '@tabler/icons-react': 2.39.0_react@18.2.0
   dayjs: 1.11.10
   event-source-polyfill: 1.0.31
-  pnpm: 8.9.0
+  pnpm: 8.7.6
   react: 18.2.0
   react-cookie: 4.1.1_react@18.2.0
   react-dom: 18.2.0_react@18.2.0
@@ -2736,8 +2736,8 @@ packages:
     resolution: {integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==}
     engines: {node: '>=8.6'}
 
-  /pnpm/8.9.0:
-    resolution: {integrity: sha512-74hZk44fBTe5/PAwkEQxE5Lzs4s0QXbmzU/e4hsiVSSwrCobCK4q4t3Vs/9LjKSW1neOlQ8+fJ9VW4EyWYJEHA==}
+  /pnpm/8.7.6:
+    resolution: {integrity: sha512-ZJ/LpDy+IGYpCPYo2INfnw2MopUOTHQ3HcnhbiSqVLtV5rTmsrbFHe4i35ITLpcgvIWptWbzUTZ8efDYXWpFew==}
     engines: {node: '>=16.14'}
     hasBin: true
     dev: false
