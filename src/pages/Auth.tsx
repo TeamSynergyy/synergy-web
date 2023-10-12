@@ -19,181 +19,51 @@ import {
   LoadingOverlay,
   Center,
   Dialog,
+  Image,
+  UnstyledButton,
 } from "@mantine/core";
 import { api } from "app/api";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "app/authSlice";
-
-import { useGoogleLogin } from "@react-oauth/google";
+import { GoogleIcon, FacebookIcon, NaverIcon, KakaoIcon } from "assets";
 
 export default function Auth(props: PaperProps) {
-  const getTokens = api.useGoogleLoginMutation()[0];
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const googleLogin = useGoogleLogin({
-    onSuccess: async ({ code }) => {
-      try {
-        console.log("code: ", code);
-        const payload = await getTokens(code).unwrap();
-        console.log("fulfilled", payload);
-        dispatch(setCredentials(payload.accessToken));
-        navigate("/");
-      } catch (error) {
-        console.error("rejected", error);
-      }
-    },
-    flow: "auth-code",
-  });
+  const oauthProviderIds = ["google", "facebook", "naver", "kakao"];
+
+  const hostUrl = import.meta.env.VITE_API_URL;
+
+  const getSocialIcon = (providerId: string) => {
+    switch (providerId) {
+      case "google":
+        return GoogleIcon;
+      case "facebook":
+        return FacebookIcon;
+      case "naver":
+        return NaverIcon;
+      case "kakao":
+        return KakaoIcon;
+    }
+  };
 
   return (
     <Center h="100vh">
-      <Button onClick={googleLogin}>Login with Google</Button>
-    </Center>
-  );
-
-  const setRegister = api.useRegisterMutation()[0];
-  const [login, { isLoading }] = api.useLoginMutation();
-  const { height } = useViewportSize();
-  const [type, toggle] = useToggle(["login", "register"]);
-  const [loadingOverlayVisible, { open, close }] = useDisclosure(false);
-  const [dialogOpened, { open: dialogOpen, close: dialogClose }] =
-    useDisclosure(false);
-  const [dialogMessage, setDialogMessage] = useState("");
-  const form = useForm({
-    initialValues: {
-      email: "",
-      password: "",
-      name: "",
-    },
-  });
-
-  return (
-    <>
-      <Center h={height}>
-        <Paper radius="md" p="xl" withBorder {...props}>
-          <Text size="lg" weight={500}>
-            Welcome to Synergy, {type} with
-          </Text>
-
-          <form
-            onSubmit={form.onSubmit(async (credentials) => {
-              open();
-              dialogClose();
-              if (type === "register") {
-                try {
-                  await setRegister(credentials).unwrap();
-                  setDialogMessage("✅ 회원가입 성공. 로그인 하세요");
-                  dialogOpen();
-                  toggle();
-                } catch (error) {
-                  setDialogMessage(
-                    "❌ 회원가입 실패. 잠시 후 다시 시도해주세요"
-                  );
-                  dialogOpen();
-                  console.error("rejected", error);
-                }
-              }
-              if (type === "login") {
-                try {
-                  const { token } = await login(credentials).unwrap();
-                  dispatch(setCredentials(token));
-                  return navigate("/");
-                } catch (error) {
-                  setDialogMessage("❌ 로그인 실패");
-                  dialogOpen();
-                  console.error("rejected", error);
-                }
-              }
-
-              close();
-            })}
+      <Stack>
+        {oauthProviderIds.map((providerId) => (
+          <Button
+            onClick={() => {
+              const url = `${hostUrl}/api/v1/oauth2/authorization/${providerId}?redirect_uri=${window.location.origin}/oauth/redirect`;
+              fetch(url).then((response) => console.log(response));
+            }}
           >
-            <LoadingOverlay visible={loadingOverlayVisible} overlayBlur={2} />
-
-            <Stack>
-              {type === "register" && (
-                <TextInput
-                  label="Name"
-                  placeholder="Your name"
-                  // value={form.values.name}
-                  onChange={(event) =>
-                    form.setFieldValue("name", event.currentTarget.value)
-                  }
-                  radius="md"
-                />
-              )}
-
-              <TextInput
-                required
-                label="Email"
-                placeholder="hello@mantine.dev"
-                value={form.values.email}
-                onChange={(event) =>
-                  form.setFieldValue("email", event.currentTarget.value)
-                }
-                error={form.errors.email && "Invalid email"}
-                radius="md"
-              />
-
-              <PasswordInput
-                required
-                label="Password"
-                placeholder="Your password"
-                value={form.values.password}
-                onChange={(event) =>
-                  form.setFieldValue("password", event.currentTarget.value)
-                }
-                error={
-                  form.errors.password &&
-                  "Password should include at least 6 characters"
-                }
-                radius="md"
-              />
-
-              {type === "register" && (
-                <Checkbox
-                  label="I accept terms and conditions"
-                  // checked={form.values.terms}
-                  onChange={(event) =>
-                    form.setFieldValue("terms", event.currentTarget.checked)
-                  }
-                />
-              )}
-            </Stack>
-            <Group position="apart" mt="xl">
-              <Anchor
-                component="button"
-                type="button"
-                color="dimmed"
-                onClick={() => toggle()}
-                size="xs"
-              >
-                {type === "register"
-                  ? "Already have an account? Login"
-                  : "Don't have an account? Register"}
-              </Anchor>
-              <Button type="submit" radius="xl">
-                {upperFirst(type)}
-              </Button>
-            </Group>
-          </form>
-        </Paper>
-      </Center>
-
-      <Dialog
-        opened={dialogOpened}
-        withCloseButton
-        onClose={dialogClose}
-        size="lg"
-        radius="md"
-      >
-        <Text size="sm" weight={500}>
-          {dialogMessage}
-        </Text>
-      </Dialog>
-    </>
+            {providerId}
+          </Button>
+        ))}
+      </Stack>
+    </Center>
   );
 }

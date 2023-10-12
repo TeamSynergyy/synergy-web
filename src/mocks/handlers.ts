@@ -263,6 +263,12 @@ const user = {
 };
 
 export const handlers = [
+  rest.get("/api/v1/oauth2/authorization/google", (req, res, ctx) => {
+    const redirect_uri = req.url.searchParams.get("redirect_uri");
+
+    if (!redirect_uri) return res(ctx.status(400));
+    return res(ctx.status(302), ctx.set("Location", redirect_uri));
+  }),
   // User
   rest.post("/members/login", async (req, res, ctx) => {
     const { code } = await req.json();

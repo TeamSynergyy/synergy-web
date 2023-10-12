@@ -4,10 +4,9 @@ import { RootState } from "./store";
 
 export const api = createApi({
   baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_API_URL,
+    baseUrl: import.meta.env.VITE_API_URL + "/api/v1",
     prepareHeaders: (headers, { getState }) => {
-      const token =
-        (getState() as RootState).auth.token || localStorage.getItem("token"); // 임시로 토큰 헤더에 저장
+      const token = (getState() as RootState).auth.token;
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
       }
@@ -33,37 +32,6 @@ export const api = createApi({
   ],
   endpoints: (build) => ({
     // Auth
-    googleLogin: build.mutation<{ accessToken: string }, string>({
-      query: (code) => ({
-        url: "/members/login",
-        method: "POST",
-        body: {
-          code,
-        },
-      }),
-    }),
-
-    register: build.mutation<
-      void,
-      { email: string; password: string; name: string }
-    >({
-      query: (credentials) => ({
-        url: "/members/signup",
-        method: "POST",
-        body: credentials,
-      }),
-    }),
-
-    login: build.mutation<
-      { token: string },
-      { email: string; password: string }
-    >({
-      query: (credentials) => ({
-        url: "/members/login",
-        method: "POST",
-        body: credentials,
-      }),
-    }),
 
     // MyInfo
     getMyInfo: build.query<Member, null>({
