@@ -43,7 +43,9 @@ export default function Auth() {
               leftIcon={<Image src={getSocialIcon(providerId)} />}
               onClick={() => {
                 const url = `${hostUrl}/oauth2/authorization/${providerId}?redirect_uri=${window.location.origin}/oauth/redirect`;
-                fetch(url).then((response) => console.log(response));
+                fetch(url, {
+                  mode: "cors",
+                }).then((response) => console.log(response));
               }}
             >
               {providerId.charAt(0).toUpperCase() + providerId.slice(1)}
