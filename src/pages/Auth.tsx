@@ -6,6 +6,7 @@ import {
   Text,
   Center,
   Stack,
+  Anchor,
 } from "@mantine/core";
 import axios, { AxiosResponse } from "axios";
 import Google from "assets/Google.svg";
@@ -37,18 +38,20 @@ export default function Auth() {
 
         <Stack mb="md" mt="md">
           {oauthProviderIds.map((providerId) => (
-            <a
+            <Anchor
+              key={providerId}
               href={`${hostUrl}/oauth2/authorization/${providerId}?redirect_uri=${window.location.origin}/oauth/redirect`}
             >
               <Button
-                key={providerId}
+                fullWidth
+                size="md"
                 radius="xl"
                 variant="default"
                 leftIcon={<Image src={getSocialIcon(providerId)} />}
               >
                 {providerId.charAt(0).toUpperCase() + providerId.slice(1)}
               </Button>
-            </a>
+            </Anchor>
           ))}
         </Stack>
       </Paper>
