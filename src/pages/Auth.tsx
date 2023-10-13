@@ -42,9 +42,9 @@ export default function Auth() {
               radius="xl"
               variant="default"
               leftIcon={<Image src={getSocialIcon(providerId)} />}
-              onClick={() => {
+              onClick={async () => {
                 const url = `${hostUrl}/oauth2/authorization/${providerId}?redirect_uri=${window.location.origin}/oauth/redirect`;
-                axios.get(url).then((response) => console.log(response));
+                await axios.get(url).then((response) => console.log(response));
               }}
             >
               {providerId.charAt(0).toUpperCase() + providerId.slice(1)}
