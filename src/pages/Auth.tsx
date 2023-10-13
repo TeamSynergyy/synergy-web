@@ -42,7 +42,7 @@ export default function Auth() {
               variant="default"
               leftIcon={<Image src={getSocialIcon(providerId)} />}
               onClick={() => {
-                const url = `${hostUrl}/api/v1/oauth2/authorization/${providerId}?redirect_uri=${window.location.origin}/oauth/redirect`;
+                const url = `${hostUrl}/oauth2/authorization/${providerId}?redirect_uri=${window.location.origin}/oauth/redirect`;
                 fetch(url).then((response) => console.log(response));
               }}
             >
