@@ -12,17 +12,17 @@ import Naver from "assets/Naver.svg";
 import Kakao from "assets/Kakao.svg";
 
 export default function Auth() {
-  const oauthProviderIds = ["Google", "Naver", "Kakao"];
+  const oauthProviderIds = ["google", "naver", "kakao"];
 
   const hostUrl = import.meta.env.VITE_API_URL;
 
   const getSocialIcon = (providerId: string) => {
     switch (providerId) {
-      case "Google":
+      case "google":
         return Google;
-      case "Naver":
+      case "naver":
         return Naver;
-      case "Kakao":
+      case "kakao":
         return Kakao;
     }
   };
@@ -31,7 +31,7 @@ export default function Auth() {
     <Center h="100vh">
       <Paper radius="md" p="xl" withBorder>
         <Text size="lg" fw={500}>
-          Welcome to Synergy, Login with
+          Welcome to Synergy, Continue with
         </Text>
 
         <Stack mb="md" mt="md">
@@ -46,7 +46,7 @@ export default function Auth() {
                 fetch(url).then((response) => console.log(response));
               }}
             >
-              {providerId}
+              {providerId.charAt(0).toUpperCase() + providerId.slice(1)}
             </Button>
           ))}
         </Stack>
