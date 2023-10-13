@@ -7,7 +7,7 @@ import {
   Center,
   Stack,
 } from "@mantine/core";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import Google from "assets/Google.svg";
 import Naver from "assets/Naver.svg";
 import Kakao from "assets/Kakao.svg";
@@ -37,18 +37,18 @@ export default function Auth() {
 
         <Stack mb="md" mt="md">
           {oauthProviderIds.map((providerId) => (
-            <Button
-              key={providerId}
-              radius="xl"
-              variant="default"
-              leftIcon={<Image src={getSocialIcon(providerId)} />}
-              onClick={async () => {
-                const url = `${hostUrl}/oauth2/authorization/${providerId}?redirect_uri=${window.location.origin}/oauth/redirect`;
-                await axios.get(url).then((response) => console.log(response));
-              }}
+            <a
+              href={`${hostUrl}/oauth2/authorization/${providerId}?redirect_uri=${window.location.origin}/oauth/redirect`}
             >
-              {providerId.charAt(0).toUpperCase() + providerId.slice(1)}
-            </Button>
+              <Button
+                key={providerId}
+                radius="xl"
+                variant="default"
+                leftIcon={<Image src={getSocialIcon(providerId)} />}
+              >
+                {providerId.charAt(0).toUpperCase() + providerId.slice(1)}
+              </Button>
+            </a>
           ))}
         </Stack>
       </Paper>
