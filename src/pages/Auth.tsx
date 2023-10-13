@@ -7,6 +7,7 @@ import {
   Center,
   Stack,
 } from "@mantine/core";
+import axios from "axios";
 import Google from "assets/Google.svg";
 import Naver from "assets/Naver.svg";
 import Kakao from "assets/Kakao.svg";
@@ -43,9 +44,7 @@ export default function Auth() {
               leftIcon={<Image src={getSocialIcon(providerId)} />}
               onClick={() => {
                 const url = `${hostUrl}/oauth2/authorization/${providerId}?redirect_uri=${window.location.origin}/oauth/redirect`;
-                fetch(url, {
-                  mode: "cors",
-                }).then((response) => console.log(response));
+                axios.get(url).then((response) => console.log(response));
               }}
             >
               {providerId.charAt(0).toUpperCase() + providerId.slice(1)}
