@@ -50,7 +50,7 @@ export default function ChatRoom() {
   const content = allMessages.reduce((acc, cur, i) => {
     const next = allMessages[i + 1];
     const { text, senderId, sendTime } = cur;
-    const fromMe = senderId === myInfo?.memberId;
+    const fromMe = senderId === myInfo?.userId;
 
     const isLast =
       !next ||

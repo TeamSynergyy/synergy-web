@@ -3,7 +3,7 @@ import { rest } from "msw";
 
 const users = [
   {
-    memberId: "0",
+    userId: "0",
     name: "yeoularu",
     backgroundImage: "https://source.unsplash.com/random",
     avatar:
@@ -16,7 +16,7 @@ const users = [
     followersIds: ["1"],
   },
   {
-    memberId: "1",
+    userId: "1",
     backgroundImage: "https://source.unsplash.com/random",
     avatar:
       "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=255&q=80",
@@ -29,7 +29,7 @@ const users = [
     followersIds: [],
   },
   {
-    memberId: "2",
+    userId: "2",
     backgroundImage: "https://source.unsplash.com/random",
     avatar: "https://avatars.githubusercontent.com/u/109144975?v=4",
     name: "이종훈",
@@ -41,7 +41,7 @@ const users = [
     followersIds: ["0"],
   },
   {
-    memberId: "3",
+    userId: "3",
     backgroundImage: "https://source.unsplash.com/random",
     avatar: "https://avatars.githubusercontent.com/u/69510981?v=4",
     name: "삼삼삼",
@@ -53,7 +53,7 @@ const users = [
     followersIds: ["0"],
   },
   {
-    memberId: "4",
+    userId: "4",
     backgroundImage: "https://source.unsplash.com/random",
     avatar: "https://avatars.githubusercontent.com/u/69510444?v=4",
     name: "사사사사",
@@ -118,22 +118,21 @@ const posts = [
   },
 ].map((post) => ({
   ...post,
-  authorName: users.find(({ memberId }) => memberId === post.authorId)?.name,
-  authorAvatar: users.find(({ memberId }) => memberId === post.authorId)
-    ?.avatar,
+  authorName: users.find(({ userId }) => userId === post.authorId)?.name,
+  authorAvatar: users.find(({ userId }) => userId === post.authorId)?.avatar,
 }));
 
 const postComments = [
   {
     commentId: 0,
-    memberId: "0",
+    userId: "0",
     postId: 0,
     content: "hello",
     updateAt: "2021-09-01T04:56:55.074",
   },
   {
     commentId: 1,
-    memberId: "1",
+    userId: "1",
     postId: 0,
     content:
       "hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22hello22 hello22        hello22",
@@ -152,7 +151,7 @@ const projects = [
     likes: 0,
     teamMemberIds: ["0", "1"],
     leaderId: "0",
-    membersCount: 2,
+    usersCount: 2,
     applicants: ["2", "3"],
   },
   {
@@ -165,7 +164,7 @@ const projects = [
     likes: 21,
     teamMemberIds: ["0", "2", "3"],
     leaderId: "2",
-    membersCount: 3,
+    usersCount: 3,
     applicants: [],
   },
   {
@@ -178,7 +177,7 @@ const projects = [
     likes: 21,
     teamMemberIds: ["2", "3"],
     leaderId: "3",
-    membersCount: 2,
+    usersCount: 2,
     applicants: [],
   },
 ];
@@ -263,14 +262,14 @@ const user = {
 };
 
 export const handlers = [
-  rest.get("/oauth2/authorization/google", (req, res, ctx) => {
+  rest.get("/api/v1/oauth2/authorization/google", (req, res, ctx) => {
     const redirect_uri = req.url.searchParams.get("redirect_uri");
 
     if (!redirect_uri) return res(ctx.status(400));
     return res(ctx.status(302), ctx.set("Location", redirect_uri));
   }),
   // User
-  rest.post("/members/login", async (req, res, ctx) => {
+  rest.post("/api/v1/users/login", async (req, res, ctx) => {
     const { code } = await req.json();
 
     console.log(code);
@@ -282,7 +281,7 @@ export const handlers = [
     );
   }),
 
-  rest.post("/members/signup", async (req, res, ctx) => {
+  rest.post("/api/v1/users/signup", async (req, res, ctx) => {
     // error test
     const { email } = await req.json();
     if (email === "error@test.com") return res(ctx.status(400));
@@ -294,33 +293,33 @@ export const handlers = [
     );
   }),
 
-  rest.get("/members/me/info", (_, res, ctx) => {
+  rest.get("/api/v1/users/me/info", (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(users[0]));
   }),
 
-  rest.get("/posts/me/likes", (_, res, ctx) => {
+  rest.get("/api/v1/posts/me/likes", (_, res, ctx) => {
     return res(ctx.status(200), ctx.json({ postIds: user.likedPosts }));
   }),
-  rest.get("/projects/me/likes", (_, res, ctx) => {
+  rest.get("/api/v1/projects/me/likes", (_, res, ctx) => {
     return res(ctx.status(200), ctx.json({ projectIds: user.likedProjects }));
   }),
-  rest.get("/applies/me", (_, res, ctx) => {
+  rest.get("/api/v1/applies/me", (_, res, ctx) => {
     return res(ctx.status(200), ctx.json({ projectIds: user.appliedProjects }));
   }),
-  rest.get("/members/me/chatrooms", (_, res, ctx) => {
+  rest.get("/api/v1/users/me/chatrooms", (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(user.chatRooms));
   }),
 
-  rest.patch("/members/me/info", async (req, res, ctx) => {
+  rest.patch("/api/v1/users/me/info", async (req, res, ctx) => {
     const body = await req.json();
     const updatedUser = { ...users[0], ...body };
     users[0] = updatedUser;
     return res(ctx.status(200));
   }),
 
-  rest.put("/follows/:id", (req, res, ctx) => {
+  rest.put("/api/v1/follows/:id", (req, res, ctx) => {
     const { id } = req.params as { id: string };
-    if (!id || !users.find((user) => user.memberId === id))
+    if (!id || !users.find((user) => user.userId === id))
       return res(ctx.status(400));
     if (users[0].followingIds.includes(id)) {
       users[0].followingIds = users[0].followingIds.filter(
@@ -333,11 +332,11 @@ export const handlers = [
     return res(ctx.status(200));
   }),
 
-  rest.get("/follows/:id", (req, res, ctx) => {
+  rest.get("/api/v1/follows/:id", (req, res, ctx) => {
     const { id } = req.params as { id: string };
-    if (!id || !users.find((user) => user.memberId === id))
+    if (!id || !users.find((user) => user.userId === id))
       return res(ctx.status(400));
-    const user = users.find((user) => user.memberId === id);
+    const user = users.find((user) => user.userId === id);
 
     return res(
       ctx.status(200),
@@ -348,9 +347,9 @@ export const handlers = [
     );
   }),
 
-  rest.put("/chat/create/:id", (req, res, ctx) => {
+  rest.put("/api/v1/chat/create/:id", (req, res, ctx) => {
     const { id } = req.params as { id: string };
-    if (!id || !users.find((user) => user.memberId === id))
+    if (!id || !users.find((user) => user.userId === id))
       return res(ctx.status(400));
     chatRooms.push({
       roomId: 3,
@@ -361,7 +360,7 @@ export const handlers = [
   }),
 
   // Search
-  rest.get("/posts/search", (req, res, ctx) => {
+  rest.get("/api/v1/posts/search", (req, res, ctx) => {
     const keyword = req.url.searchParams.get("keyword");
     const page = req.url.searchParams.get("page");
 
@@ -385,7 +384,7 @@ export const handlers = [
     };
     return res(ctx.status(200), ctx.json(result));
   }),
-  rest.get("/projects/search", (req, res, ctx) => {
+  rest.get("/api/v1/projects/search", (req, res, ctx) => {
     const keyword = req.url.searchParams.get("keyword");
     const page = req.url.searchParams.get("page");
 
@@ -410,7 +409,7 @@ export const handlers = [
     return res(ctx.status(200), ctx.json(result));
   }),
 
-  rest.get("/members/search", async (req, res, ctx) => {
+  rest.get("/api/v1/users/search", async (req, res, ctx) => {
     const keyword = req.url.searchParams.get("keyword");
     const page = req.url.searchParams.get("page");
 
@@ -437,14 +436,14 @@ export const handlers = [
   }),
 
   // Post
-  rest.post("/posts", async (req, res, ctx) => {
+  rest.post("/api/v1/posts", async (req, res, ctx) => {
     const { title, content } = await req.json();
     if (title === "error") return res(ctx.status(400));
     posts.push({
       postId: posts.at(-1)?.postId ? posts.at(-1)!.postId + 1 : 0,
       title,
       content,
-      authorId: user.memberId,
+      authorId: user.userId,
       likes: 0,
       authorName: user.name,
       authorAvatar: user.avatar,
@@ -453,7 +452,7 @@ export const handlers = [
     return res(ctx.status(200));
   }),
 
-  rest.get("/posts/followings", (req, res, ctx) => {
+  rest.get("/api/v1/posts/followings", (req, res, ctx) => {
     const page = req.url.searchParams.get("page");
     const content = posts.filter((post) =>
       user.followingIds.includes(post.authorId)
@@ -468,7 +467,7 @@ export const handlers = [
     );
   }),
 
-  rest.get("/posts/recent", (req, res, ctx) => {
+  rest.get("/api/v1/posts/recent", (req, res, ctx) => {
     const page = req.url.searchParams.get("page");
     return res(
       ctx.status(200),
@@ -490,7 +489,7 @@ export const handlers = [
     );
   }),
 
-  rest.get("/posts/:id", (req, res, ctx) => {
+  rest.get("/api/v1/posts/:id", (req, res, ctx) => {
     const { id } = req.params as { id: string };
     return res(
       ctx.status(200),
@@ -498,7 +497,7 @@ export const handlers = [
     );
   }),
 
-  rest.delete("/posts/:id", (req, res, ctx) => {
+  rest.delete("/api/v1/posts/:id", (req, res, ctx) => {
     const { id } = req.params as { id: string };
     const index = posts.findIndex((post) => post.postId === parseInt(id));
     if (index === -1) return res(ctx.status(400));
@@ -507,7 +506,7 @@ export const handlers = [
     return res(ctx.status(200));
   }),
 
-  rest.put("/posts/:id/like", (req, res, ctx) => {
+  rest.put("/api/v1/posts/:id/like", (req, res, ctx) => {
     const { id } = req.params as { id: string };
     const index = user.likedPosts.findIndex(
       (PostId) => PostId === parseInt(id)
@@ -527,7 +526,7 @@ export const handlers = [
   }),
 
   // Project
-  rest.post("/projects", async (req, res, ctx) => {
+  rest.post("/api/v1/projects", async (req, res, ctx) => {
     const { name, content, field, startAt, endAt } = await req.json();
     if (name === "error") return res(ctx.status(400));
 
@@ -544,28 +543,28 @@ export const handlers = [
       likes: 0,
       teamMemberIds: ["0"],
       leaderId: "0",
-      membersCount: 1,
+      usersCount: 1,
       applicants: [],
     });
 
     return res(ctx.status(200));
   }),
 
-  rest.get("/projects", (req, res, ctx) => {
-    const memberId = req.url.searchParams.get("memberId");
-    if (!memberId) return res(ctx.status(400));
-    console.log(memberId);
+  rest.get("/api/v1/projects", (req, res, ctx) => {
+    const userId = req.url.searchParams.get("userId");
+    if (!userId) return res(ctx.status(400));
+    console.log(userId);
     return res(
       ctx.status(200),
       ctx.json({
         infoProjectResponses: projects.filter((project) =>
-          project.teamMemberIds.includes(memberId)
+          project.teamMemberIds.includes(userId)
         ),
       })
     );
   }),
 
-  rest.get("/projects/recent", (req, res, ctx) => {
+  rest.get("/api/v1/projects/recent", (req, res, ctx) => {
     const page = req.url.searchParams.get("page");
     return res(
       ctx.status(200),
@@ -587,7 +586,7 @@ export const handlers = [
     );
   }),
 
-  rest.get("/projects/:id", (req, res, ctx) => {
+  rest.get("/api/v1/projects/:id", (req, res, ctx) => {
     const { id } = req.params as { id: string };
     return res(
       ctx.status(200),
@@ -595,7 +594,7 @@ export const handlers = [
     );
   }),
 
-  rest.delete("/projects/:id", (req, res, ctx) => {
+  rest.delete("/api/v1/projects/:id", (req, res, ctx) => {
     const { id } = req.params as { id: string };
     const index = projects.findIndex(
       (project) => project.projectId === parseInt(id)
@@ -606,7 +605,7 @@ export const handlers = [
     return res(ctx.status(200));
   }),
 
-  rest.put("/projects/:id/like", (req, res, ctx) => {
+  rest.put("/api/v1/projects/:id/like", (req, res, ctx) => {
     const { id } = req.params as { id: string };
     const index = user.likedProjects.findIndex(
       (projectId) => projectId === parseInt(id)
@@ -622,39 +621,39 @@ export const handlers = [
     return res(ctx.status(200));
   }),
 
-  rest.post("/applies/accept", async (req, res, ctx) => {
-    const { projectId, memberId } = await req.json();
-    if (projectId === null || memberId === null) return res(ctx.status(400));
+  rest.post("/api/v1/applies/accept", async (req, res, ctx) => {
+    const { projectId, userId } = await req.json();
+    if (projectId === null || userId === null) return res(ctx.status(400));
     const proj = projects.find(
       (project) => project.projectId === parseInt(projectId)
     );
     projectId;
     if (proj === undefined) return res(ctx.status(400));
-    const index = proj.applicants.findIndex((id) => id === memberId);
+    const index = proj.applicants.findIndex((id) => id === userId);
     if (index === -1) return res(ctx.status(400));
     proj.applicants.splice(index, 1);
-    proj.teamMemberIds.push(memberId);
+    proj.teamMemberIds.push(userId);
     return res(ctx.status(200));
   }),
 
-  rest.delete("/applies/reject", async (req, res, ctx) => {
-    const { projectId, memberId } = await req.json();
-    if (projectId === null || memberId === null) return res(ctx.status(400));
+  rest.delete("/api/v1/applies/reject", async (req, res, ctx) => {
+    const { projectId, userId } = await req.json();
+    if (projectId === null || userId === null) return res(ctx.status(400));
     const proj = projects.find(
       (project) => project.projectId === parseInt(projectId)
     );
     if (proj === undefined) return res(ctx.status(400));
-    const index = proj.applicants.findIndex((id) => id === memberId);
+    const index = proj.applicants.findIndex((id) => id === userId);
     if (index === -1) return res(ctx.status(400));
     proj.applicants.splice(index, 1);
     proj.teamMemberIds.splice(
-      proj.teamMemberIds.findIndex((id) => id === memberId),
+      proj.teamMemberIds.findIndex((id) => id === userId),
       1
     );
     return res(ctx.status(200));
   }),
 
-  rest.get("/applies/:projectId", (req, res, ctx) => {
+  rest.get("/api/v1/applies/:projectId", (req, res, ctx) => {
     const { projectId } = req.params as { projectId: string };
 
     if (projectId === null) return res(ctx.status(400));
@@ -662,10 +661,10 @@ export const handlers = [
     const applicants = projects.find(
       (project) => project.projectId === parseInt(projectId)
     )?.applicants;
-    return res(ctx.status(200), ctx.json({ memberIds: applicants }));
+    return res(ctx.status(200), ctx.json({ userIds: applicants }));
   }),
 
-  rest.post("/applies/:projectId", (req, res, ctx) => {
+  rest.post("/api/v1/applies/:projectId", (req, res, ctx) => {
     const { projectId } = req.params as { projectId: string };
     if (projectId === null) return res(ctx.status(400));
     const index = user.appliedProjects.findIndex(
@@ -680,7 +679,7 @@ export const handlers = [
     return res(ctx.status(200));
   }),
 
-  rest.delete("/applies/:projectId", (req, res, ctx) => {
+  rest.delete("/api/v1/applies/:projectId", (req, res, ctx) => {
     const { projectId } = req.params as { projectId: string };
     if (projectId === null) return res(ctx.status(400));
     const index = user.appliedProjects.findIndex(
@@ -695,7 +694,7 @@ export const handlers = [
     return res(ctx.status(200));
   }),
 
-  rest.get("/posts", (req, res, ctx) => {
+  rest.get("/api/v1/posts", (req, res, ctx) => {
     const authorId = req.url.searchParams.get("authorId");
     const page = req.url.searchParams.get("page");
 
@@ -709,15 +708,15 @@ export const handlers = [
   }),
 
   // Get User
-  rest.get("/members/:id", (req, res, ctx) => {
+  rest.get("/api/v1/users/:id", (req, res, ctx) => {
     const { id } = req.params as { id: string };
-    const user = users.find((user) => user.memberId === id);
+    const user = users.find((user) => user.userId === id);
     if (!user) return res(ctx.status(404));
     return res(ctx.status(200), ctx.json(user));
   }),
 
   // Comment
-  rest.get("/comments/:postId", (req, res, ctx) => {
+  rest.get("/api/v1/comments/:postId", (req, res, ctx) => {
     const { postId } = req.params as { postId: string };
     if (!postId) return res(ctx.status(400));
     const comments = postComments.filter(
@@ -726,7 +725,7 @@ export const handlers = [
     return res(ctx.status(200), ctx.json({ comments }));
   }),
 
-  rest.post("/comments", async (req, res, ctx) => {
+  rest.post("/api/v1/comments", async (req, res, ctx) => {
     const { postId, comment } = await req.json();
 
     if (!String(postId) || !comment) return res(ctx.status(400));
@@ -734,7 +733,7 @@ export const handlers = [
       commentId: postComments.at(-1)?.commentId
         ? postComments.at(-1)!.commentId + 1
         : 0,
-      memberId: user.memberId,
+      userId: user.userId,
       postId,
       content: comment,
       updateAt: new Date().toISOString().slice(0, -1),

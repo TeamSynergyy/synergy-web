@@ -15,7 +15,7 @@ const ChatMessageCard: React.FC<{
     <Group spacing="xs">
       {fromMe ? null : data && isLast ? (
         <Box mt="auto">
-          <Link to={`/people/${data.memberId}`}>
+          <Link to={`/people/${data.userId}`}>
             <Avatar src={data.avatar} radius="xl" />
           </Link>
         </Box>

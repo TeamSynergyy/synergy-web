@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { Post, Project, Member, ChatRoom, Comment } from "types";
+import { Post, Project, User, ChatRoom, Comment } from "types";
 import { RootState } from "./store";
 
 export const api = createApi({
@@ -34,8 +34,8 @@ export const api = createApi({
     // Auth
 
     // MyInfo
-    getMyInfo: build.query<Member, null>({
-      query: () => "/members/me/info",
+    getMyInfo: build.query<User, null>({
+      query: () => "/users/me/info",
       providesTags: [{ type: "MyInfo" }],
     }),
 
@@ -55,7 +55,7 @@ export const api = createApi({
     }),
 
     getMyChatRooms: build.query<ChatRoom[], null>({
-      query: () => "/members/me/chatrooms",
+      query: () => "/users/me/chatrooms",
       providesTags: (result, error, arg) =>
         result
           ? [
@@ -68,15 +68,15 @@ export const api = createApi({
           : [{ type: "ChatRoom", id: "LIST" }],
     }),
 
-    editMyInfo: build.mutation<void, Member>({
+    editMyInfo: build.mutation<void, User>({
       query: (data) => ({
-        url: "/members/me/info",
+        url: "/users/me/info",
         method: "PUT",
         body: data,
       }),
       invalidatesTags: (result, error, arg) => [
         { type: "MyInfo" },
-        { type: "User", id: String(arg.memberId) },
+        { type: "User", id: String(arg.userId) },
       ],
     }),
 
@@ -172,8 +172,8 @@ export const api = createApi({
     }),
 
     // Users
-    getUser: build.query<Member, string>({
-      query: (id) => `/members/${id}`,
+    getUser: build.query<User, string>({
+      query: (id) => `/users/${id}`,
       providesTags: (result, error, arg) => [{ type: "User", id: String(arg) }],
     }),
 
@@ -337,7 +337,7 @@ export const api = createApi({
       invalidatesTags: [{ type: "AppliedProjectId", id: "LIST" }],
     }),
 
-    getApplicantsIds: build.query<{ memberIds: string[] }, number>({
+    getApplicantsIds: build.query<{ userIds: string[] }, number>({
       query: (projectId) => ({
         url: `/applies/${projectId}`,
       }),
@@ -347,12 +347,12 @@ export const api = createApi({
     }),
 
     acceptApplicant: build.mutation<void, [number, string]>({
-      query: ([projectId, memberId]) => ({
+      query: ([projectId, userId]) => ({
         url: `/applies/accept`,
         method: "POST",
         body: {
           projectId,
-          memberId,
+          userId,
         },
       }),
       invalidatesTags: (result, error, arg) => [
@@ -361,12 +361,12 @@ export const api = createApi({
     }),
 
     rejectApplicant: build.mutation<void, [number, string]>({
-      query: ([projectId, memberId]) => ({
+      query: ([projectId, userId]) => ({
         url: `/applies/reject`,
         method: "DELETE",
         body: {
           projectId,
-          memberId,
+          userId,
         },
       }),
       invalidatesTags: (result, error, arg) => [
@@ -392,11 +392,11 @@ export const api = createApi({
     }),
 
     searchUsers: build.query<
-      { content: Member[]; totalPages: number; totalElements: number },
+      { content: User[]; totalPages: number; totalElements: number },
       [string, number]
     >({
       query: ([keyword, page]) =>
-        `/members/search?keyword=${keyword}&page=${page}`,
+        `/users/search?keyword=${keyword}&page=${page}`,
     }),
 
     getPostsByUser: build.query<
@@ -417,7 +417,7 @@ export const api = createApi({
 
     getProjectsByUser: build.query<{ infoProjectResponses: Project[] }, string>(
       {
-        query: (userId) => `/projects?memberId=${userId}`,
+        query: (userId) => `/projects?userId=${userId}`,
       }
     ),
   }),

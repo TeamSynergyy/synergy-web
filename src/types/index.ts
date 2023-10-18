@@ -22,8 +22,8 @@ interface Project {
   leaderId: string;
 }
 
-interface Member {
-  memberId: string;
+interface User {
+  userId: string;
   name: string;
   email: string;
   avatar: string;
@@ -35,7 +35,7 @@ interface Member {
 
 interface Comment {
   commentId: number;
-  memberId: string;
+  userId: string;
   postId: number;
   content: string;
   updateAt: string; // date string
@@ -56,4 +56,4 @@ interface ChatMessage {
   sendTime: string;
 }
 
-export type { Post, Project, Member, Comment, ChatMessage, ChatRoom };
+export type { Post, Project, User, Comment, ChatMessage, ChatRoom };

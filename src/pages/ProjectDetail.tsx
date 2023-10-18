@@ -38,7 +38,7 @@ export default function ProjectDetail() {
   const { data: project, isFetching } = api.useGetProjectQuery({ id });
   const [opened, { open, close }] = useDisclosure(false);
 
-  const myId = api.useGetMyInfoQuery(null).data?.memberId;
+  const myId = api.useGetMyInfoQuery(null).data?.userId;
   const deleteProject = api.useDeleteProjectMutation()[0];
 
   const { data: appliedProjectIds } = api.useGetMyAppliedProjectsQuery(null);
@@ -50,7 +50,7 @@ export default function ProjectDetail() {
   const applicantsIdsQuery = api.useGetApplicantsIdsQuery(
     project?.projectId || 0
   );
-  const applicantIds = isLeader ? applicantsIdsQuery.data?.memberIds : [];
+  const applicantIds = isLeader ? applicantsIdsQuery.data?.userIds : [];
 
   const today = dayjs();
   const startAt = dayjs(project?.startAt);

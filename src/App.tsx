@@ -44,7 +44,7 @@ export default function App() {
               <Route path="home">
                 <Route index element={<Navigate to="foryou" />} />
                 <Route path="foryou" element={<ForYou />} />
-                <Route path="following" element={<Following />} />;
+                <Route path="following" element={<Following />} />
                 <Route path="recent">
                   <Route path="post" element={<RecentPost />} />
                   <Route path="project" element={<RecentProject />} />

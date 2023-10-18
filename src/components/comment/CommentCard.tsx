@@ -3,8 +3,8 @@ import { api } from "app/api";
 import dayjs from "dayjs";
 import { Comment } from "types";
 
-export default function CommentCard({ memberId, content, updateAt }: Comment) {
-  const { data: user } = api.useGetUserQuery(memberId);
+export default function CommentCard({ userId, content, updateAt }: Comment) {
+  const { data: user } = api.useGetUserQuery(userId);
   const fromNow = dayjs(updateAt + "Z").fromNow();
 
   return (

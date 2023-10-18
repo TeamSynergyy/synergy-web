@@ -68,7 +68,7 @@ export default function SearchTotalResult({
       <Space h="md" />
       <Stack spacing="md" my="xl">
         {users.map((user) => (
-          <UserCard key={user.memberId} {...user} />
+          <UserCard key={user.userId} {...user} />
         ))}
         <Button m="auto" onClick={() => handleTabChange("people")}>
           사람 더 보기

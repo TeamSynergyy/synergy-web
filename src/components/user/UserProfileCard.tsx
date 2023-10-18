@@ -35,7 +35,7 @@ const useStyles = createStyles((theme) => ({
 }));
 
 interface UserCardImageProps {
-  memberId: string;
+  userId: string;
   backgroundImage: string;
   avatar: string;
   name: string;
@@ -45,7 +45,7 @@ interface UserCardImageProps {
 }
 
 export default function UserProfileCard({
-  memberId,
+  userId,
   backgroundImage,
   avatar,
   name,
@@ -55,18 +55,18 @@ export default function UserProfileCard({
 }: UserCardImageProps) {
   const { classes, theme } = useStyles();
   const { data: myInfo } = api.useGetMyInfoQuery(null);
-  const myId = myInfo?.memberId || "";
+  const myId = myInfo?.userId || "";
   const myFollowing = api.useGetFollowsQuery(myId)?.data?.followings;
-  const isFollowing = myFollowing?.includes(memberId);
+  const isFollowing = myFollowing?.includes(userId);
   const followType = isFollowing ? "unfollow" : "follow";
   const editMyInfo = api.useEditMyInfoMutation()[0];
   const [opened, { open, close }] = useDisclosure(false);
   const follow = api.useFollowMutation()[0];
   const handleFollow = () => {
-    follow([memberId, followType, myId]);
+    follow([userId, followType, myId]);
   };
 
-  const isMe = myInfo?.memberId !== memberId;
+  const isMe = myInfo?.userId !== userId;
   const form = useForm({
     initialValues: myInfo,
 

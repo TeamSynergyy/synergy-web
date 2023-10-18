@@ -122,7 +122,7 @@ export function HeaderSearch({ links, children }: HeaderSearchProps) {
                 <Menu.Dropdown>
                   <Menu.Label>Account</Menu.Label>
                   <Link
-                    to={`/people/${data?.memberId}`}
+                    to={`/people/${data?.userId}`}
                     style={{ color: "inherit", textDecoration: "inherit" }}
                   >
                     <Menu.Item>내 프로필</Menu.Item>
