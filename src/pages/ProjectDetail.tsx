@@ -46,7 +46,7 @@ export default function ProjectDetail() {
   const isApplied = appliedProjectIds?.projectIds.includes(id);
 
   const isLeader = project?.leaderId === myId;
-  const isTeamMember = project?.teamMemberIds.includes(myId || "");
+  const isTeamMember = project?.teamUserIds.includes(myId || "");
   const applicantsIdsQuery = api.useGetApplicantsIdsQuery(
     project?.projectId || 0
   );

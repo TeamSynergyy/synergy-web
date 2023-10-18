@@ -149,7 +149,7 @@ const projects = [
     startAt: "2023-09-02T00:00:000",
     endAt: "2024-09-30T00:00:000",
     likes: 0,
-    teamMemberIds: ["0", "1"],
+    teamUserIds: ["0", "1"],
     leaderId: "0",
     usersCount: 2,
     applicants: ["2", "3"],
@@ -162,7 +162,7 @@ const projects = [
     startAt: "2023-08-30T00:00:000",
     endAt: "2024-01-12T00:00:000",
     likes: 21,
-    teamMemberIds: ["0", "2", "3"],
+    teamUserIds: ["0", "2", "3"],
     leaderId: "2",
     usersCount: 3,
     applicants: [],
@@ -175,7 +175,7 @@ const projects = [
     startAt: "2024-08-30T00:00:000",
     endAt: "2025-01-12T00:00:000",
     likes: 21,
-    teamMemberIds: ["2", "3"],
+    teamUserIds: ["2", "3"],
     leaderId: "3",
     usersCount: 2,
     applicants: [],
@@ -541,7 +541,7 @@ export const handlers = [
       startAt,
       endAt,
       likes: 0,
-      teamMemberIds: ["0"],
+      teamUserIds: ["0"],
       leaderId: "0",
       usersCount: 1,
       applicants: [],
@@ -558,7 +558,7 @@ export const handlers = [
       ctx.status(200),
       ctx.json({
         infoProjectResponses: projects.filter((project) =>
-          project.teamMemberIds.includes(userId)
+          project.teamUserIds.includes(userId)
         ),
       })
     );
@@ -632,7 +632,7 @@ export const handlers = [
     const index = proj.applicants.findIndex((id) => id === userId);
     if (index === -1) return res(ctx.status(400));
     proj.applicants.splice(index, 1);
-    proj.teamMemberIds.push(userId);
+    proj.teamUserIds.push(userId);
     return res(ctx.status(200));
   }),
 
@@ -646,8 +646,8 @@ export const handlers = [
     const index = proj.applicants.findIndex((id) => id === userId);
     if (index === -1) return res(ctx.status(400));
     proj.applicants.splice(index, 1);
-    proj.teamMemberIds.splice(
-      proj.teamMemberIds.findIndex((id) => id === userId),
+    proj.teamUserIds.splice(
+      proj.teamUserIds.findIndex((id) => id === userId),
       1
     );
     return res(ctx.status(200));

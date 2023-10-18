@@ -18,7 +18,7 @@ interface Project {
   startAt: string;
   endAt: string;
   likes: number;
-  teamMemberIds: string[];
+  teamUserIds: string[];
   leaderId: string;
 }
 
