@@ -151,6 +151,8 @@ const projects = [
     likes: 0,
     teamUserIds: ["0", "1"],
     leaderId: "0",
+    coordLat: 37.6294393535107,
+    coordLng: 127.08155702932217,
     usersCount: 2,
     applicants: ["2", "3"],
   },
@@ -164,6 +166,8 @@ const projects = [
     likes: 21,
     teamUserIds: ["0", "2", "3"],
     leaderId: "2",
+    coordLat: 37.63538335258811,
+    coordLng: 127.07861220492845,
     usersCount: 3,
     applicants: [],
   },
@@ -177,6 +181,8 @@ const projects = [
     likes: 21,
     teamUserIds: ["2", "3"],
     leaderId: "3",
+    coordLat: 37.63089076860488,
+    coordLng: 127.08035068598026,
     usersCount: 2,
     applicants: [],
   },
@@ -527,7 +533,8 @@ export const handlers = [
 
   // Project
   rest.post("/api/v1/projects", async (req, res, ctx) => {
-    const { name, content, field, startAt, endAt } = await req.json();
+    const { name, content, field, startAt, endAt, coordLat, coordLng } =
+      await req.json();
     if (name === "error") return res(ctx.status(400));
 
     const projectId = projects.at(-1)?.projectId
@@ -543,6 +550,8 @@ export const handlers = [
       likes: 0,
       teamUserIds: ["0"],
       leaderId: "0",
+      coordLat,
+      coordLng,
       usersCount: 1,
       applicants: [],
     });

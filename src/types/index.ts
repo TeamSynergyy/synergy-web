@@ -20,6 +20,8 @@ interface Project {
   likes: number;
   teamUserIds: string[];
   leaderId: string;
+  coordLat: number;
+  coordLng: number;
 }
 
 interface User {

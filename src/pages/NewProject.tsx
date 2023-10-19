@@ -7,6 +7,7 @@ import {
   Text,
   MultiSelect,
   Flex,
+  Checkbox,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
@@ -15,6 +16,8 @@ import { useNavigate } from "react-router-dom";
 import { DateInput } from "@mantine/dates";
 import dayjs from "dayjs";
 import usePage from "hooks/usePage";
+import MapInfo from "components/project/MapInfo";
+import { useState } from "react";
 
 const data = [
   "기계자동차",
@@ -32,6 +35,7 @@ export default function NewProject() {
   const { initPage } = usePage();
   const navigate = useNavigate();
   const [opened, { open, close }] = useDisclosure(false);
+  const [coord, setCoord] = useState<[number, number]>([0, 0]);
   const form = useForm({
     initialValues: {
       name: "",
@@ -39,12 +43,21 @@ export default function NewProject() {
       field: [],
       startAt: "",
       endAt: "",
+      coordLat: 0,
+      coordLng: 0,
+      hasLocation: true,
     },
     validate: {
       endAt: (endAt, values) =>
         dayjs(values.startAt) > dayjs(endAt)
           ? "시작일이 종료일보다 늦습니다."
           : null,
+
+      hasLocation: (hasLocation, values) => {
+        if (hasLocation) {
+          return coord[0] === 0 ? "지도를 이동해 위치를 지정해주세요." : null;
+        }
+      },
     },
   });
 
@@ -76,6 +89,8 @@ export default function NewProject() {
               startAt,
               endAt,
               field,
+              coordLat: coord[0],
+              coordLng: coord[1],
             }).unwrap();
             initPage("recentProject");
             navigate(`/home/recent/project`);
@@ -121,6 +136,15 @@ export default function NewProject() {
           placeholder="종료예정일"
           {...form.getInputProps("endAt")}
         />
+
+        <Checkbox
+          my={10}
+          label="진행 장소"
+          {...form.getInputProps("hasLocation", { type: "checkbox" })}
+        />
+        <div hidden={!form.values.hasLocation}>
+          <MapInfo coord={coord} setCoord={setCoord} />
+        </div>
 
         <Group position="right" mt="md">
           <Button type="submit">Submit</Button>

@@ -25,6 +25,7 @@ import { useDisclosure } from "@mantine/hooks";
 import ProjectLike from "components/project/ProjectLike";
 import dayjs from "dayjs";
 import ApplicantBar from "components/user/ApplicantBar";
+import { StaticMap } from "react-kakao-maps-sdk";
 
 const avatars = [
   "https://avatars.githubusercontent.com/u/10353856?s=460&u=88394dfd67727327c1f7670a1764dc38a8a24831&v=4",
@@ -55,6 +56,11 @@ export default function ProjectDetail() {
   const today = dayjs();
   const startAt = dayjs(project?.startAt);
   const dday = Math.floor(today.diff(startAt, "day", true));
+
+  const staticMapCoords = {
+    lat: project?.coordLat || 0,
+    lng: project?.coordLng || 0,
+  };
 
   const handleDelete = async () => {
     try {
@@ -138,6 +144,35 @@ export default function ProjectDetail() {
             <Avatar radius="xl">+5</Avatar>
           </Avatar.Group>
         </Group>
+
+        {staticMapCoords.lat !== 0 && (
+          <>
+            <Text c="dimmed" fz="sm" mt="md">
+              진행 장소
+            </Text>
+            <div
+              style={{
+                position: "relative",
+                width: "100%",
+                paddingBottom: "56.25%", // This maintains a 1:1 aspect ratio
+                overflow: "hidden",
+              }}
+            >
+              <StaticMap
+                center={staticMapCoords}
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                }}
+                marker={{ position: staticMapCoords }}
+                level={4}
+              />
+            </div>
+          </>
+        )}
 
         {!isTeamMember && (
           <Flex justify="right" mt={10}>

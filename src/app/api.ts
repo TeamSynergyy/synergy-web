@@ -258,13 +258,7 @@ export const api = createApi({
     // Project
     createProject: build.mutation<
       void,
-      {
-        name: string;
-        content: string;
-        field: string;
-        startAt: string;
-        endAt: string;
-      }
+      Omit<Project, "projectId" | "likes" | "teamUserIds" | "leaderId">
     >({
       query: (project) => ({
         url: "/projects",
