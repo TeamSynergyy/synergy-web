@@ -18,7 +18,7 @@ import {
   ScrollArea,
   Stack,
 } from "@mantine/core";
-import { IconDots, IconTrash } from "@tabler/icons-react";
+import { IconDots, IconTrash, IconEdit } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 import { useDisclosure } from "@mantine/hooks";
 
@@ -62,6 +62,15 @@ export default function ProjectDetail() {
     lng: project?.coordLng || 0,
   };
 
+  const handleEdit = async () => {
+    try {
+      await deleteProject({ id }).unwrap();
+      navigate("/");
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   const handleDelete = async () => {
     try {
       await deleteProject({ id }).unwrap();
@@ -88,23 +97,31 @@ export default function ProjectDetail() {
       <Box w="100%">
         <Group position="apart">
           <Badge>D{dday < 0 ? dday : `+${dday}`}</Badge>
-          <Menu withinPortal position="bottom-end" shadow="sm">
-            <Menu.Target>
-              <ActionIcon>
-                <IconDots size="1rem" />
-              </ActionIcon>
-            </Menu.Target>
+          {isLeader && (
+            <Menu withinPortal position="bottom-end" shadow="sm">
+              <Menu.Target>
+                <ActionIcon>
+                  <IconDots size="1rem" />
+                </ActionIcon>
+              </Menu.Target>
 
-            <Menu.Dropdown>
-              <Menu.Item
-                icon={<IconTrash size={rem(14)} />}
-                color="red"
-                onClick={handleDelete}
-              >
-                삭제하기
-              </Menu.Item>
-            </Menu.Dropdown>
-          </Menu>
+              <Menu.Dropdown>
+                <Menu.Item
+                  icon={<IconEdit size={rem(14)} />}
+                  onClick={handleEdit}
+                >
+                  수정하기
+                </Menu.Item>
+                <Menu.Item
+                  icon={<IconTrash size={rem(14)} />}
+                  color="red"
+                  onClick={handleDelete}
+                >
+                  삭제하기
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
+          )}
         </Group>
 
         <Title fz="lg" fw={500} mt="md">

@@ -40,7 +40,7 @@ interface Comment {
   userId: string;
   postId: number;
   content: string;
-  updateAt: string; // date string
+  updateAt: string;
 }
 
 interface ChatRoom {
