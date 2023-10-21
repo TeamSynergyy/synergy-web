@@ -10,12 +10,11 @@ import {
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { api } from "app/api";
-import usePage from "hooks/usePage";
 import { useNavigate } from "react-router-dom";
 
 export default function NewPost() {
   const setCreatePost = api.useCreatePostMutation()[0];
-  const { initPage } = usePage();
+
   const navigate = useNavigate();
   const [opened, { open, close }] = useDisclosure(false);
   const form = useForm({
@@ -43,7 +42,6 @@ export default function NewPost() {
         onSubmit={form.onSubmit(async (values) => {
           try {
             await setCreatePost(values).unwrap();
-            initPage("recentPost");
             navigate("/home/recent/post");
           } catch (e) {
             open();

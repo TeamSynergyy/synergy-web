@@ -20,10 +20,10 @@ export default function ApplicantBar({
     <Paper w="100%" p="md" withBorder>
       <Flex justify="space-between">
         <Group spacing="sm">
-          <Avatar size={40} src={item.avatar} radius={40} />
+          <Avatar size={40} src={item.profileImageUrl} radius={40} />
           <div>
             <Text fz="sm" fw={500}>
-              {item.name}
+              {item.username}
             </Text>
             <Text c="dimmed" fz="xs">
               {item.major}

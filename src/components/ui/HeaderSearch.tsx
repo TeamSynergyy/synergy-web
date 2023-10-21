@@ -77,7 +77,7 @@ export function HeaderSearch({ links, children }: HeaderSearchProps) {
   const isSearchPage = activePage === "search";
 
   const { data } = api.useGetMyInfoQuery(null);
-
+  console.log(data);
   const items = links.map((link) => (
     <Link
       key={link.label}
@@ -115,7 +115,7 @@ export function HeaderSearch({ links, children }: HeaderSearchProps) {
               <Menu shadow="md" width={200} withinPortal>
                 <Menu.Target>
                   <ActionIcon mx="sm">
-                    <Avatar src={data?.avatar} size={32} radius="xl" />
+                    <Avatar src={data?.profileImageUrl} size={32} radius="xl" />
                   </ActionIcon>
                 </Menu.Target>
 

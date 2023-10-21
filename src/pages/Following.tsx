@@ -1,44 +1,36 @@
-import HomeTab from "components/ui/HomeTab";
 import PostCard from "components/post/PostCard";
-import { Box, Button, Stack } from "@mantine/core";
+import { Button, Stack } from "@mantine/core";
 import { api } from "app/api";
 import { useEffect, useState } from "react";
 import { useIntersection } from "@mantine/hooks";
 import PostSkeleton from "components/post/PostSkeleton";
-import usePage from "hooks/usePage";
+import HomeTab from "components/ui/HomeTab";
 
 export default function Following() {
-  const { initPage, getPage, increasePage } = usePage();
-  const pageKey = "following";
-  const [page, setPage] = useState(getPage(pageKey) || 0);
+  const [end, setEnd] = useState<null | number>(null);
   const { data, isLoading, isSuccess, isError, error } =
-    api.useGetFollowingContentsQuery(page);
+    api.useGetFollowingContentsQuery(end);
 
   const { ref, entry } = useIntersection();
 
-  const isEnd = data?.totalPages !== undefined && data?.totalPages <= page;
+  const isLast = data?.next === false;
 
-  const handlePage = () => {
-    increasePage(pageKey);
-    setPage(getPage(pageKey));
+  const handleEnd = () => {
+    if (!data?.content) return;
+    setEnd(data?.content[data?.content.length - 1].postId);
   };
 
   useEffect(() => {
-    if (getPage(pageKey) === undefined) {
-      initPage(pageKey);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (entry?.isIntersecting && isSuccess) handlePage();
-    if (isEnd) return;
+    if (entry?.isIntersecting && isSuccess) handleEnd();
+    if (isLast) return;
   }, [entry?.isIntersecting, isSuccess]);
 
   let content;
   if (isLoading) {
     content = <p>"Loading..."</p>;
   } else if (isSuccess) {
-    content = data.content.map((post, i) => <PostCard key={i} post={post} />);
+    // 포스트가 많아졌을 때 느려짐. <List />를 추가하도록 리팩토링 필요
+    content = data?.content.map((post, i) => <PostCard key={i} post={post} />);
   } else if (isError) {
     console.error(error);
     content = <p>error! check the console message</p>;
@@ -48,10 +40,10 @@ export default function Following() {
     <>
       <HomeTab />
       <Stack w="100%">{content}</Stack>
-      <Stack ref={ref} w="100%" mt="md" display={isEnd ? "none" : "flex"}>
+      <Stack ref={ref} w="100%" mt="md" display={isLast ? "none" : "flex"}>
         <PostSkeleton />
         <PostSkeleton />
-        <Button m="auto" onClick={handlePage}>
+        <Button m="auto" onClick={handleEnd}>
           더 보기
         </Button>
       </Stack>

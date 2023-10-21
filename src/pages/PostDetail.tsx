@@ -68,7 +68,7 @@ export default function PostDetail() {
         <Card.Section className={classes.section}>
           <Group position="apart">
             <Group>
-              <Link to={`/people/${post.authorId}`}>
+              <Link to={`/people/${post.userId}`}>
                 <Avatar src={post.authorAvatar} radius="xl" />
               </Link>
               <Text>{post.authorName}</Text>

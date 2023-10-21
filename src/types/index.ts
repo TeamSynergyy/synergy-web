@@ -3,7 +3,7 @@ interface Post {
   title: string;
   content: string;
   authorName: string;
-  authorId: number;
+  userId: number;
   authorAvatar: string;
   likes: number;
   createAt: string;
@@ -17,19 +17,19 @@ interface Project {
   field: string;
   startAt: string;
   endAt: string;
+  coordLat: number;
+  coordLng: number;
   likes: number;
   teamUserIds: string[];
   leaderId: string;
-  coordLat: number;
-  coordLng: number;
 }
 
 interface User {
   userId: string;
-  name: string;
+  username: string;
   email: string;
-  avatar: string;
-  backgroundImage: string;
+  profileImageUrl: string;
+  backImage: string;
   major: string;
   temperature: number;
   bio: string;

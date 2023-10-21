@@ -36,9 +36,9 @@ const useStyles = createStyles((theme) => ({
 
 interface UserCardImageProps {
   userId: string;
-  backgroundImage: string;
-  avatar: string;
-  name: string;
+  backImage: string;
+  profileImageUrl: string;
+  username: string;
   major: string;
   temperature: number;
   bio: string;
@@ -46,9 +46,9 @@ interface UserCardImageProps {
 
 export default function UserProfileCard({
   userId,
-  backgroundImage,
-  avatar,
-  name,
+  backImage,
+  profileImageUrl,
+  username,
   major,
   temperature,
   bio,
@@ -71,7 +71,7 @@ export default function UserProfileCard({
     initialValues: myInfo,
 
     validate: {
-      name: (value) =>
+      username: (value) =>
         value && value.trim().length > 0 ? null : "필수입니다.",
     },
   });
@@ -79,18 +79,16 @@ export default function UserProfileCard({
   return (
     <>
       <Card withBorder padding="xl" radius="md" className={classes.card}>
-        <Card.Section
-          sx={{ backgroundImage: `url(${backgroundImage})`, height: 140 }}
-        />
+        <Card.Section sx={{ backImage: `url(${backImage})`, height: 140 }} />
         <Stack align="flex-start" spacing={0} mb="md">
           <Avatar
-            src={avatar}
+            src={profileImageUrl}
             size={160}
             radius={80}
             mt={-30}
             className={classes.avatar}
           />
-          <Title mt="sm">{name}</Title>
+          <Title mt="sm">{username}</Title>
           <Text fz="sm" c="dimmed">
             {major}
           </Text>
@@ -172,7 +170,7 @@ export default function UserProfileCard({
           <TextInput
             label="배경 이미지 주소"
             placeholder="배경 이미지 주소을 입력하세요"
-            {...form.getInputProps("backgroundImage")}
+            {...form.getInputProps("backImage")}
           />
 
           <TextInput

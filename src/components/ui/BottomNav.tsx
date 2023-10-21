@@ -71,7 +71,7 @@ export function BottomNav({ links }: BottomNavProps) {
       <Group w="100%" grow spacing={0}>
         {items}
         <Link to={`/people/${data?.userId}`} className={cx(classes.link)}>
-          <Avatar src={data?.avatar} size="sm" radius="xl" />
+          <Avatar src={data?.profileImageUrl} size="sm" radius="xl" />
         </Link>
       </Group>
     </div>

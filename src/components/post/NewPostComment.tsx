@@ -22,7 +22,7 @@ export default function NewPostComment({ postId }: { postId: number }) {
   return (
     <Paper w="100%" p="sm" withBorder>
       <Flex gap="sm">
-        <Avatar src={myInfo?.avatar} radius="xl" alt="avatar" />
+        <Avatar src={myInfo?.profileImageUrl} radius="xl" alt="avatar" />
         <Textarea
           w="100%"
           autosize

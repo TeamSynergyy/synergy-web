@@ -474,23 +474,27 @@ export const handlers = [
   }),
 
   rest.get("/api/v1/posts/recent", (req, res, ctx) => {
-    const page = req.url.searchParams.get("page");
+    const end = req.url.searchParams.get("end") || "0";
+
     return res(
       ctx.status(200),
       ctx.json({
         content: [
           {
             id: 999,
-            title: "this is front of page" + page,
-            content: page,
+            title: "this is front of page of postId:" + end,
+            content: end,
             authorId: 999,
             author: "page master",
             authorAvatar: "",
             likes: 0,
           },
-          ...posts,
+          ...posts.map((post) => ({
+            ...post,
+            postId: post.postId,
+          })),
         ],
-        totalPages: 10,
+        next: true,
       })
     );
   }),

@@ -1,15 +1,15 @@
 import { Avatar, Text, Button, Paper } from "@mantine/core";
 
 interface UserCardProps {
-  avatar: string;
-  name: string;
+  profileImageUrl: string;
+  username: string;
   email: string;
   major: string;
 }
 
 export default function UserCard({
-  avatar,
-  name,
+  profileImageUrl,
+  username,
   email,
   major,
 }: UserCardProps) {
@@ -23,9 +23,9 @@ export default function UserCard({
           theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.white,
       })}
     >
-      <Avatar src={avatar} size={120} radius={120} mx="auto" />
+      <Avatar src={profileImageUrl} size={120} radius={120} mx="auto" />
       <Text ta="center" fz="lg" weight={500} mt="md">
-        {name}
+        {username}
       </Text>
       <Text ta="center" c="dimmed" fz="sm">
         {email} • {major}

@@ -16,7 +16,7 @@ const ChatMessageCard: React.FC<{
       {fromMe ? null : data && isLast ? (
         <Box mt="auto">
           <Link to={`/people/${data.userId}`}>
-            <Avatar src={data.avatar} radius="xl" />
+            <Avatar src={data.profileImageUrl} radius="xl" />
           </Link>
         </Box>
       ) : (

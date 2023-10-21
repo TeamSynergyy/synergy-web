@@ -10,10 +10,10 @@ export default function CommentCard({ userId, content, updateAt }: Comment) {
   return (
     <Paper w="100%" p="sm">
       <Flex gap="xs">
-        <Avatar src={user?.avatar} radius="xl" alt="avatar" />
+        <Avatar src={user?.profileImageUrl} radius="xl" alt="avatar" />
         <Stack spacing="xs">
           <Group>
-            <Text weight={600}>{user?.name}</Text>
+            <Text weight={600}>{user?.username}</Text>
             <Text>{fromNow}</Text>
           </Group>
 

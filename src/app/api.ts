@@ -4,7 +4,8 @@ import { RootState } from "./store";
 
 export const api = createApi({
   baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_API_URL + "/api/v1",
+    // baseUrl: import.meta.env.VITE_API_URL + "/api/v1",
+    baseUrl: "/api/v1",
     prepareHeaders: (headers, { getState }) => {
       const token = (getState() as RootState).auth.token;
       if (token) {
@@ -36,11 +37,13 @@ export const api = createApi({
     // MyInfo
     getMyInfo: build.query<User, null>({
       query: () => "/users/me/info",
+      transformResponse: (response: { body: { "user info": User } }) =>
+        response.body["user info"],
       providesTags: [{ type: "MyInfo" }],
     }),
 
     getMyLikedPosts: build.query<{ postIds: number[] }, null>({
-      query: () => "posts/me/likes",
+      query: () => "/posts/me/likes",
       providesTags: [{ type: "LikedPostIds", id: "LIST" }],
     }),
 
@@ -136,10 +139,10 @@ export const api = createApi({
     }),
 
     getFollowingContents: build.query<
-      { content: Post[]; totalPages: number },
-      number
+      { content: Post[]; next: boolean },
+      number | null
     >({
-      query: (page) => `/posts/followings?page=${page}`,
+      query: (end) => `/posts/feed?end=${end}`,
       serializeQueryArgs: ({ endpointName }) => {
         return endpointName;
       },
@@ -174,6 +177,8 @@ export const api = createApi({
     // Users
     getUser: build.query<User, string>({
       query: (id) => `/users/${id}`,
+      transformResponse: (response: { body: { "user info": User } }) =>
+        response.body["user info"],
       providesTags: (result, error, arg) => [{ type: "User", id: String(arg) }],
     }),
 
@@ -196,10 +201,13 @@ export const api = createApi({
     }),
 
     getRecentPosts: build.query<
-      { content: Post[]; totalPages: number },
-      number
+      { content: Post[]; next: boolean },
+      number | string
     >({
-      query: (page) => `/posts/recent?page=${page}`,
+      query: (end) => `/posts/recent?end=${end}`,
+      transformResponse: (response: {
+        body: { "post list": { content: Post[]; next: boolean } };
+      }) => response.body["post list"],
       serializeQueryArgs: ({ endpointName }) => {
         return endpointName;
       },
@@ -280,10 +288,10 @@ export const api = createApi({
     }),
 
     getRecentProjects: build.query<
-      { content: Project[]; totalPages: number },
-      number
+      { content: Project[]; next: boolean },
+      number | null
     >({
-      query: (page) => `/projects/recent?page=${page}`,
+      query: (end) => `/projects/recent?end=${end}`,
       serializeQueryArgs: ({ endpointName }) => {
         return endpointName;
       },
