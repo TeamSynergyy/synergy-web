@@ -1,11 +1,16 @@
 import { Paper, Flex, Avatar, Button, Text, Stack, Group } from "@mantine/core";
 import { api } from "app/api";
 import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import utc from "dayjs/plugin/utc";
 import { Comment } from "types";
 
 export default function CommentCard({ userId, comment, updateAt }: Comment) {
   const { data: user } = api.useGetUserQuery(userId);
-  const fromNow = dayjs(updateAt + "Z").fromNow();
+
+  dayjs.extend(relativeTime);
+  dayjs.extend(utc);
+  const fromNow = dayjs.utc(updateAt?.replace("Z", "")).fromNow();
 
   return (
     <Paper w="100%" p="sm">

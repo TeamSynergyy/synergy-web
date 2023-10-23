@@ -8,6 +8,7 @@ import {
   MultiSelect,
   Flex,
   Checkbox,
+  Select,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
@@ -19,16 +20,7 @@ import usePage from "hooks/usePage";
 import MapInfo from "components/project/MapInfo";
 import { useState } from "react";
 
-const data = [
-  "기계자동차",
-  "전기전자",
-  "IT서비스",
-  "AI",
-  "인문학",
-  "어학",
-  "창업",
-  "기타",
-];
+const data = ["웹개발", "앱개발", "머신러닝", "인공지능"];
 
 export default function NewProject() {
   const setCreateProject = api.useCreateProjectMutation()[0];
@@ -107,7 +99,7 @@ export default function NewProject() {
           {...form.getInputProps("content")}
         />
 
-        <MultiSelect
+        <Select
           required
           data={data}
           label="field"
@@ -131,6 +123,7 @@ export default function NewProject() {
         />
 
         <div>
+          <br />
           <MapInfo coord={coord} setCoord={setCoord} />
         </div>
 
