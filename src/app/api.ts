@@ -32,13 +32,16 @@ const baseQueryWithReauth = async (
 ) => {
   let result = await baseQuery(args, api, extraOptions);
   console.log("result", result);
-  // if (result.error && result.error.status === 401) {
+  //if (result.error && result.error.status === 401) {
   if (result.error) {
-    // 401 에러 감지
     const state = api.getState() as RootState;
+    console.log("state", state);
     const token = state.auth.token;
     console.log("token", token);
-    const refreshResult = await axios.get(
+    const refreshResult: {
+      header: { code: number; message: string };
+      body: { token: string };
+    } = await axios.get(
       import.meta.env.DEV
         ? "/api/v1/auth/refresh"
         : import.meta.env.VITE_API_URL + "/api/v1/auth/refresh",
@@ -50,15 +53,12 @@ const baseQueryWithReauth = async (
       }
     );
 
-    if (refreshResult.data) {
-      // 토큰 갱신 성공
-      const newAccessToken = refreshResult.data;
-      // 새 액세스 토큰을 상태에 저장
+    if (refreshResult.body.token) {
+      const newAccessToken = refreshResult.body.token;
       api.dispatch(setAccessToken(newAccessToken));
-      // 원래 요청을 다시 시도
       result = await baseQuery(args, api, extraOptions);
     } else {
-      // 토큰 갱신 실패, 로그아웃 등의 처리
+      // window.location.href = "/auth";
     }
   }
 
@@ -92,6 +92,19 @@ export const api = createApi({
       providesTags: [{ type: "MyInfo" }],
     }),
 
+    editMyInfo: build.mutation<void, User>({
+      query: (data) => ({
+        url: "/users/me/info",
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: (result, error, arg) => [
+        { type: "MyInfo" },
+        { type: "User", id: String(arg.userId) },
+      ],
+    }),
+
+    // my data
     getMyLikedPosts: build.query<{ postIds: number[] }, null>({
       query: () => "/posts/me/likes",
       providesTags: [{ type: "LikedPostIds", id: "LIST" }],
@@ -119,18 +132,6 @@ export const api = createApi({
               { type: "ChatRoom", id: "LIST" },
             ]
           : [{ type: "ChatRoom", id: "LIST" }],
-    }),
-
-    editMyInfo: build.mutation<void, User>({
-      query: (data) => ({
-        url: "/users/me/info",
-        method: "PUT",
-        body: data,
-      }),
-      invalidatesTags: (result, error, arg) => [
-        { type: "MyInfo" },
-        { type: "User", id: String(arg.userId) },
-      ],
     }),
 
     likePost: build.mutation<void, [number, "post_like" | "post_unlike"]>({
