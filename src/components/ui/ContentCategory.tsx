@@ -5,6 +5,8 @@ import {
 } from "@tabler/icons-react";
 import { NavLink } from "@mantine/core";
 import { Link, useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { toggleNavbar } from "./layoutSlice";
 
 const data = [
   {
@@ -23,6 +25,11 @@ const data = [
 
 export function ContentCategory() {
   const { pathname } = useLocation();
+  const dispatch = useDispatch();
+
+  const handleToggleNavbar = () => {
+    dispatch(toggleNavbar());
+  };
 
   return (
     <>
@@ -31,6 +38,7 @@ export function ContentCategory() {
           to={item.path}
           key={item.label}
           style={{ color: "inherit", textDecoration: "inherit" }}
+          onClick={handleToggleNavbar}
         >
           <NavLink
             active={item.path === pathname}

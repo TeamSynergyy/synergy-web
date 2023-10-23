@@ -16,6 +16,9 @@ import AsideContent from "./AsideContent";
 import { StompProvider } from "app/StompContext";
 import FloatingActionButton from "./FloatingActionButton";
 import { SseProvider } from "app/SseContext";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "app/store";
+import { toggleNavbar } from "./layoutSlice";
 
 const headerLinks = [
   {
@@ -38,7 +41,12 @@ const headerLinks = [
 
 export default function Layout() {
   const theme = useMantineTheme();
-  const [opened, setOpened] = useState(false);
+  const dispatch = useDispatch();
+  const opened = useSelector((state: RootState) => state.layout.opened);
+
+  const handleToggleNavbar = () => {
+    dispatch(toggleNavbar());
+  };
   const location = useLocation();
   const isChatRoom =
     location.pathname.split("/")[1] === "chat" &&
@@ -100,7 +108,7 @@ export default function Layout() {
           <MediaQuery largerThan="sm" styles={{ display: "none" }}>
             <Burger
               opened={opened}
-              onClick={() => setOpened((o) => !o)}
+              onClick={handleToggleNavbar}
               size="sm"
               color={theme.colors.gray[6]}
             />

@@ -15,6 +15,8 @@ const baseQuery = fetchBaseQuery({
     : import.meta.env.VITE_API_URL + "/api/v1",
 
   prepareHeaders: (headers, { getState }) => {
+    headers.set("Credentials", "include");
+
     const token = (getState() as RootState).auth.token;
     if (token) {
       headers.set("Authorization", `Bearer ${token}`);
@@ -29,14 +31,17 @@ const baseQueryWithReauth = async (
   extraOptions: object
 ) => {
   let result = await baseQuery(args, api, extraOptions);
-
-  if (result.error && result.error.status === 401) {
+  console.log("result", result);
+  // if (result.error && result.error.status === 401) {
+  if (result.error) {
     // 401 에러 감지
-
     const state = api.getState() as RootState;
     const token = state.auth.token;
+    console.log("token", token);
     const refreshResult = await axios.get(
-      import.meta.env.VITE_API_URL + "/api/v1/auth/refresh",
+      import.meta.env.DEV
+        ? "/api/v1/auth/refresh"
+        : import.meta.env.VITE_API_URL + "/api/v1/auth/refresh",
       {
         headers: {
           Authorization: `Bearer ${token}`,

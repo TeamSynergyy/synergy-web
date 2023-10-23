@@ -4,6 +4,7 @@ import stompReducer from "./stompSlice";
 import { useDispatch } from "react-redux";
 import authReducer from "./authSlice";
 import sseReducer from "./sseSlice";
+import layoutReducer from "components/ui/layoutSlice";
 
 export const store = configureStore({
   reducer: {
@@ -11,6 +12,7 @@ export const store = configureStore({
     stomp: stompReducer,
     auth: authReducer,
     sse: sseReducer,
+    layout: layoutReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(api.middleware),
