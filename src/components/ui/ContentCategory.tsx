@@ -1,50 +1,50 @@
-import { useState } from "react";
 import {
   IconGauge,
   IconFingerprint,
   IconChevronRight,
 } from "@tabler/icons-react";
 import { NavLink } from "@mantine/core";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { toggleNavbar } from "./layoutSlice";
 
 const data = [
   {
     icon: IconGauge,
-    label: "For you",
-    rightSection: <IconChevronRight size="1rem" stroke={1.5} />,
-    path: "/home",
-  },
-  {
-    icon: IconGauge,
-    label: "최신 글",
+    label: "최근 글",
     rightSection: <IconChevronRight size="1rem" stroke={1.5} />,
     path: "/home/recent/post",
   },
   {
     icon: IconFingerprint,
-    label: "최신 프로젝트",
+    label: "최근 프로젝트",
     rightSection: <IconChevronRight size="1rem" stroke={1.5} />,
     path: "/home/recent/project",
   },
 ];
 
 export function ContentCategory() {
-  const [active, setActive] = useState(0);
+  const { pathname } = useLocation();
+  const dispatch = useDispatch();
+
+  const handleToggleNavbar = () => {
+    dispatch(toggleNavbar());
+  };
 
   return (
     <>
-      {data.map((item, index) => (
+      {data.map((item) => (
         <Link
           to={item.path}
           key={item.label}
           style={{ color: "inherit", textDecoration: "inherit" }}
+          onClick={handleToggleNavbar}
         >
           <NavLink
-            active={index === active}
+            active={item.path === pathname}
             label={item.label}
             rightSection={item.rightSection}
             icon={<item.icon size="1rem" stroke={1.5} />}
-            onClick={() => setActive(index)}
           />
         </Link>
       ))}

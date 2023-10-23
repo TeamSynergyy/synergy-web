@@ -35,42 +35,43 @@ const useStyles = createStyles((theme) => ({
 }));
 
 interface UserCardImageProps {
-  id: string;
-  backgroundImage: string;
-  avatar: string;
-  name: string;
+  userId: string;
+  backImage: string;
+  profileImageUrl: string;
+  username: string;
   major: string;
   temperature: number;
   bio: string;
 }
 
 export default function UserProfileCard({
-  id,
-  backgroundImage,
-  avatar,
-  name,
+  userId,
+  backImage,
+  profileImageUrl,
+  username,
   major,
   temperature,
   bio,
 }: UserCardImageProps) {
   const { classes, theme } = useStyles();
   const { data: myInfo } = api.useGetMyInfoQuery(null);
-  const myFollowing = myInfo?.followingIds;
-  const isFollowing = myFollowing?.includes(id);
+  const myId = myInfo?.userId || "";
+  const myFollowing = api.useGetFollowsQuery(myId)?.data?.followings;
+  const isFollowing = myFollowing?.includes(userId);
   const followType = isFollowing ? "unfollow" : "follow";
   const editMyInfo = api.useEditMyInfoMutation()[0];
   const [opened, { open, close }] = useDisclosure(false);
   const follow = api.useFollowMutation()[0];
   const handleFollow = () => {
-    follow([id, followType]);
+    follow([userId, followType, myId]);
   };
 
-  const isMe = myInfo?.id !== id;
+  const isMe = myInfo?.userId !== userId;
   const form = useForm({
-    initialValues: { ...myInfo },
+    initialValues: myInfo,
 
     validate: {
-      name: (value) =>
+      username: (value) =>
         value && value.trim().length > 0 ? null : "필수입니다.",
     },
   });
@@ -78,18 +79,16 @@ export default function UserProfileCard({
   return (
     <>
       <Card withBorder padding="xl" radius="md" className={classes.card}>
-        <Card.Section
-          sx={{ backgroundImage: `url(${backgroundImage})`, height: 140 }}
-        />
+        <Card.Section sx={{ backImage: `url(${backImage})`, height: 140 }} />
         <Stack align="flex-start" spacing={0} mb="md">
           <Avatar
-            src={avatar}
+            src={profileImageUrl}
             size={160}
             radius={80}
             mt={-30}
             className={classes.avatar}
           />
-          <Title mt="sm">{name}</Title>
+          <Title mt="sm">{username}</Title>
           <Text fz="sm" c="dimmed">
             {major}
           </Text>
@@ -171,7 +170,7 @@ export default function UserProfileCard({
           <TextInput
             label="배경 이미지 주소"
             placeholder="배경 이미지 주소을 입력하세요"
-            {...form.getInputProps("backgroundImage")}
+            {...form.getInputProps("backImage")}
           />
 
           <TextInput

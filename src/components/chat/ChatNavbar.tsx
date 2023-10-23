@@ -22,7 +22,7 @@ const ChatNavbar = () => {
   } else if (isSuccess) {
     // 차후 신규 메세지 순으로 정렬하도록 기능 추가
     content = chatRooms.map(({ roomId, participantIds }, i) => {
-      const partnerId = participantIds.find((id) => id !== data?.id);
+      const partnerId = participantIds.find((id) => id !== data?.userId);
       if (!partnerId)
         return <p key={i}>대화 상대방의 데이터를 불러오지 못했습니다.</p>;
 

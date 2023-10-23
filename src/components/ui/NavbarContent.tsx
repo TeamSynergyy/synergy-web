@@ -5,7 +5,7 @@ import ChatNavbar from "components/chat/ChatNavbar";
 export function NavbarContent() {
   const { pathname } = useLocation();
   const page = pathname.split("/")[1];
-  console.log(page);
+
   switch (page) {
     case "chat":
       return <ChatNavbar />;

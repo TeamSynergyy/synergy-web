@@ -14,6 +14,11 @@ import { Outlet, useLocation } from "react-router-dom";
 import { NavbarContent } from "./NavbarContent";
 import AsideContent from "./AsideContent";
 import { StompProvider } from "app/StompContext";
+import FloatingActionButton from "./FloatingActionButton";
+import { SseProvider } from "app/SseContext";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "app/store";
+import { toggleNavbar } from "./layoutSlice";
 
 const headerLinks = [
   {
@@ -36,81 +41,85 @@ const headerLinks = [
 
 export default function Layout() {
   const theme = useMantineTheme();
-  const [opened, setOpened] = useState(false);
+  const dispatch = useDispatch();
+  const opened = useSelector((state: RootState) => state.layout.opened);
+
+  const handleToggleNavbar = () => {
+    dispatch(toggleNavbar());
+  };
   const location = useLocation();
   const isChatRoom =
     location.pathname.split("/")[1] === "chat" &&
     location.pathname.split("/")[2] !== undefined;
 
   return (
-    <StompProvider>
-      <AppShell
-        styles={{
-          main: {
-            minHeight: 0,
-            background:
-              theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.white,
-          },
-        }}
-        navbarOffsetBreakpoint="sm"
-        asideOffsetBreakpoint="sm"
-        navbar={
-          <Navbar
+    // <SseProvider>
+    //   <StompProvider>
+    <AppShell
+      styles={{
+        main: {
+          minHeight: 0,
+          background:
+            theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.white,
+        },
+      }}
+      navbarOffsetBreakpoint="sm"
+      asideOffsetBreakpoint="sm"
+      navbar={
+        <Navbar
+          p="md"
+          hiddenBreakpoint="sm"
+          hidden={!opened}
+          width={{ sm: 200, lg: 300 }}
+          bg={theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.white}
+          withBorder={false}
+        >
+          <Navbar.Section grow mt="md">
+            <NavbarContent />
+          </Navbar.Section>
+        </Navbar>
+      }
+      aside={
+        <MediaQuery smallerThan="sm" styles={{ display: "none" }}>
+          <Aside
             p="md"
             hiddenBreakpoint="sm"
-            hidden={!opened}
             width={{ sm: 200, lg: 300 }}
             bg={
               theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.white
             }
             withBorder={false}
           >
-            <Navbar.Section grow mt="md">
-              <NavbarContent />
-            </Navbar.Section>
-          </Navbar>
-        }
-        aside={
-          <MediaQuery smallerThan="sm" styles={{ display: "none" }}>
-            <Aside
-              p="md"
-              hiddenBreakpoint="sm"
-              width={{ sm: 200, lg: 300 }}
-              bg={
-                theme.colorScheme === "dark"
-                  ? theme.colors.dark[8]
-                  : theme.white
-              }
-              withBorder={false}
-            >
-              <AsideContent />
-            </Aside>
+            <AsideContent />
+          </Aside>
+        </MediaQuery>
+      }
+      footer={
+        isChatRoom ? undefined : (
+          <MediaQuery largerThan="sm" styles={{ display: "none" }}>
+            <Footer height={56}>
+              <BottomNav links={headerLinks} />
+            </Footer>
           </MediaQuery>
-        }
-        footer={
-          isChatRoom ? undefined : (
-            <MediaQuery largerThan="sm" styles={{ display: "none" }}>
-              <Footer height={56}>
-                <BottomNav links={headerLinks} />
-              </Footer>
-            </MediaQuery>
-          )
-        }
-        header={
-          <HeaderSearch links={headerLinks}>
-            <MediaQuery largerThan="sm" styles={{ display: "none" }}>
-              <Burger
-                opened={opened}
-                onClick={() => setOpened((o) => !o)}
-                size="sm"
-                color={theme.colors.gray[6]}
-              />
-            </MediaQuery>
-          </HeaderSearch>
-        }
-      >
-        <Outlet />
-      </AppShell>
-    </StompProvider>
+        )
+      }
+      header={
+        <HeaderSearch links={headerLinks}>
+          <MediaQuery largerThan="sm" styles={{ display: "none" }}>
+            <Burger
+              opened={opened}
+              onClick={handleToggleNavbar}
+              size="sm"
+              color={theme.colors.gray[6]}
+            />
+          </MediaQuery>
+        </HeaderSearch>
+      }
+    >
+      <Outlet />
+      <FloatingActionButton />
+    </AppShell>
+    //   </StompProvider>
+    // </SseProvider>
   );
 }

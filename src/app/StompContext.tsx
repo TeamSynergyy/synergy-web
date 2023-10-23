@@ -1,8 +1,9 @@
 import { createContext, useEffect, useState, useRef } from "react";
 import { Client } from "@stomp/stompjs";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { messageReceived } from "app/stompSlice";
 import { api } from "./api";
+import { selectCurrentToken } from "./authSlice";
 
 interface StompContextProps {
   client: Client | null;
@@ -12,10 +13,13 @@ export const StompContext = createContext<StompContextProps>({ client: null });
 
 export const StompProvider = ({ children }: { children: JSX.Element }) => {
   const dispatch = useDispatch();
+  const token =
+    useSelector(selectCurrentToken) || localStorage.getItem("token");
   const brokerURL = import.meta.env.VITE_WEBSOCKET_URL;
   const { data: chatRooms } = api.useGetMyChatRoomsQuery(null);
 
-  const topics = chatRooms?.map(({ roomId }) => `/topic/${roomId}`) || [];
+  const topics =
+    chatRooms?.map(({ roomId }) => `/sub/chat/room/${roomId}`) || [];
 
   const clientRef = useRef<Client | null>(null);
   const isConnected = clientRef.current?.connected;
@@ -32,10 +36,15 @@ export const StompProvider = ({ children }: { children: JSX.Element }) => {
 
   useEffect(() => {
     if (!clientRef.current) {
-      console.log("create new client");
       clientRef.current = new Client({
         brokerURL,
         reconnectDelay: 5000,
+        connectHeaders: {
+          Authorization: `Bearer ${token}`,
+        },
+        debug: (str) => {
+          console.log(str);
+        },
       });
 
       clientRef.current.activate();
@@ -57,12 +66,11 @@ export const StompProvider = ({ children }: { children: JSX.Element }) => {
 
       return () => {
         subscriptions.forEach((subscription) => {
-          console.log(subscription);
           subscription?.unsubscribe();
         });
       };
     }
-  }, [chatRooms?.length]);
+  }, [chatRooms?.length, token]);
 
   return (
     <StompContext.Provider value={{ client: clientRef.current }}>

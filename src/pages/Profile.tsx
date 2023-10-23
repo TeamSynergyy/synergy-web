@@ -1,6 +1,6 @@
 import { LoadingOverlay, Space, Tabs } from "@mantine/core";
 import { api } from "app/api";
-import UserPostList from "components/user/UserPostList";
+import PostListByUser from "components/user/PostListByUser";
 import UserProfileCard from "components/user/UserProfileCard";
 import UserProfileInfo from "components/user/UserProfileInfo";
 
@@ -23,7 +23,7 @@ export default function Profile() {
 
   let content;
   if (activeTab === "info") content = <UserProfileInfo userId={id} />;
-  if (activeTab === "post") content = <UserPostList userId={id} />;
+  if (activeTab === "post") content = <PostListByUser userId={id} />;
 
   if (user)
     return (

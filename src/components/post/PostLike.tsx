@@ -14,18 +14,27 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-export default function PostLike({ id, likes }: { id: number; likes: number }) {
+export default function PostLike({
+  postId,
+  likes,
+}: {
+  postId: number;
+  likes: number;
+}) {
   const { classes } = useStyles();
 
-  const isLiked = api.useGetMyLikedPostsQuery(null).data?.includes(id);
-  const likeType = isLiked ? "unlike" : "like";
+  const isLiked = api
+    .useGetMyLikedPostsQuery(null)
+    .data?.content.map((post) => post.postId)
+    .includes(postId);
+  const likeType = isLiked ? "post_unlike" : "post_like";
 
   const like = api.useLikePostMutation()[0];
 
   const [tempLikes, setTempLikes] = useState(likes);
   const handleLike = () => {
     isLiked ? setTempLikes(tempLikes - 1) : setTempLikes(tempLikes + 1);
-    like([id, likeType]);
+    like([postId, likeType]);
   };
 
   return (

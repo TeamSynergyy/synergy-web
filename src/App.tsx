@@ -14,17 +14,22 @@ import Chat from "pages/Chat";
 import NewPost from "pages/NewPost";
 import NewProject from "pages/NewProject";
 import People from "pages/People";
-import ProjectDetail from "components/project/ProjectDetail";
-import Recommendation from "pages/Recommendation";
+import ProjectDetail from "pages/ProjectDetail";
+import ForYou from "pages/ForYou";
 import Notification from "pages/Notification";
 import RecentPost from "pages/RecentPost";
 import RecentProject from "pages/RecentProject";
 import Search from "pages/Search";
 import { selectCurrentToken } from "app/authSlice";
 import { useSelector } from "react-redux";
+import PostDetail from "pages/PostDetail";
+import Following from "pages/Following";
+
+import OauthRedirect from "pages/OauthRedirect";
 
 const PrivateRoutes = () => {
   const auth = useSelector(selectCurrentToken);
+  console.log(auth);
   return auth ? <Outlet /> : <Navigate to="/auth" />;
 };
 
@@ -35,9 +40,11 @@ export default function App() {
         <Routes>
           <Route element={<PrivateRoutes />}>
             <Route path="/" element={<Layout />}>
-              <Route index element={<Navigate to="/home" />} />
+              <Route index element={<Navigate to="/home/foryou" />} />
               <Route path="home">
-                <Route index element={<Recommendation />} />
+                <Route index element={<Navigate to="foryou" />} />
+                <Route path="foryou" element={<ForYou />} />
+                <Route path="following" element={<Following />} />
                 <Route path="recent">
                   <Route path="post" element={<RecentPost />} />
                   <Route path="project" element={<RecentProject />} />
@@ -51,11 +58,14 @@ export default function App() {
 
               <Route path="chat">
                 <Route index element={<Chat />} />
-                <Route path=":id" element={<ChatRoom />} />R
+                <Route path=":id" element={<ChatRoom />} />
               </Route>
 
               <Route path="notification" element={<Notification />} />
 
+              <Route path="post">
+                <Route path=":id" element={<PostDetail />} />
+              </Route>
               <Route path="project">
                 <Route path=":id" element={<ProjectDetail />} />
               </Route>
@@ -68,6 +78,7 @@ export default function App() {
           </Route>
 
           <Route path="/auth" element={<Auth />} />
+          <Route path="/oauth/redirect" element={<OauthRedirect />} />
         </Routes>
       </BrowserRouter>
     </MantineProvider>

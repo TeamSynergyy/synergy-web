@@ -1,3 +1,18 @@
+import { useSelector } from "react-redux";
+import { RootState } from "app/store";
+import { Paper, Stack, Text } from "@mantine/core";
+import NotificationCard from "components/notification/NotificationCard";
+
 export default function Notification() {
-  return <p>개발중</p>;
+  const messageEvents = useSelector(
+    (state: RootState) => state.sse.messageEvents
+  );
+
+  return (
+    <Stack>
+      {messageEvents.map((messageEvent, i) => (
+        <NotificationCard key={i} messageEvent={messageEvent} />
+      ))}
+    </Stack>
+  );
 }

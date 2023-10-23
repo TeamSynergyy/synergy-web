@@ -6,7 +6,7 @@ import { useIntersection } from "@mantine/hooks";
 import PostSkeleton from "components/post/PostSkeleton";
 import { useState, useEffect } from "react";
 
-export default function UserPostList({ userId }: { userId: string }) {
+export default function PostListByUser({ userId }: { userId: string }) {
   const [page, setPage] = useState(0);
   const [isEnd, setIsEnd] = useState(false);
 
@@ -20,7 +20,6 @@ export default function UserPostList({ userId }: { userId: string }) {
     }
     if (page === data?.totalPages) return setIsEnd(true);
   }, [entry?.isIntersecting, isSuccess]);
-  console.log(entry?.isIntersecting);
 
   let content;
   if (isLoading) {

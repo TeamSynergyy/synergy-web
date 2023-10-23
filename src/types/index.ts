@@ -1,36 +1,49 @@
 interface Post {
-  id: number;
+  postId: number;
   title: string;
   content: string;
-  authorId: string;
   authorName: string;
+  userId: number;
   authorAvatar: string;
+  imagesUrl: string[];
   likes: number;
   createAt: string;
+  updateAt: string;
 }
 
 interface Project {
-  id: number;
+  projectId: number;
   name: string;
   content: string;
   field: string;
   startAt: string;
   endAt: string;
+  location: {
+    x: number;
+    y: number;
+  };
   likes: number;
-  teamMemberIds: string[];
+  teamUserIds: string[];
+  leaderId: string;
 }
 
 interface User {
-  id: string;
-  name: string;
+  userId: string;
+  username: string;
   email: string;
-  avatar: string;
-  backgroundImage: string;
+  profileImageUrl: string;
+  backImage: string;
   major: string;
   temperature: number;
   bio: string;
-  followerIds: string[];
-  followingIds: string[];
+}
+
+interface Comment {
+  commentId: number;
+  userId: string;
+  postId: number;
+  comment: string;
+  updateAt: string;
 }
 
 interface ChatRoom {
@@ -48,4 +61,4 @@ interface ChatMessage {
   sendTime: string;
 }
 
-export type { Post, Project, User, ChatMessage, ChatRoom };
+export type { Post, Project, User, Comment, ChatMessage, ChatRoom };

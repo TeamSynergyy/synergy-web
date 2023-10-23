@@ -32,14 +32,14 @@ export function ChatInput({ roomId }: { roomId: number }) {
         type: "TALK",
         roomId,
         text,
-        senderId: data?.id,
+        senderId: data?.userId,
         sendTime: dayjs().toISOString(),
       };
 
       if (!client) return console.error("WebSocket is not connected");
 
       client.publish({
-        destination: "/topic/" + String(roomId),
+        destination: "/pub/chat/room/" + String(roomId),
         body: JSON.stringify(message),
       });
     }
