@@ -5,7 +5,7 @@ import {
   fetchBaseQuery,
 } from "@reduxjs/toolkit/query/react";
 import { Post, Project, User, ChatRoom, Comment } from "types";
-import { RootState, store } from "./store";
+import { RootState } from "./store";
 import { setAccessToken } from "./authSlice";
 import axios from "axios";
 
@@ -33,7 +33,7 @@ const baseQueryWithReauth = async (
   if (result.error && result.error.status === 401) {
     // 401 에러 감지
 
-    const state = store.getState();
+    const state = api.getState() as RootState;
     const token = state.auth.token;
     const refreshResult = await axios.get(
       import.meta.env.VITE_API_URL + "/api/v1/auth/refresh",
