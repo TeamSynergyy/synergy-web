@@ -31,8 +31,7 @@ const baseQueryWithReauth = async (
   extraOptions: object
 ) => {
   let result = await baseQuery(args, api, extraOptions);
-  console.log("result", result);
-  //if (result.error && result.error.status === 401) {
+  // if (result.error && result.error.status === 401) {
   if (result.error) {
     const state = api.getState() as RootState;
     console.log("state", state);
@@ -57,8 +56,10 @@ const baseQueryWithReauth = async (
       const newAccessToken = refreshResult.body.token;
       api.dispatch(setAccessToken(newAccessToken));
       result = await baseQuery(args, api, extraOptions);
-    } else {
-      // window.location.href = "/auth";
+    }
+
+    if (refreshResult.header.code !== 200) {
+      window.location.href = "/auth";
     }
   }
 
@@ -105,8 +106,11 @@ export const api = createApi({
     }),
 
     // my data
-    getMyLikedPosts: build.query<{ postIds: number[] }, null>({
+    getMyLikedPosts: build.query<{ content: Post[] }, null>({
       query: () => "/posts/me/likes",
+      transformResponse: (response: {
+        body: { "liked posts": { content: Post[] } };
+      }) => response.body["liked posts"],
       providesTags: [{ type: "LikedPostIds", id: "LIST" }],
     }),
 
@@ -297,8 +301,11 @@ export const api = createApi({
       ],
     }),
 
-    getPostComments: build.query<{ comments: Comment[] }, number>({
+    getPostComments: build.query<Comment[], number>({
       query: (postId) => `/comments/${postId}`,
+      transformResponse: (response: {
+        body: { comments: { content: Comment[] } };
+      }) => response.body.comments.content,
       providesTags: (result, error, arg) =>
         result
           ? [
@@ -484,7 +491,7 @@ export const api = createApi({
 
     getProjectsByUser: build.query<{ infoProjectResponses: Project[] }, string>(
       {
-        query: (userId) => `/projects?userId=${userId}`,
+        query: (userId) => `/projects/other?userId=${userId}`,
       }
     ),
   }),

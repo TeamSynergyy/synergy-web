@@ -4,10 +4,10 @@ import CommentCard from "./CommentCard";
 
 export default function CommentStack({ postId }: { postId: number }) {
   const { data } = api.useGetPostCommentsQuery(postId);
-  if (!data?.comments) return null;
+  if (!data) return null;
   return (
     <Stack>
-      {data.comments.map((comment) => (
+      {data.map((comment) => (
         <CommentCard key={comment.commentId} {...comment} />
       ))}
     </Stack>

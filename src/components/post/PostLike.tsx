@@ -25,7 +25,8 @@ export default function PostLike({
 
   const isLiked = api
     .useGetMyLikedPostsQuery(null)
-    .data?.postIds.includes(postId);
+    .data?.content.map((post) => post.postId)
+    .includes(postId);
   const likeType = isLiked ? "post_unlike" : "post_like";
 
   const like = api.useLikePostMutation()[0];

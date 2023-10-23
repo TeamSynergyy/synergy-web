@@ -15,12 +15,10 @@ export default function PostDetail() {
   const { data: post, isLoading } = api.useGetPostQuery(postId);
 
   if (isLoading) return <LoadingOverlay visible />;
-  if (!post) return null;
 
   return (
     <>
-      <PostCard post={post} isDetail />
-
+      {post && <PostCard post={post} isDetail />}
       <Card.Section mt={10}>
         <NewPostComment postId={postId} />
       </Card.Section>
