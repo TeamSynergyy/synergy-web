@@ -32,7 +32,7 @@ export default function NewProject() {
     initialValues: {
       name: "",
       content: "",
-      field: [],
+      field: "",
       startAt: "",
       endAt: "",
       latitude: 0,
@@ -68,12 +68,10 @@ export default function NewProject() {
             const endAt = values.endAt
               ? dayjs(values.startAt).format("YYYY-MM-DD") + "T00:00:00.000Z"
               : "";
-            const field = values.field.join(", ");
             await setCreateProject({
               ...values,
               startAt,
               endAt,
-              field,
               latitude: coord[0],
               longitude: coord[1],
             }).unwrap();
