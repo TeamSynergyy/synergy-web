@@ -11,6 +11,7 @@ export default defineConfig({
       "/api": {
         target: "https://synergyy.link",
         changeOrigin: true, // host 헤더를 변경합니다.
+        secure: false, // SSL 설정 (https 프로토콜)
       },
     },
   },

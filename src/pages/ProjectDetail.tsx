@@ -58,8 +58,8 @@ export default function ProjectDetail() {
   const dday = Math.floor(today.diff(startAt, "day", true));
 
   const staticMapCoords = {
-    lat: project?.location.x || 0,
-    lng: project?.location.y || 0,
+    lat: project?.location.y || 0,
+    lng: project?.location.x || 0,
   };
 
   const handleEdit = async () => {
