@@ -31,7 +31,7 @@ export const api = createApi({
     "RecentProjects",
     "ApplicantsIds",
     "PostComments",
-    "FollowingContents",
+    "FollowingPosts",
   ],
   endpoints: (build) => ({
     // Auth
@@ -140,16 +140,20 @@ export const api = createApi({
       providesTags: (result, error, arg) => [{ type: "Follows", id: arg }],
     }),
 
-    getFollowingContents: build.query<
+    getFollowingPosts: build.query<
       { content: Post[]; next: boolean },
-      number | null
+      number | string
     >({
       query: (end) => `/posts/feed?end=${end}`,
+      transformResponse: (response: {
+        body: { "post feed list": { content: Post[]; next: boolean } };
+      }) => response.body["post feed list"],
       serializeQueryArgs: ({ endpointName }) => {
         return endpointName;
       },
       merge: (currentCache, newItems) => {
         currentCache.content.push(...newItems.content);
+        currentCache.next = newItems.next;
       },
       forceRefetch({ currentArg, previousArg }) {
         return currentArg !== previousArg;
@@ -158,12 +162,12 @@ export const api = createApi({
         result
           ? [
               ...result.content.map(({ postId }) => ({
-                type: "FollowingContents" as const,
+                type: "FollowingPosts" as const,
                 id: String(postId),
               })),
-              { type: "FollowingContents", id: "LIST" },
+              { type: "FollowingPosts", id: "LIST" },
             ]
-          : [{ type: "FollowingContents", id: "LIST" }],
+          : [{ type: "FollowingPosts", id: "LIST" }],
     }),
 
     createChatRoom: build.mutation<void, string>({
@@ -185,7 +189,7 @@ export const api = createApi({
     }),
 
     // Post
-    createPost: build.mutation<void, { title: string; content: string }>({
+    createPost: build.mutation<void, FormData>({
       query: (post) => ({
         url: "/posts",
         method: "POST",
@@ -199,6 +203,8 @@ export const api = createApi({
 
     getPost: build.query<Post, number>({
       query: (id) => `/posts/${id}`,
+      transformResponse: (response: { body: { post: Post } }) =>
+        response.body.post,
       providesTags: (result, error, arg) => [{ type: "Post", id: String(arg) }],
     }),
 
@@ -215,6 +221,7 @@ export const api = createApi({
       },
       merge: (currentCache, newItems) => {
         currentCache.content.push(...newItems.content);
+        currentCache.next = newItems.next;
       },
       forceRefetch({ currentArg, previousArg }) {
         return currentArg !== previousArg;
@@ -268,7 +275,10 @@ export const api = createApi({
     // Project
     createProject: build.mutation<
       void,
-      Omit<Project, "projectId" | "likes" | "teamUserIds" | "leaderId">
+      Omit<
+        Project,
+        "projectId" | "likes" | "teamUserIds" | "leaderId" | "location"
+      > & { latitude: number; longitude: number }
     >({
       query: (project) => ({
         url: "/projects",
@@ -291,14 +301,18 @@ export const api = createApi({
 
     getRecentProjects: build.query<
       { content: Project[]; next: boolean },
-      number | null
+      number | string
     >({
       query: (end) => `/projects/recent?end=${end}`,
+      transformResponse: (response: {
+        body: { "project list": { content: Project[]; next: boolean } };
+      }) => response.body["project list"],
       serializeQueryArgs: ({ endpointName }) => {
         return endpointName;
       },
       merge: (currentCache, newItems) => {
         currentCache.content.push(...newItems.content);
+        currentCache.next = newItems.next;
       },
       forceRefetch({ currentArg, previousArg }) {
         return currentArg !== previousArg;

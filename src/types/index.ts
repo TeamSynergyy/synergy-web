@@ -5,6 +5,7 @@ interface Post {
   authorName: string;
   userId: number;
   authorAvatar: string;
+  imagesUrl: string[];
   likes: number;
   createAt: string;
   updateAt: string;
@@ -17,8 +18,10 @@ interface Project {
   field: string;
   startAt: string;
   endAt: string;
-  coordLat: number;
-  coordLng: number;
+  location: {
+    x: number;
+    y: number;
+  };
   likes: number;
   teamUserIds: string[];
   leaderId: string;

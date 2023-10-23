@@ -43,21 +43,14 @@ export default function NewProject() {
       field: [],
       startAt: "",
       endAt: "",
-      coordLat: 0,
-      coordLng: 0,
-      hasLocation: true,
+      latitude: 0,
+      longitude: 0,
     },
     validate: {
       endAt: (endAt, values) =>
         dayjs(values.startAt) > dayjs(endAt)
           ? "시작일이 종료일보다 늦습니다."
           : null,
-
-      hasLocation: (hasLocation, values) => {
-        if (hasLocation) {
-          return coord[0] === 0 ? "지도를 이동해 위치를 지정해주세요." : null;
-        }
-      },
     },
   });
 
@@ -79,9 +72,9 @@ export default function NewProject() {
         onSubmit={form.onSubmit(async (values) => {
           try {
             const startAt =
-              dayjs(values.startAt).format("YYYY-MM-DD") + "T00:00:00.000";
+              dayjs(values.startAt).format("YYYY-MM-DD") + "T00:00:00.000Z";
             const endAt = values.endAt
-              ? dayjs(values.startAt).format("YYYY-MM-DD") + "T00:00:00.000"
+              ? dayjs(values.startAt).format("YYYY-MM-DD") + "T00:00:00.000Z"
               : "";
             const field = values.field.join(", ");
             await setCreateProject({
@@ -89,8 +82,8 @@ export default function NewProject() {
               startAt,
               endAt,
               field,
-              coordLat: coord[0],
-              coordLng: coord[1],
+              latitude: coord[0],
+              longitude: coord[1],
             }).unwrap();
             initPage("recentProject");
             navigate(`/home/recent/project`);
@@ -137,12 +130,7 @@ export default function NewProject() {
           {...form.getInputProps("endAt")}
         />
 
-        <Checkbox
-          my={10}
-          label="진행 장소"
-          {...form.getInputProps("hasLocation", { type: "checkbox" })}
-        />
-        <div hidden={!form.values.hasLocation}>
+        <div>
           <MapInfo coord={coord} setCoord={setCoord} />
         </div>
 

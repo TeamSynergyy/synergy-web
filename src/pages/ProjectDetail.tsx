@@ -58,8 +58,8 @@ export default function ProjectDetail() {
   const dday = Math.floor(today.diff(startAt, "day", true));
 
   const staticMapCoords = {
-    lat: project?.coordLat || 0,
-    lng: project?.coordLng || 0,
+    lat: project?.location.x || 0,
+    lng: project?.location.y || 0,
   };
 
   const handleEdit = async () => {
@@ -171,7 +171,7 @@ export default function ProjectDetail() {
               style={{
                 position: "relative",
                 width: "100%",
-                paddingBottom: "56.25%", // This maintains a 1:1 aspect ratio
+                paddingBottom: "56.25%",
                 overflow: "hidden",
               }}
             >

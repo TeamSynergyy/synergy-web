@@ -6,22 +6,22 @@ import PostSkeleton from "components/post/PostSkeleton";
 import ProjectCard from "components/project/ProjectCard";
 
 export default function RecentProject() {
-  const [end, setEnd] = useState<null | number>(null);
+  const [end, setEnd] = useState<string | number>("");
   const { data, isLoading, isSuccess, isError, error } =
     api.useGetRecentProjectsQuery(end);
 
   const { ref, entry } = useIntersection();
 
-  const isLast = data?.next === false;
+  const hasNext = data?.next;
 
   const handleEnd = () => {
-    if (!data?.content) return;
-    setEnd(data?.content[data?.content.length - 1].projectId);
+    if (data?.content)
+      setEnd(data?.content[data?.content.length - 1].projectId);
   };
 
   useEffect(() => {
     if (entry?.isIntersecting && isSuccess) handleEnd();
-    if (isLast) return;
+    if (!hasNext) return;
   }, [entry?.isIntersecting, isSuccess]);
 
   let content;
@@ -35,11 +35,11 @@ export default function RecentProject() {
     console.error(error);
     content = <p>error! check the console message</p>;
   }
-
+  console.log(data?.next);
   return (
     <>
       <Stack w="100%">{content}</Stack>
-      <Stack ref={ref} w="100%" mt="md" display={isLast ? "none" : "flex"}>
+      <Stack ref={ref} w="100%" mt="md" display={!hasNext ? "none" : "flex"}>
         <PostSkeleton />
         <PostSkeleton />
         <Button m="auto" onClick={handleEnd}>

@@ -7,22 +7,21 @@ import PostSkeleton from "components/post/PostSkeleton";
 import HomeTab from "components/ui/HomeTab";
 
 export default function Following() {
-  const [end, setEnd] = useState<null | number>(null);
+  const [end, setEnd] = useState<string | number>("");
   const { data, isLoading, isSuccess, isError, error } =
-    api.useGetFollowingContentsQuery(end);
+    api.useGetFollowingPostsQuery(end);
 
   const { ref, entry } = useIntersection();
 
-  const isLast = data?.next === false;
+  const hasNext = data?.next;
 
   const handleEnd = () => {
-    if (!data?.content) return;
-    setEnd(data?.content[data?.content.length - 1].postId);
+    if (data?.content) setEnd(data?.content[data?.content.length - 1].postId);
   };
 
   useEffect(() => {
     if (entry?.isIntersecting && isSuccess) handleEnd();
-    if (isLast) return;
+    if (!hasNext) return;
   }, [entry?.isIntersecting, isSuccess]);
 
   let content;
@@ -30,17 +29,17 @@ export default function Following() {
     content = <p>"Loading..."</p>;
   } else if (isSuccess) {
     // 포스트가 많아졌을 때 느려짐. <List />를 추가하도록 리팩토링 필요
-    content = data?.content.map((post, i) => <PostCard key={i} post={post} />);
+    content = data.content.map((post, i) => <PostCard key={i} post={post} />);
   } else if (isError) {
     console.error(error);
     content = <p>error! check the console message</p>;
   }
-
+  console.log(data?.next);
   return (
     <>
       <HomeTab />
       <Stack w="100%">{content}</Stack>
-      <Stack ref={ref} w="100%" mt="md" display={isLast ? "none" : "flex"}>
+      <Stack ref={ref} w="100%" mt="md" display={!hasNext ? "none" : "flex"}>
         <PostSkeleton />
         <PostSkeleton />
         <Button m="auto" onClick={handleEnd}>

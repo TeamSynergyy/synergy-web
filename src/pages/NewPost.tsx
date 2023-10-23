@@ -10,10 +10,23 @@ import {
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { api } from "app/api";
+import ImageUploadCard from "components/ui/ImageUploadCard";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Post } from "types";
 
 export default function NewPost() {
   const setCreatePost = api.useCreatePostMutation()[0];
+
+  const [images, setImages] = useState<File[]>([]);
+
+  const addImage = (image: File) => {
+    setImages((prev) => [...prev, image]);
+  };
+
+  const removeImage = (index: number) => {
+    setImages((prev) => prev.filter((_, i) => i !== index));
+  };
 
   const navigate = useNavigate();
   const [opened, { open, close }] = useDisclosure(false);
@@ -41,7 +54,23 @@ export default function NewPost() {
       <form
         onSubmit={form.onSubmit(async (values) => {
           try {
-            await setCreatePost(values).unwrap();
+            const formData = new FormData();
+            images.forEach((image) => {
+              formData.append("files", image, image.name);
+            });
+
+            // 다른 필드들도 함께 추가
+            formData.append("title", values.title);
+            formData.append("content", values.content);
+
+            try {
+              await setCreatePost(formData).unwrap();
+              navigate("/home/recent/post");
+            } catch (e) {
+              open();
+              console.error(e);
+            }
+
             navigate("/home/recent/post");
           } catch (e) {
             open();
@@ -61,6 +90,18 @@ export default function NewPost() {
           placeholder="content"
           {...form.getInputProps("content")}
         />
+
+        <Group mt={10}>
+          {Array.from({ length: 5 }).map((_, index) => (
+            <ImageUploadCard
+              key={index}
+              visible={index <= images.length}
+              imageFile={images[index]}
+              onImageChange={(file) => addImage(file)}
+              onImageRemove={() => removeImage(index)}
+            />
+          ))}
+        </Group>
 
         <Group position="right" mt="md">
           <Button type="submit">Submit</Button>

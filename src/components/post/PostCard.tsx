@@ -18,6 +18,8 @@ import PostLike from "./PostLike";
 import { useRef } from "react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import utc from "dayjs/plugin/utc";
+import ImageCardModal from "components/ui/ImageCardModal";
 
 const useStyles = createStyles((theme) => ({
   card: {
@@ -40,7 +42,13 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-export default function PostCard({ post }: { post: Post }) {
+export default function PostCard({
+  post,
+  isDetail = false,
+}: {
+  post: Post;
+  isDetail?: boolean;
+}) {
   const navigate = useNavigate();
   const { classes } = useStyles();
   const setDeletePost = api.useDeletePostMutation()[0];
@@ -66,8 +74,9 @@ export default function PostCard({ post }: { post: Post }) {
   if (!post) return null;
 
   dayjs.extend(relativeTime);
+  dayjs.extend(utc);
   return (
-    <Card withBorder radius="md" p="md" className={classes.card}>
+    <Card withBorder={!isDetail} radius="md" p="md" className={classes.card}>
       <Card.Section className={classes.section}>
         <Group position="apart">
           <Group>
@@ -77,7 +86,7 @@ export default function PostCard({ post }: { post: Post }) {
             <Text>{post.authorName}</Text>
 
             <Text fz="sm" c="gray">
-              {dayjs(post.createAt).fromNow()}
+              {dayjs.utc(post.createAt?.replace("Z", "")).fromNow()}
             </Text>
           </Group>
 
@@ -118,13 +127,20 @@ export default function PostCard({ post }: { post: Post }) {
           </Text>
         </Spoiler>
       </Card.Section>
+      {post.imagesUrl && (
+        <Card.Section className={classes.section}>
+          <ImageCardModal images={post.imagesUrl} />
+        </Card.Section>
+      )}
 
       <Card.Section className={classes.section}>
         <Flex w="100%" justify="space-between" align="center">
           <PostLike {...post} />
-          <ActionIcon onClick={() => navigate(`/post/${post.postId}`)}>
-            <IconMessage size="1.25rem" />
-          </ActionIcon>
+          {!isDetail && (
+            <ActionIcon onClick={() => navigate(`/post/${post.postId}`)}>
+              <IconMessage size="1.25rem" />
+            </ActionIcon>
+          )}
         </Flex>
       </Card.Section>
     </Card>
