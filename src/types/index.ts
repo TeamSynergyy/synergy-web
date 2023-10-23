@@ -42,7 +42,7 @@ interface Comment {
   commentId: number;
   userId: string;
   postId: number;
-  content: string;
+  comment: string;
   updateAt: string;
 }
 

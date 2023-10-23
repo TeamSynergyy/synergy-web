@@ -3,7 +3,7 @@ import { api } from "app/api";
 import dayjs from "dayjs";
 import { Comment } from "types";
 
-export default function CommentCard({ userId, content, updateAt }: Comment) {
+export default function CommentCard({ userId, comment, updateAt }: Comment) {
   const { data: user } = api.useGetUserQuery(userId);
   const fromNow = dayjs(updateAt + "Z").fromNow();
 
@@ -18,7 +18,7 @@ export default function CommentCard({ userId, content, updateAt }: Comment) {
           </Group>
 
           <Text w="100%" sx={{ whiteSpace: "pre-wrap" }}>
-            {content}
+            {comment}
           </Text>
         </Stack>
       </Flex>
