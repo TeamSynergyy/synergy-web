@@ -304,8 +304,8 @@ export const api = createApi({
     getPostComments: build.query<Comment[], number>({
       query: (postId) => `/comments/${postId}`,
       transformResponse: (response: {
-        body: { "comment list from post": { content: Comment[] } };
-      }) => response.body["comment list from post"].content,
+        body: { "comment list from post": Comment[] };
+      }) => response.body["comment list from post"],
       providesTags: (result, error, arg) =>
         result
           ? [
