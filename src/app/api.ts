@@ -1,22 +1,67 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import {
+  BaseQueryApi,
+  FetchArgs,
+  createApi,
+  fetchBaseQuery,
+} from "@reduxjs/toolkit/query/react";
 import { Post, Project, User, ChatRoom, Comment } from "types";
-import { RootState } from "./store";
+import { RootState, store } from "./store";
+import { setAccessToken } from "./authSlice";
+import axios from "axios";
+
+const baseQuery = fetchBaseQuery({
+  baseUrl: import.meta.env.DEV
+    ? "/api/v1"
+    : import.meta.env.VITE_API_URL + "/api/v1",
+
+  prepareHeaders: (headers, { getState }) => {
+    const token = (getState() as RootState).auth.token;
+    if (token) {
+      headers.set("Authorization", `Bearer ${token}`);
+    }
+    return headers;
+  },
+});
+
+const baseQueryWithReauth = async (
+  args: string | FetchArgs,
+  api: BaseQueryApi,
+  extraOptions: object
+) => {
+  let result = await baseQuery(args, api, extraOptions);
+
+  if (result.error && result.error.status === 401) {
+    // 401 에러 감지
+
+    const state = store.getState();
+    const token = state.auth.token;
+    const refreshResult = await axios.get(
+      import.meta.env.VITE_API_URL + "/api/v1/auth/refresh",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Credentials: "include",
+        },
+      }
+    );
+
+    if (refreshResult.data) {
+      // 토큰 갱신 성공
+      const newAccessToken = refreshResult.data;
+      // 새 액세스 토큰을 상태에 저장
+      api.dispatch(setAccessToken(newAccessToken));
+      // 원래 요청을 다시 시도
+      result = await baseQuery(args, api, extraOptions);
+    } else {
+      // 토큰 갱신 실패, 로그아웃 등의 처리
+    }
+  }
+
+  return result;
+};
 
 export const api = createApi({
-  baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.DEV
-      ? "/api/v1"
-      : import.meta.env.VITE_API_URL + "/api/v1",
-
-    prepareHeaders: (headers, { getState }) => {
-      const token = (getState() as RootState).auth.token;
-      if (token) {
-        headers.set("Authorization", `Bearer ${token}`);
-      }
-      return headers;
-    },
-  }),
-
+  baseQuery: baseQueryWithReauth,
   tagTypes: [
     "MyInfo",
     "Post",
@@ -34,8 +79,6 @@ export const api = createApi({
     "FollowingPosts",
   ],
   endpoints: (build) => ({
-    // Auth
-
     // MyInfo
     getMyInfo: build.query<User, null>({
       query: () => "/users/me/info",
