@@ -1,23 +1,49 @@
-import { Stack, Text } from "@mantine/core";
-import { SseContext } from "app/SseContext";
+import PostCard from "components/post/PostCard";
+import { Button, Stack } from "@mantine/core";
+import { api } from "app/api";
+import { useEffect, useState } from "react";
+import { useIntersection } from "@mantine/hooks";
+import PostSkeleton from "components/post/PostSkeleton";
 import HomeTab from "components/ui/HomeTab";
-import { useContext } from "react";
-import { Link } from "react-router-dom";
+
 export default function ForYou() {
-  const es = useContext(SseContext);
-  console.log(es);
+  const [end, setEnd] = useState<string | number>("");
+  const { data, isLoading, isSuccess, isError, error } =
+    api.useGetRecommendedPostsQuery(end);
+
+  const { ref, entry } = useIntersection();
+
+  const hasNext = data?.next;
+
+  const handleEnd = () => {
+    if (data?.content) setEnd(data?.content[data?.content.length - 1].postId);
+  };
+
+  useEffect(() => {
+    if (entry?.isIntersecting && isSuccess) handleEnd();
+    if (!hasNext) return;
+  }, [entry?.isIntersecting, isSuccess]);
+
+  let content;
+  if (isLoading) {
+    content = <p>"Loading..."</p>;
+  } else if (isSuccess) {
+    content = data.content.map((post, i) => <PostCard key={i} post={post} />);
+  } else if (isError) {
+    console.error(error);
+    content = <p>error! check the console message</p>;
+  }
+  console.log(data?.next);
   return (
     <>
       <HomeTab />
-      <Stack
-        mih={300}
-        sx={(theme) => ({
-          backgroundColor:
-            theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.white,
-        })}
-        align="center"
-      >
-        <Text> 개발중 </Text>
+      <Stack w="100%">{content}</Stack>
+      <Stack ref={ref} w="100%" mt="md" display={!hasNext ? "none" : "flex"}>
+        <PostSkeleton />
+        <PostSkeleton />
+        <Button m="auto" onClick={handleEnd}>
+          더 보기
+        </Button>
       </Stack>
     </>
   );

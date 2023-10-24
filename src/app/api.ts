@@ -193,36 +193,6 @@ export const api = createApi({
       providesTags: (result, error, arg) => [{ type: "Follows", id: arg }],
     }),
 
-    getFollowingPosts: build.query<
-      { content: Post[]; next: boolean },
-      number | string
-    >({
-      query: (end) => `/posts/feed?end=${end}`,
-      transformResponse: (response: {
-        body: { "post feed list": { content: Post[]; next: boolean } };
-      }) => response.body["post feed list"],
-      serializeQueryArgs: ({ endpointName }) => {
-        return endpointName;
-      },
-      merge: (currentCache, newItems) => {
-        currentCache.content.push(...newItems.content);
-        currentCache.next = newItems.next;
-      },
-      forceRefetch({ currentArg, previousArg }) {
-        return currentArg !== previousArg;
-      },
-      providesTags: (result, error, arg) =>
-        result
-          ? [
-              ...result.content.map(({ postId }) => ({
-                type: "FollowingPosts" as const,
-                id: String(postId),
-              })),
-              { type: "FollowingPosts", id: "LIST" },
-            ]
-          : [{ type: "FollowingPosts", id: "LIST" }],
-    }),
-
     createChatRoom: build.mutation<void, string>({
       query: (userId) => ({
         url: `/chat/create/${userId}`,
@@ -289,6 +259,66 @@ export const api = createApi({
               { type: "RecentPosts", id: "LIST" },
             ]
           : [{ type: "RecentPosts", id: "LIST" }],
+    }),
+
+    getFollowingPosts: build.query<
+      { content: Post[]; next: boolean },
+      number | string
+    >({
+      query: (end) => `/posts/feed?end=${end}`,
+      transformResponse: (response: {
+        body: { "post feed list": { content: Post[]; next: boolean } };
+      }) => response.body["post feed list"],
+      serializeQueryArgs: ({ endpointName }) => {
+        return endpointName;
+      },
+      merge: (currentCache, newItems) => {
+        currentCache.content.push(...newItems.content);
+        currentCache.next = newItems.next;
+      },
+      forceRefetch({ currentArg, previousArg }) {
+        return currentArg !== previousArg;
+      },
+      providesTags: (result, error, arg) =>
+        result
+          ? [
+              ...result.content.map(({ postId }) => ({
+                type: "FollowingPosts" as const,
+                id: String(postId),
+              })),
+              { type: "FollowingPosts", id: "LIST" },
+            ]
+          : [{ type: "FollowingPosts", id: "LIST" }],
+    }),
+
+    getRecommendedPosts: build.query<
+      { content: Post[]; next: boolean },
+      number | string
+    >({
+      query: (end) => `/posts/recommend?end=${end}`,
+      transformResponse: (response: {
+        body: { "post feed list": { content: Post[]; next: boolean } };
+      }) => response.body["post feed list"],
+      serializeQueryArgs: ({ endpointName }) => {
+        return endpointName;
+      },
+      merge: (currentCache, newItems) => {
+        currentCache.content.push(...newItems.content);
+        currentCache.next = newItems.next;
+      },
+      forceRefetch({ currentArg, previousArg }) {
+        return currentArg !== previousArg;
+      },
+      providesTags: (result, error, arg) =>
+        result
+          ? [
+              ...result.content.map(({ postId }) => ({
+                type: "FollowingPosts" as const,
+                id: String(postId),
+              })),
+              { type: "FollowingPosts", id: "LIST" },
+            ]
+          : [{ type: "FollowingPosts", id: "LIST" }],
     }),
 
     deletePost: build.mutation<void, number>({
