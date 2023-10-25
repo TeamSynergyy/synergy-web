@@ -43,6 +43,7 @@ export default function Auth() {
               href={`${hostUrl}/oauth2/authorization/${providerId}?redirect_uri=${window.location.origin}/oauth/redirect`}
             >
               <Button
+                disabled={providerId !== "google"}
                 fullWidth
                 size="md"
                 radius="xl"

@@ -35,9 +35,7 @@ const TrendingPosts = () => {
     isSuccess,
     isError,
     error,
-  } = api.useGetRecentPostsQuery("");
-
-  const theme = useMantineTheme();
+  } = api.useGetTrendingPostsQuery(null);
 
   const { classes } = useStyles();
   const mediaQuery = useMediaQuery("(max-width: 1200px)");
@@ -51,7 +49,7 @@ const TrendingPosts = () => {
       {isLoading ? (
         <Text>Loading...</Text>
       ) : (
-        posts?.content.slice(0, 5).map((post, i) => (
+        posts?.slice(0, 5).map((post, i) => (
           <Link to={`/post/${post.postId}`} style={{ textDecoration: "none" }}>
             <Card className={classes.card} w="100%" p="xs" h="auto">
               <Text>

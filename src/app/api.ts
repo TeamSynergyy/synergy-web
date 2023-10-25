@@ -114,8 +114,11 @@ export const api = createApi({
       providesTags: [{ type: "LikedPostIds", id: "LIST" }],
     }),
 
-    getMyLikedProjects: build.query<{ projectIds: number[] }, null>({
+    getMyLikedProjects: build.query<{ content: Project[] }, null>({
       query: () => "/projects/me/likes",
+      transformResponse: (response: {
+        body: { "liked project list": { content: Project[] } };
+      }) => response.body["liked project list"],
       providesTags: [{ type: "LikedProjectIds", id: "LIST" }],
     }),
 
@@ -323,6 +326,13 @@ export const api = createApi({
               { type: "FollowingPosts", id: "LIST" },
             ]
           : [{ type: "FollowingPosts", id: "LIST" }],
+    }),
+
+    getTrendingPosts: build.query<Post[], null>({
+      query: () => `/posts/week`,
+      transformResponse: (response: {
+        body: { "week best posts": { content: Post[] } };
+      }) => response.body["week best posts"].content,
     }),
 
     deletePost: build.mutation<void, number>({
