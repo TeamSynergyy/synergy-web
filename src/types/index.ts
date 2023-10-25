@@ -3,7 +3,9 @@ interface Post {
   title: string;
   content: string;
   authorName: string;
+
   userId: string;
+
   authorAvatar: string;
   imagesUrl: string[];
   likes: number;

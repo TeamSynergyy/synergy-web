@@ -44,6 +44,7 @@ export default function ForYou() {
         <Button m="auto" onClick={handleEnd}>
           더 보기
         </Button>
+
       </Stack>
     </>
   );

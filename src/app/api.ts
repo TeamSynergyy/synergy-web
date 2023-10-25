@@ -52,6 +52,7 @@ const baseQueryWithReauth = async (
       }
     );
 
+
     if (refreshResult.body?.token) {
       const newAccessToken = refreshResult.body.token;
       api.dispatch(setAccessToken(newAccessToken));
@@ -59,6 +60,7 @@ const baseQueryWithReauth = async (
     }
 
     if (refreshResult.header?.code === 400) {
+
       window.location.href = "/auth";
     }
   }
@@ -119,11 +121,13 @@ export const api = createApi({
       providesTags: [{ type: "LikedProjectIds", id: "LIST" }],
     }),
 
+
     getMyAppliedProjects: build.query<number[], null>({
       query: () => "/applies/me",
       transformResponse: (response: {
         body: { "me applied projects": number[] };
       }) => response.body["me applied projects"],
+
       providesTags: [{ type: "AppliedProjectId", id: "LIST" }],
     }),
 
@@ -194,6 +198,36 @@ export const api = createApi({
     >({
       query: (id) => `/follows/${id}`,
       providesTags: (result, error, arg) => [{ type: "Follows", id: arg }],
+    }),
+
+    getFollowingPosts: build.query<
+      { content: Post[]; next: boolean },
+      number | string
+    >({
+      query: (end) => `/posts/feed?end=${end}`,
+      transformResponse: (response: {
+        body: { "post feed list": { content: Post[]; next: boolean } };
+      }) => response.body["post feed list"],
+      serializeQueryArgs: ({ endpointName }) => {
+        return endpointName;
+      },
+      merge: (currentCache, newItems) => {
+        currentCache.content.push(...newItems.content);
+        currentCache.next = newItems.next;
+      },
+      forceRefetch({ currentArg, previousArg }) {
+        return currentArg !== previousArg;
+      },
+      providesTags: (result, error, arg) =>
+        result
+          ? [
+              ...result.content.map(({ postId }) => ({
+                type: "FollowingPosts" as const,
+                id: String(postId),
+              })),
+              { type: "FollowingPosts", id: "LIST" },
+            ]
+          : [{ type: "FollowingPosts", id: "LIST" }],
     }),
 
     createChatRoom: build.mutation<void, string>({
@@ -382,8 +416,10 @@ export const api = createApi({
 
     getProject: build.query<Project, { id: number }>({
       query: ({ id }) => `/projects/${id}`,
+
       transformResponse: (response: { body: { "project get": Project } }) =>
         response.body["project get"],
+
       providesTags: (result) =>
         result
           ? [{ type: "Project", id: String(result.projectId) }]

@@ -44,10 +44,12 @@ export default function ProjectDetail() {
 
   const { data: appliedProjectIds } = api.useGetMyAppliedProjectsQuery(null);
   const applyProject = api.useApplyProjectMutation()[0];
+
   const isApplied = appliedProjectIds?.includes(id);
 
   const isLeader = project?.leaderId === myId;
   const isTeamMember = project?.teamUserIds?.includes(myId || "");
+
   const applicantsIdsQuery = api.useGetApplicantsIdsQuery(
     project?.projectId || 0
   );
@@ -58,8 +60,10 @@ export default function ProjectDetail() {
   const dday = Math.floor(today.diff(startAt, "day", true));
 
   const staticMapCoords = {
+
     lat: project?.location.y || 0,
     lng: project?.location.x || 0,
+
   };
 
   const handleEdit = async () => {
