@@ -44,10 +44,10 @@ export default function ProjectDetail() {
 
   const { data: appliedProjectIds } = api.useGetMyAppliedProjectsQuery(null);
   const applyProject = api.useApplyProjectMutation()[0];
-  const isApplied = appliedProjectIds?.projectIds.includes(id);
+  const isApplied = appliedProjectIds?.includes(id);
 
   const isLeader = project?.leaderId === myId;
-  const isTeamMember = project?.teamUserIds.includes(myId || "");
+  const isTeamMember = project?.teamUserIds?.includes(myId || "");
   const applicantsIdsQuery = api.useGetApplicantsIdsQuery(
     project?.projectId || 0
   );

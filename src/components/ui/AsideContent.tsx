@@ -1,5 +1,11 @@
+import TrendingPosts from "components/post/TrendingPosts";
+
 function AsideContent() {
-  return <></>;
+  return (
+    <>
+      <TrendingPosts />
+    </>
+  );
 }
 
 export default AsideContent;

@@ -54,6 +54,8 @@ export default function PostCard({
   const setDeletePost = api.useDeletePostMutation()[0];
   const spoilerControlRef = useRef<HTMLButtonElement>(null);
 
+  const { data: author } = api.useGetUserQuery(post.userId);
+
   const closeSpoilerText = "숨기기";
   const openSpoiler = () => {
     if (
@@ -81,7 +83,7 @@ export default function PostCard({
         <Group position="apart">
           <Group>
             <Link to={`/people/${post.userId}`}>
-              <Avatar src={post.authorAvatar} radius="xl" />
+              <Avatar src={author?.profileImageUrl} radius="xl" />
             </Link>
             <Text>{post.authorName}</Text>
 

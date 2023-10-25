@@ -52,13 +52,13 @@ const baseQueryWithReauth = async (
       }
     );
 
-    if (refreshResult.body.token) {
+    if (refreshResult.body?.token) {
       const newAccessToken = refreshResult.body.token;
       api.dispatch(setAccessToken(newAccessToken));
       result = await baseQuery(args, api, extraOptions);
     }
 
-    if (refreshResult.header.code !== 200) {
+    if (refreshResult.header?.code === 400) {
       window.location.href = "/auth";
     }
   }
@@ -119,8 +119,11 @@ export const api = createApi({
       providesTags: [{ type: "LikedProjectIds", id: "LIST" }],
     }),
 
-    getMyAppliedProjects: build.query<{ projectIds: number[] }, null>({
+    getMyAppliedProjects: build.query<number[], null>({
       query: () => "/applies/me",
+      transformResponse: (response: {
+        body: { "me applied projects": number[] };
+      }) => response.body["me applied projects"],
       providesTags: [{ type: "AppliedProjectId", id: "LIST" }],
     }),
 
@@ -379,6 +382,8 @@ export const api = createApi({
 
     getProject: build.query<Project, { id: number }>({
       query: ({ id }) => `/projects/${id}`,
+      transformResponse: (response: { body: { "project get": Project } }) =>
+        response.body["project get"],
       providesTags: (result) =>
         result
           ? [{ type: "Project", id: String(result.projectId) }]
