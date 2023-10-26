@@ -26,6 +26,8 @@ import ProjectLike from "components/project/ProjectLike";
 import dayjs from "dayjs";
 import ApplicantBar from "components/user/ApplicantBar";
 import { StaticMap } from "react-kakao-maps-sdk";
+import ProjectCard from "components/project/ProjectCard";
+import UserCard from "components/user/UserCard";
 
 const avatars = [
   "https://avatars.githubusercontent.com/u/10353856?s=460&u=88394dfd67727327c1f7670a1764dc38a8a24831&v=4",
@@ -34,13 +36,12 @@ const avatars = [
 ];
 
 export default function ProjectDetail() {
-  const navigate = useNavigate();
   const id = parseInt(useParams().id as string);
   const { data: project, isFetching } = api.useGetProjectQuery({ id });
   const [opened, { open, close }] = useDisclosure(false);
 
   const myId = api.useGetMyInfoQuery(null).data?.userId;
-  const deleteProject = api.useDeleteProjectMutation()[0];
+  const { data: leader } = api.useGetUserQuery(project?.leaderId || "");
 
   const { data: appliedProjectIds } = api.useGetMyAppliedProjectsQuery(null);
   const applyProject = api.useApplyProjectMutation()[0];
@@ -60,28 +61,8 @@ export default function ProjectDetail() {
   const dday = Math.floor(today.diff(startAt, "day", true));
 
   const staticMapCoords = {
-
     lat: project?.location.y || 0,
     lng: project?.location.x || 0,
-
-  };
-
-  const handleEdit = async () => {
-    try {
-      await deleteProject({ id }).unwrap();
-      navigate("/");
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const handleDelete = async () => {
-    try {
-      await deleteProject({ id }).unwrap();
-      navigate("/");
-    } catch (e) {
-      console.error(e);
-    }
   };
 
   const handleApply = async () => {
@@ -99,72 +80,7 @@ export default function ProjectDetail() {
   return (
     <>
       <Box w="100%">
-        <Group position="apart">
-          <Badge>D{dday < 0 ? dday : `+${dday}`}</Badge>
-          {isLeader && (
-            <Menu withinPortal position="bottom-end" shadow="sm">
-              <Menu.Target>
-                <ActionIcon>
-                  <IconDots size="1rem" />
-                </ActionIcon>
-              </Menu.Target>
-
-              <Menu.Dropdown>
-                <Menu.Item
-                  icon={<IconEdit size={rem(14)} />}
-                  onClick={handleEdit}
-                >
-                  수정하기
-                </Menu.Item>
-                <Menu.Item
-                  icon={<IconTrash size={rem(14)} />}
-                  color="red"
-                  onClick={handleDelete}
-                >
-                  삭제하기
-                </Menu.Item>
-              </Menu.Dropdown>
-            </Menu>
-          )}
-        </Group>
-
-        <Title fz="lg" fw={500} mt="md">
-          {project.name}
-        </Title>
-        <Text c="dark" mt={5}>
-          {project.content}
-        </Text>
-
-        <Text c="dimmed" fz="sm" mt="md">
-          분야:{" "}
-          <Text
-            span
-            fw={500}
-            sx={(theme) => ({
-              color: theme.colorScheme === "dark" ? theme.white : theme.black,
-            })}
-          >
-            {project.field}
-          </Text>
-        </Text>
-
-        <Text>
-          {project.startAt?.split("T")[0]} ~{" "}
-          {project.endAt ? project.endAt.split("T")[0] : ""}
-        </Text>
-
-        <Progress value={(23 / 36) * 100} mt={5} />
-
-        <Group position="apart" mt="md">
-          <ProjectLike {...{ id, likes: project.likes, isPost: false }} />
-
-          <Avatar.Group spacing="sm">
-            <Avatar src={avatars[0]} radius="xl" />
-            <Avatar src={avatars[1]} radius="xl" />
-            <Avatar src={avatars[2]} radius="xl" />
-            <Avatar radius="xl">+5</Avatar>
-          </Avatar.Group>
-        </Group>
+        <ProjectCard project={project} isDetail />
 
         {staticMapCoords.lat !== 0 && (
           <>
@@ -189,12 +105,19 @@ export default function ProjectDetail() {
                   height: "100%",
                 }}
                 marker={{ position: staticMapCoords }}
-                level={4}
+                level={3}
               />
             </div>
           </>
         )}
-
+        {leader && (
+          <Stack spacing={0}>
+            <Text c="dimmed" fz="sm" mt="md">
+              프로젝트 리더
+            </Text>
+            <UserCard {...leader} />
+          </Stack>
+        )}
         {!isTeamMember && (
           <Flex justify="right" mt={10}>
             <Button onClick={handleApply}>
@@ -219,6 +142,7 @@ export default function ProjectDetail() {
           </Stack>
         )}
       </Box>
+
       <Dialog
         opened={opened}
         withCloseButton

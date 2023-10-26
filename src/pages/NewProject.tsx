@@ -24,9 +24,9 @@ const data = ["웹개발", "앱개발", "머신러닝", "인공지능"];
 
 export default function NewProject() {
   const setCreateProject = api.useCreateProjectMutation()[0];
-  const { initPage } = usePage();
   const navigate = useNavigate();
   const [opened, { open, close }] = useDisclosure(false);
+  const [mapOpened, setMapOpen] = useState(true);
   const [coord, setCoord] = useState<[number, number]>([0, 0]);
   const form = useForm({
     initialValues: {
@@ -66,16 +66,15 @@ export default function NewProject() {
             const startAt =
               dayjs(values.startAt).format("YYYY-MM-DD") + "T00:00:00.000Z";
             const endAt = values.endAt
-              ? dayjs(values.startAt).format("YYYY-MM-DD") + "T00:00:00.000Z"
+              ? dayjs(values.endAt).format("YYYY-MM-DD") + "T00:00:00.000Z"
               : "";
             await setCreateProject({
               ...values,
               startAt,
               endAt,
-              latitude: coord[0],
-              longitude: coord[1],
+              latitude: mapOpened ? coord[0] : 0,
+              longitude: mapOpened ? coord[1] : 0,
             }).unwrap();
-            initPage("recentProject");
             navigate(`/home/recent/project`);
           } catch (e) {
             open();
@@ -122,7 +121,12 @@ export default function NewProject() {
 
         <div>
           <br />
-          <MapInfo coord={coord} setCoord={setCoord} />
+          <Checkbox
+            label="장소 없음"
+            checked={!mapOpened}
+            onChange={() => setMapOpen(!mapOpened)}
+          />
+          {mapOpened && <MapInfo coord={coord} setCoord={setCoord} />}
         </div>
 
         <Group position="right" mt="md">

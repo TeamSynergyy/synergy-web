@@ -31,9 +31,7 @@ export default function PostLike({
 
   const like = api.useLikePostMutation()[0];
 
-  const [tempLikes, setTempLikes] = useState(likes);
   const handleLike = () => {
-    isLiked ? setTempLikes(tempLikes - 1) : setTempLikes(tempLikes + 1);
     like([postId, likeType]);
   };
 
@@ -50,8 +48,8 @@ export default function PostLike({
           <IconHeart size="1.1rem" className={classes.likeIcon} stroke={1.5} />
         )}
       </ActionIcon>
-      {tempLikes > 0 ? (
-        <Text className={classes.likesNumber}>좋아요 {tempLikes}</Text>
+      {likes > 0 ? (
+        <Text className={classes.likesNumber}>좋아요 {likes}</Text>
       ) : null}
     </Group>
   );

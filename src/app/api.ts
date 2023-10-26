@@ -501,24 +501,48 @@ export const api = createApi({
       { content: Post[]; totalPages: number; totalElements: number },
       [string, number]
     >({
-      query: ([keyword, page]) =>
-        `/posts/search?keyword=${keyword}&page=${page}`,
+      query: ([search, page]) => `/posts?search=${search}&page=${page}`,
+      transformResponse: (response: {
+        body: {
+          "search Post list": {
+            content: Post[];
+            totalPages: number;
+            totalElements: number;
+          };
+        };
+      }) => response.body["search Post list"],
     }),
 
     searchProjects: build.query<
       { content: Project[]; totalPages: number; totalElements: number },
       [string, number]
     >({
-      query: ([keyword, page]) =>
-        `/projects/search?keyword=${keyword}&page=${page}`,
+      query: ([search, page]) => `/projects?search=${search}&page=${page}`,
+      transformResponse: (response: {
+        body: {
+          "project search result": {
+            content: Project[];
+            totalPages: number;
+            totalElements: number;
+          };
+        };
+      }) => response.body["project search result"],
     }),
 
     searchUsers: build.query<
       { content: User[]; totalPages: number; totalElements: number },
       [string, number]
     >({
-      query: ([keyword, page]) =>
-        `/users/search?keyword=${keyword}&page=${page}`,
+      query: ([search, page]) => `/users?search=${search}&page=${page}`,
+      transformResponse: (response: {
+        body: {
+          "search Post list": {
+            content: User[];
+            totalPages: number;
+            totalElements: number;
+          };
+        };
+      }) => response.body["search Post list"],
     }),
 
     getPostsByUser: build.query<

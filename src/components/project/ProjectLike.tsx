@@ -32,9 +32,7 @@ export default function ProjectLike({
 
   const like = api.useLikeProjectMutation()[0];
 
-  const [tempLikes, setTempLikes] = useState(likes);
   const handleLike = () => {
-    isLiked ? setTempLikes(tempLikes - 1) : setTempLikes(tempLikes + 1);
     like([id, likeType]);
   };
   return (

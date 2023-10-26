@@ -1,6 +1,8 @@
 import { Avatar, Text, Button, Paper } from "@mantine/core";
+import { Link } from "react-router-dom";
 
 interface UserCardProps {
+  userId: string;
   profileImageUrl: string;
   username: string;
   email: string;
@@ -8,6 +10,7 @@ interface UserCardProps {
 }
 
 export default function UserCard({
+  userId,
   profileImageUrl,
   username,
   email,
@@ -30,10 +33,11 @@ export default function UserCard({
       <Text ta="center" c="dimmed" fz="sm">
         {email} • {major}
       </Text>
-
-      <Button variant="default" fullWidth mt="md">
-        프로필 보기
-      </Button>
+      <Link to={`/people/${userId}`}>
+        <Button variant="default" fullWidth mt="md">
+          프로필 보기
+        </Button>
+      </Link>
     </Paper>
   );
 }

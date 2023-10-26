@@ -18,7 +18,8 @@ import FloatingActionButton from "./FloatingActionButton";
 import { SseProvider } from "app/SseContext";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "app/store";
-import { toggleNavbar } from "./layoutSlice";
+import { setNavbarOpen, toggleNavbar } from "./layoutSlice";
+import { useMediaQuery } from "@mantine/hooks";
 
 const headerLinks = [
   {
