@@ -561,10 +561,11 @@ export const api = createApi({
       },
     }),
 
-    getProjectsByUser: build.query<{ infoProjectResponses: Project[] }, string>(
-      {
-        query: (userId) => `/projects/other?userId=${userId}`,
-      }
-    ),
+    getProjectsByUser: build.query<Project[], string>({
+      query: (userId) => `/projects/other?userId=${userId}`,
+      transformResponse: (response: {
+        body: { "project list by user": { content: Project[] } };
+      }) => response.body["project list by user"].content,
+    }),
   }),
 });

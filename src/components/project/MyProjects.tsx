@@ -36,8 +36,6 @@ const MyProjects = () => {
   const { classes } = useStyles();
   const mediaQuery = useMediaQuery("(max-width: 1200px)");
 
-  const titleLength = mediaQuery ? 18 : 28;
-
   return (
     <Card shadow="sm" padding={!mediaQuery ? "md" : "xs"}>
       <Title order={5}>내 프로젝트</Title>
@@ -45,7 +43,8 @@ const MyProjects = () => {
       {isLoading ? (
         <Text>Loading...</Text>
       ) : (
-        data?.infoProjectResponses.slice(0, 5).map((project) => (
+        data &&
+        data.slice(0, 5)?.map((project) => (
           <Link
             to={`/project/${project.projectId}`}
             style={{ textDecoration: "none" }}
