@@ -5,7 +5,7 @@ import { Project } from "types";
 
 export default function UserProfileInfo({ userId }: { userId: string }) {
   const { data } = api.useGetProjectsByUserQuery(userId);
-  const projects = data?.infoProjectResponses;
+  const projects = data;
   console.log(data);
   return (
     <Stack p="xs">
