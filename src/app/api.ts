@@ -83,6 +83,8 @@ export const api = createApi({
     "ApplicantsIds",
     "PostComments",
     "FollowingPosts",
+    "RecommendedPosts",
+    "RecommendedProjects",
   ],
   endpoints: (build) => ({
     // MyInfo
@@ -320,12 +322,12 @@ export const api = createApi({
         result
           ? [
               ...result.content.map(({ postId }) => ({
-                type: "FollowingPosts" as const,
+                type: "RecommendedPosts" as const,
                 id: String(postId),
               })),
-              { type: "FollowingPosts", id: "LIST" },
+              { type: "RecommendedPosts", id: "LIST" },
             ]
-          : [{ type: "FollowingPosts", id: "LIST" }],
+          : [{ type: "RecommendedPosts", id: "LIST" }],
     }),
 
     getTrendingPosts: build.query<Post[], null>({
@@ -431,6 +433,38 @@ export const api = createApi({
               { type: "RecentProjects", id: "LIST" },
             ]
           : [{ type: "RecentProjects", id: "LIST" }],
+    }),
+
+    getRecommendedProjects: build.query<
+      { content: Project[]; next: boolean },
+      number | string
+    >({
+      query: (end) => `/projects/recommend?end=${end}`,
+      transformResponse: (response: {
+        body: {
+          "project recommend list": { content: Project[]; next: boolean };
+        };
+      }) => response.body["project recommend list"],
+      serializeQueryArgs: ({ endpointName }) => {
+        return endpointName;
+      },
+      merge: (currentCache, newItems) => {
+        currentCache.content.push(...newItems.content);
+        currentCache.next = newItems.next;
+      },
+      forceRefetch({ currentArg, previousArg }) {
+        return currentArg !== previousArg;
+      },
+      providesTags: (result, error, arg) =>
+        result
+          ? [
+              ...result.content.map(({ projectId }) => ({
+                type: "RecommendedProjects" as const,
+                id: String(projectId),
+              })),
+              { type: "RecommendedProjects", id: "LIST" },
+            ]
+          : [{ type: "RecommendedProjects", id: "LIST" }],
     }),
 
     deleteProject: build.mutation<void, { id: number }>({
