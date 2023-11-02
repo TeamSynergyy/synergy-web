@@ -24,7 +24,6 @@ import { selectCurrentToken } from "app/authSlice";
 import { useSelector } from "react-redux";
 import PostDetail from "pages/PostDetail";
 import Following from "pages/Following";
-
 import OauthRedirect from "pages/OauthRedirect";
 
 const PrivateRoutes = () => {

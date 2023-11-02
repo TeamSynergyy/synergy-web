@@ -3,9 +3,7 @@ interface Post {
   title: string;
   content: string;
   authorName: string;
-
   userId: string;
-
   authorAvatar: string;
   imagesUrl: string[];
   likes: number;
@@ -35,7 +33,11 @@ interface User {
   email: string;
   profileImageUrl: string;
   backImage: string;
+  organization: string;
   major: string;
+  minor: string;
+  interestAreas: string[];
+  skills: string[];
   temperature: number;
   bio: string;
 }

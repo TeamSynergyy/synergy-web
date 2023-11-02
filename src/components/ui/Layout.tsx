@@ -7,10 +7,14 @@ import {
   MediaQuery,
   Burger,
   useMantineTheme,
+  Modal,
+  TextInput,
+  Button,
+  Group,
 } from "@mantine/core";
 import { HeaderSearch } from "components/ui/HeaderSearch";
 import { BottomNav } from "./BottomNav";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { NavbarContent } from "./NavbarContent";
 import AsideContent from "./AsideContent";
 import { StompProvider } from "app/StompContext";
@@ -19,7 +23,10 @@ import { SseProvider } from "app/SseContext";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "app/store";
 import { setNavbarOpen, toggleNavbar } from "./layoutSlice";
-import { useMediaQuery } from "@mantine/hooks";
+import { useDisclosure, useMediaQuery } from "@mantine/hooks";
+import { api } from "app/api";
+import { useForm } from "@mantine/form";
+import { EditUserInfoModal } from "components/user/EditUserInfoModal";
 
 const headerLinks = [
   {
@@ -48,10 +55,24 @@ export default function Layout() {
   const handleToggleNavbar = () => {
     dispatch(toggleNavbar());
   };
+
+  const navigate = useNavigate();
+
   const location = useLocation();
   const isChatRoom =
     location.pathname.split("/")[1] === "chat" &&
     location.pathname.split("/")[2] !== undefined;
+
+  const { data: myInfo, isSuccess } = api.useGetMyInfoQuery(null);
+
+  if (isSuccess && !myInfo.organization)
+    return (
+      <EditUserInfoModal
+        isSignup
+        opened={true}
+        close={() => navigate("/home/foryou")}
+      />
+    );
 
   return (
     // <SseProvider>

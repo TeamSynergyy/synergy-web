@@ -1,7 +1,7 @@
 import PostCard from "components/post/PostCard";
 import { Button, Stack } from "@mantine/core";
 import { api } from "app/api";
-import { Key, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useIntersection } from "@mantine/hooks";
 import PostSkeleton from "components/post/PostSkeleton";
 import HomeTab from "components/ui/HomeTab";
