@@ -27,6 +27,12 @@ interface Project {
   leaderId: string;
 }
 
+interface ProjectNotice {
+  noticeId: number;
+  content: string;
+  updateAt: string;
+}
+
 interface User {
   userId: string;
   username: string;
@@ -36,8 +42,8 @@ interface User {
   organization: string;
   major: string;
   minor: string;
-  interestAreas: string[];
-  skills: string[];
+  interestAreas: string;
+  skills: string;
   temperature: number;
   bio: string;
 }
@@ -65,4 +71,12 @@ interface ChatMessage {
   sendTime: string;
 }
 
-export type { Post, Project, User, Comment, ChatMessage, ChatRoom };
+export type {
+  Post,
+  Project,
+  ProjectNotice,
+  User,
+  Comment,
+  ChatMessage,
+  ChatRoom,
+};

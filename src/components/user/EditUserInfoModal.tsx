@@ -20,7 +20,7 @@ export function EditUserInfoModal({
   close: () => void;
   isSignup?: boolean;
 }) {
-  const [checked, setChecked] = useState(false);
+  const [checked, setChecked] = useState(!isSignup);
   const { data: myInfo } = api.useGetMyInfoQuery(null);
   const editMyInfo = api.useEditMyInfoMutation()[0];
 
@@ -86,7 +86,7 @@ export function EditUserInfoModal({
             clearable
             {...form.getInputProps("minor")}
           />
-          <MultiSelect
+          {/* <MultiSelect
             label="관심분야"
             placeholder="관심분야를 입력하세요"
             data={interestAreasData}
@@ -101,22 +101,27 @@ export function EditUserInfoModal({
             searchable
             clearable
             {...form.getInputProps("skills")}
+          /> */}
+          <Select
+            label="관심분야"
+            placeholder="관심분야를 입력하세요"
+            data={interestAreasData}
+            searchable
+            clearable
+            {...form.getInputProps("interestAreas")}
+          />
+          <Select
+            label="스킬"
+            placeholder="스킬을 입력하세요"
+            data={skillsData}
+            searchable
+            clearable
+            {...form.getInputProps("skills")}
           />
           <TextInput
             label="자기소개"
             placeholder="자기소개를 입력하세요"
             {...form.getInputProps("bio")}
-          />
-
-          <TextInput
-            label="프로필 사진 주소"
-            placeholder="사용할 프로필 사진 주소를 입력하세요"
-            {...form.getInputProps("avatar")}
-          />
-          <TextInput
-            label="배경 이미지 주소"
-            placeholder="배경 이미지 주소을 입력하세요"
-            {...form.getInputProps("backImage")}
           />
 
           {isSignup && (

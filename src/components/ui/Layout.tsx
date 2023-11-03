@@ -65,14 +65,14 @@ export default function Layout() {
 
   const { data: myInfo, isSuccess } = api.useGetMyInfoQuery(null);
 
-  if (isSuccess && !myInfo.organization)
-    return (
-      <EditUserInfoModal
-        isSignup
-        opened={true}
-        close={() => navigate("/home/foryou")}
-      />
-    );
+  // if (isSuccess && !myInfo.organization)
+  //   return (
+  //     <EditUserInfoModal
+  //       isSignup
+  //       opened={true}
+  //       close={() => navigate("/home/foryou")}
+  //     />
+  //   );
 
   return (
     // <SseProvider>

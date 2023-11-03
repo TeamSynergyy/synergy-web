@@ -1,15 +1,13 @@
+import { Box, Stack, Flex, Button, Dialog, Text } from "@mantine/core";
+import ApplicantBar from "components/user/ApplicantBar";
+import UserCard from "components/user/UserCard";
+import { StaticMap } from "react-kakao-maps-sdk";
+import ProjectCard from "./ProjectCard";
+import { useDisclosure } from "@mantine/hooks";
 import { api } from "app/api";
 import { useParams } from "react-router-dom";
-import { Text, Button, Box, Dialog, Flex, Stack } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
 
-import ApplicantBar from "components/user/ApplicantBar";
-import { StaticMap } from "react-kakao-maps-sdk";
-import ProjectCard from "components/project/ProjectCard";
-import UserCard from "components/user/UserCard";
-import ProjectTab from "components/project/ProjectTab";
-
-export default function ProjectDetail() {
+export function ProjectDetailMain() {
   const id = parseInt(useParams().id as string);
   const { data: project, isFetching } = api.useGetProjectQuery(id);
   const [opened, { open, close }] = useDisclosure(false);
@@ -49,7 +47,6 @@ export default function ProjectDetail() {
 
   return (
     <>
-      {isTeamMember && <ProjectTab projectId={id} />}
       <Box w="100%">
         <ProjectCard project={project} isDetail />
 
@@ -113,7 +110,6 @@ export default function ProjectDetail() {
           </Stack>
         )}
       </Box>
-
       <Dialog
         opened={opened}
         withCloseButton

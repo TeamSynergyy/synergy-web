@@ -1,0 +1,42 @@
+import { Button, Group, Paper, ScrollArea, Stack, Text } from "@mantine/core";
+import { api } from "app/api";
+import dayjs from "dayjs";
+import { useLocation, useNavigate } from "react-router-dom";
+
+export function ProjectNoticeNavBar() {
+  const navigate = useNavigate();
+
+  const { pathname } = useLocation();
+  if (pathname.split("/")[3]) return <></>;
+
+  const id = pathname.split("/")[2];
+  const { data: notices } = api.useGetProjectNoticesQuery(id);
+  return (
+    <>
+      <Text size="lg" weight={700} m="md">
+        최근 공지
+      </Text>
+      <ScrollArea h="80vh">
+        <Stack>
+          {notices?.map((notice) => (
+            <Paper key={notice.noticeId} p="md" mt="md">
+              <Group position="apart">
+                <Text c="gray">
+                  {dayjs(notice.updateAt).format("YYYY/MM/DD  hh:mm")}
+                </Text>
+              </Group>
+              <Text>{notice.content}</Text>
+            </Paper>
+          ))}
+        </Stack>
+      </ScrollArea>
+      <Button
+        fullWidth
+        variant="subtle"
+        onClick={() => navigate(`/project/${id}/notice`)}
+      >
+        more...
+      </Button>
+    </>
+  );
+}

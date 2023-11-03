@@ -25,6 +25,7 @@ import { useSelector } from "react-redux";
 import PostDetail from "pages/PostDetail";
 import Following from "pages/Following";
 import OauthRedirect from "pages/OauthRedirect";
+import ProjectNotice from "components/project/ProjectNotice";
 
 const PrivateRoutes = () => {
   const auth = useSelector(selectCurrentToken);
@@ -66,7 +67,10 @@ export default function App() {
                 <Route path=":id" element={<PostDetail />} />
               </Route>
               <Route path="project">
-                <Route path=":id" element={<ProjectDetail />} />
+                <Route path=":id">
+                  <Route index element={<ProjectDetail />} />
+                  <Route path="notice" element={<ProjectNotice />} />
+                </Route>
               </Route>
 
               <Route path="search" element={<Search />} />

@@ -4,7 +4,7 @@ import {
   createApi,
   fetchBaseQuery,
 } from "@reduxjs/toolkit/query/react";
-import { Post, Project, User, ChatRoom, Comment } from "types";
+import { Post, Project, User, ChatRoom, Comment, ProjectNotice } from "types";
 import { RootState } from "./store";
 import { setAccessToken } from "./authSlice";
 import axios from "axios";
@@ -85,6 +85,7 @@ export const api = createApi({
     "FollowingPosts",
     "RecommendedPosts",
     "RecommendedProjects",
+    "ProjectNotice",
   ],
   endpoints: (build) => ({
     // MyInfo
@@ -393,8 +394,8 @@ export const api = createApi({
       ],
     }),
 
-    getProject: build.query<Project, { id: number }>({
-      query: ({ id }) => `/projects/${id}`,
+    getProject: build.query<Project, number>({
+      query: (id) => `/projects/${id}`,
 
       transformResponse: (response: { body: { "project get": Project } }) =>
         response.body["project get"],
@@ -527,6 +528,49 @@ export const api = createApi({
       }),
       invalidatesTags: (result, error, arg) => [
         { type: "ApplicantsIds", id: String(arg[0]) },
+      ],
+    }),
+
+    // Project Notice
+    createProjectNotice: build.mutation<
+      void,
+      { projectId: number; content: string }
+    >({
+      query: ({ projectId, content }) => ({
+        url: `/notices`,
+        method: "POST",
+        body: {
+          projectId,
+          content,
+        },
+      }),
+      invalidatesTags: (result, error, arg) => [
+        { type: "ProjectNotice", id: String(arg.projectId) },
+        { type: "ProjectNotice", id: "LIST" },
+      ],
+    }),
+
+    getProjectNotices: build.query<ProjectNotice[], number | string>({
+      query: (projectId) => `/notices/${projectId}`,
+      transformResponse: (response: {
+        body: { "notice list": ProjectNotice[] };
+      }) => response.body["notice list"],
+      providesTags: (result, error, arg) =>
+        result
+          ? [
+              { type: "ProjectNotice", id: String(arg) },
+              { type: "ProjectNotice", id: "LIST" },
+            ]
+          : [{ type: "ProjectNotice", id: "LIST" }],
+    }),
+
+    deleteProjectNotice: build.mutation<void, number>({
+      query: (id) => ({
+        url: `/notices/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (result, error, arg) => [
+        { type: "ProjectNotice", id: String(arg) },
       ],
     }),
 
