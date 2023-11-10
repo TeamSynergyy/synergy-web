@@ -8,8 +8,13 @@ export default defineConfig({
   plugins: [react(), tsconfigPaths(), svgr()],
   server: {
     proxy: {
+      // "/api": {
+      //   target: "https://synergyy.link",
+      //   changeOrigin: true, // host 헤더를 변경합니다.
+      //   secure: false, // SSL 설정 (https 프로토콜)
+      // },
       "/api": {
-        target: "https://synergyy.link",
+        target: "http://localhost:8080",
         changeOrigin: true, // host 헤더를 변경합니다.
         secure: false, // SSL 설정 (https 프로토콜)
       },
