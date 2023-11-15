@@ -48,7 +48,11 @@ export default function ProjectNotice() {
               </Button>
               <Button
                 disabled={value === ""}
-                onClick={() => createNotice({ projectId: id, content: value })}
+                onClick={() => {
+                  createNotice({ projectId: id, content: value });
+                  close();
+                  setValue("");
+                }}
               >
                 작성
               </Button>

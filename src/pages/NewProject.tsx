@@ -113,9 +113,10 @@ export default function NewProject() {
         />
 
         <DateInput
+          required
           valueFormat="YYYY-MM-DD"
           label="endAt"
-          placeholder="종료예정일"
+          placeholder="종료일"
           {...form.getInputProps("endAt")}
         />
 

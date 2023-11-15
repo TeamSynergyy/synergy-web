@@ -58,6 +58,7 @@ export const ProjectUpdateScheduleModal = ({
           })}
         >
           <TextInput
+            required
             withAsterisk
             label="일정 제목"
             placeholder="일정 제목을 입력하세요"
@@ -65,6 +66,7 @@ export const ProjectUpdateScheduleModal = ({
           />
 
           <DatePickerInput
+            required
             withAsterisk
             type="range"
             label="일정 기간"
