@@ -44,10 +44,11 @@ const MyProjects = () => {
         <Text>Loading...</Text>
       ) : (
         data &&
-        data.slice(0, 5)?.map((project) => (
+        data.slice(0, 5)?.map((project, i) => (
           <Link
             to={`/project/${project.projectId}`}
             style={{ textDecoration: "none" }}
+            key={i}
           >
             <Card className={classes.card} w="100%" p="xs" h="auto">
               <Text>{project.name}</Text>

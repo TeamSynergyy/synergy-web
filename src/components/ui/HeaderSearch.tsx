@@ -99,7 +99,7 @@ export function HeaderSearch({ links, children }: HeaderSearchProps) {
           style={{ color: "inherit", textDecoration: "inherit" }}
         >
           <Group mx="sm">
-            <Logo width={28} />
+            <Logo width={28} height={28} />
             <Title size={"h3"}>Synergy</Title>
           </Group>
         </Link>

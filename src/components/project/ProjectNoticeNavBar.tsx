@@ -7,10 +7,11 @@ export function ProjectNoticeNavBar() {
   const navigate = useNavigate();
 
   const { pathname } = useLocation();
-  if (pathname.split("/")[3]) return <></>;
 
   const id = pathname.split("/")[2];
   const { data: notices } = api.useGetProjectNoticesQuery(id);
+
+  if (pathname.split("/")[3]) return <></>;
   return (
     <>
       <Text size="lg" weight={700} m="md">

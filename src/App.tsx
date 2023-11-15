@@ -26,6 +26,7 @@ import PostDetail from "pages/PostDetail";
 import Following from "pages/Following";
 import OauthRedirect from "pages/OauthRedirect";
 import ProjectNotice from "components/project/ProjectNotice";
+import ProjectSchedule from "components/project/ProjectSchedule";
 
 const PrivateRoutes = () => {
   const auth = useSelector(selectCurrentToken);
@@ -70,6 +71,7 @@ export default function App() {
                 <Route path=":id">
                   <Route index element={<ProjectDetail />} />
                   <Route path="notice" element={<ProjectNotice />} />
+                  <Route path="schedule" element={<ProjectSchedule />} />
                 </Route>
               </Route>
 

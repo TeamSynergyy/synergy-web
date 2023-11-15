@@ -50,7 +50,11 @@ const TrendingPosts = () => {
         <Text>Loading...</Text>
       ) : (
         posts?.slice(0, 5).map((post, i) => (
-          <Link to={`/post/${post.postId}`} style={{ textDecoration: "none" }}>
+          <Link
+            to={`/post/${post.postId}`}
+            style={{ textDecoration: "none" }}
+            key={i}
+          >
             <Card className={classes.card} w="100%" p="xs" h="auto">
               <Text>
                 {post.title

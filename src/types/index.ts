@@ -33,6 +33,16 @@ interface ProjectNotice {
   updateAt: string;
 }
 
+interface ProjectSchedule {
+  scheduleId: number;
+  projectId?: number;
+  title: string;
+  content: string;
+  label: string;
+  startAt: string;
+  endAt: string;
+}
+
 interface User {
   userId: string;
   username: string;
@@ -75,6 +85,7 @@ export type {
   Post,
   Project,
   ProjectNotice,
+  ProjectSchedule,
   User,
   Comment,
   ChatMessage,

@@ -44,8 +44,8 @@ export default function ProjectDetail() {
     }
   };
 
-  if (!project) return <div>프로젝트 데이터를 불러오지 못했습니다.</div>;
   if (isFetching) return <div>loading...</div>;
+  if (!project) return <div>프로젝트 데이터를 불러오지 못했습니다.</div>;
 
   return (
     <>

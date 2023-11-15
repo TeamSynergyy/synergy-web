@@ -4,7 +4,15 @@ import {
   createApi,
   fetchBaseQuery,
 } from "@reduxjs/toolkit/query/react";
-import { Post, Project, User, ChatRoom, Comment, ProjectNotice } from "types";
+import {
+  Post,
+  Project,
+  User,
+  ChatRoom,
+  Comment,
+  ProjectNotice,
+  ProjectSchedule,
+} from "types";
 import { RootState } from "./store";
 import { setAccessToken } from "./authSlice";
 import axios from "axios";
@@ -86,6 +94,7 @@ export const api = createApi({
     "RecommendedPosts",
     "RecommendedProjects",
     "ProjectNotice",
+    "ProjectSchedule",
   ],
   endpoints: (build) => ({
     // MyInfo
@@ -571,6 +580,58 @@ export const api = createApi({
       }),
       invalidatesTags: (result, error, arg) => [
         { type: "ProjectNotice", id: String(arg) },
+      ],
+    }),
+
+    createProjectSchedule: build.mutation<
+      void,
+      Omit<ProjectSchedule, "scheduleId">
+    >({
+      query: (schedule) => ({
+        url: `/schedules`,
+        method: "POST",
+        body: schedule,
+      }),
+      invalidatesTags: (result, error, arg) => [
+        { type: "ProjectSchedule", id: String(arg.projectId) },
+        { type: "ProjectSchedule", id: "LIST" },
+      ],
+    }),
+
+    getProjectSchedule: build.query<ProjectSchedule[], number | string>({
+      query: (projectId) => `/schedules/${projectId}`,
+      transformResponse: (response: {
+        body: { "schedule list": ProjectSchedule[] };
+      }) => response.body["schedule list"],
+      providesTags: (result, error, arg) =>
+        result
+          ? [
+              { type: "ProjectSchedule", id: String(arg) },
+              { type: "ProjectSchedule", id: "LIST" },
+            ]
+          : [{ type: "ProjectSchedule", id: "LIST" }],
+    }),
+
+    updateProjectSchedule: build.mutation<void, ProjectSchedule>({
+      query: (schedule) => ({
+        url: `/schedules/${schedule.scheduleId}`,
+        method: "PUT",
+        body: schedule,
+      }),
+      invalidatesTags: (result, error, arg) => [
+        { type: "ProjectSchedule", id: String(arg.projectId) },
+        { type: "ProjectSchedule", id: "LIST" },
+      ],
+    }),
+
+    deleteProjectSchedule: build.mutation<void, ProjectSchedule>({
+      query: (schedule) => ({
+        url: `/schedules/${schedule.scheduleId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (result, error, arg) => [
+        { type: "ProjectSchedule", id: String(arg.projectId) },
+        { type: "ProjectSchedule", id: "LIST" },
       ],
     }),
 
