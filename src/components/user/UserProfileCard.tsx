@@ -57,8 +57,9 @@ export default function UserProfileCard({
   const { classes, theme } = useStyles();
   const { data: myInfo } = api.useGetMyInfoQuery(null);
   const myId = myInfo?.userId || "";
-  const myFollowing = api.useGetFollowsQuery(myId)?.data?.followings;
+  const myFollowing = api.useGetMyFollowingsQuery(null)?.data;
   const isFollowing = myFollowing?.includes(userId);
+  console.log("🚀 ~ file: UserProfileCard.tsx:62 ~ isFollowing:", isFollowing);
   const followType = isFollowing ? "unfollow" : "follow";
   const [opened, { open, close }] = useDisclosure(false);
   const follow = api.useFollowMutation()[0];
