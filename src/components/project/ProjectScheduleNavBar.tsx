@@ -23,28 +23,18 @@ export function ProjectScheduleNavBar() {
   return (
     <>
       <Text size="lg" weight={700} m="md">
-        최근 공지
+        일정
       </Text>
       <ScrollArea h="80vh">
         <Stack>
           {data?.map((sched) => (
-            <Paper key={sched.scheduleId} p="md" mt="md" withBorder>
-              <Text weight={500}>{sched.title}</Text>
+            <Paper key={sched.scheduleId} p="md" mt="md">
+              <Text c="gray">{dayjs(sched.startAt).format("YYYY-MM-DD")}</Text>
+              <Text c="gray">{dayjs(sched.endAt).format("YYYY-MM-DD")}</Text>
 
-              {sched.label && (
-                <Badge variant="light" mt="md">
-                  {sched.label}
-                </Badge>
-              )}
-              <Text size="sm" mt="xs">
-                {sched.content}
-              </Text>
-              <Text size="sm" mt="xs">
-                시작: {dayjs(sched.startAt).format("YYYY-MM-DD")}
-              </Text>
-              <Text size="sm">
-                종료: {dayjs(sched.endAt).format("YYYY-MM-DD")}
-              </Text>
+              <Text>{sched.title}</Text>
+
+              {sched.label && <Badge variant="light">{sched.label}</Badge>}
             </Paper>
           ))}
         </Stack>

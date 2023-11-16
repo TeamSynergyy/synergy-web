@@ -104,7 +104,7 @@ export default function Layout() {
       aside={
         <MediaQuery smallerThan="sm" styles={{ display: "none" }}>
           <Aside
-            p="md"
+            p="xs"
             hiddenBreakpoint="sm"
             width={{ sm: 200, lg: 300 }}
             bg={
@@ -112,7 +112,9 @@ export default function Layout() {
             }
             withBorder={false}
           >
-            <AsideContent />
+            <Aside.Section grow mt="md">
+              <AsideContent />
+            </Aside.Section>
           </Aside>
         </MediaQuery>
       }

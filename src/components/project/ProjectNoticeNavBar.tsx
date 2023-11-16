@@ -21,11 +21,10 @@ export function ProjectNoticeNavBar() {
         <Stack>
           {notices?.map((notice) => (
             <Paper key={notice.noticeId} p="md" mt="md">
-              <Group position="apart">
-                <Text c="gray">
-                  {dayjs(notice.updateAt).format("YYYY/MM/DD  hh:mm")}
-                </Text>
-              </Group>
+              <Text c="gray">
+                {dayjs(notice.updateAt).format("YYYY/MM/DD  hh:mm")}
+              </Text>
+
               <Text>{notice.content}</Text>
             </Paper>
           ))}
