@@ -43,6 +43,15 @@ interface ProjectSchedule {
   endAt: string;
 }
 
+interface ProjectPeerRating {
+  rateId: number;
+  projectId: number;
+  giveUserId: string;
+  receiveUserId: string;
+  content: string;
+  score: number;
+}
+
 interface User {
   userId: string;
   username: string;
@@ -86,6 +95,7 @@ export type {
   Project,
   ProjectNotice,
   ProjectSchedule,
+  ProjectPeerRating,
   User,
   Comment,
   ChatMessage,

@@ -17,6 +17,7 @@ export default function ProjectTab({ projectId }: { projectId: number }) {
           <Tabs.Tab value={`${projectId}`}>프로젝트</Tabs.Tab>
           <Tabs.Tab value={`${projectId}/notice`}>공지사항</Tabs.Tab>
           <Tabs.Tab value={`${projectId}/schedule`}>일정</Tabs.Tab>
+          <Tabs.Tab value={`${projectId}/peer-rating`}>동료 평가</Tabs.Tab>
         </Tabs.List>
       </Tabs>
     </Box>

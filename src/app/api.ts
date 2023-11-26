@@ -12,6 +12,7 @@ import {
   Comment,
   ProjectNotice,
   ProjectSchedule,
+  ProjectPeerRating,
 } from "types";
 import { RootState } from "./store";
 import { setAccessToken } from "./authSlice";
@@ -584,6 +585,7 @@ export const api = createApi({
       ],
     }),
 
+    // Project Schedule
     createProjectSchedule: build.mutation<
       void,
       Omit<ProjectSchedule, "scheduleId">
@@ -634,6 +636,19 @@ export const api = createApi({
         { type: "ProjectSchedule", id: String(arg.projectId) },
         { type: "ProjectSchedule", id: "LIST" },
       ],
+    }),
+
+    // Project peer evaluation
+    ratePeer: build.mutation<void, Omit<ProjectPeerRating, "rateId">>({
+      query: (rating) => ({
+        url: `/rates`,
+        method: "POST",
+        body: rating,
+      }),
+      // invalidatesTags: (result, error, arg) => [
+      //   { type: "ProjectPeerRating", id: String(arg.projectId) },
+      //   { type: "ProjectPeerRating", id: "LIST" },
+      // ],
     }),
 
     // Search

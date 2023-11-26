@@ -27,6 +27,7 @@ import Following from "pages/Following";
 import OauthRedirect from "pages/OauthRedirect";
 import ProjectNotice from "components/project/ProjectNotice";
 import ProjectSchedule from "components/project/ProjectSchedule";
+import ProjectPeerRating from "components/project/ProjectPeerRating";
 
 const PrivateRoutes = () => {
   const auth = useSelector(selectCurrentToken);
@@ -72,6 +73,7 @@ export default function App() {
                   <Route index element={<ProjectDetail />} />
                   <Route path="notice" element={<ProjectNotice />} />
                   <Route path="schedule" element={<ProjectSchedule />} />
+                  <Route path="peer-rating" element={<ProjectPeerRating />} />
                 </Route>
               </Route>
 
