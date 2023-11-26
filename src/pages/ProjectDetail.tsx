@@ -19,6 +19,7 @@ export default function ProjectDetail() {
 
   const { data: appliedProjectIds } = api.useGetMyAppliedProjectsQuery(null);
   const applyProject = api.useApplyProjectMutation()[0];
+  const cancleApplyProject = api.useCancelApplyProjectMutation()[0];
 
   const isApplied = appliedProjectIds?.includes(id);
 
@@ -28,7 +29,7 @@ export default function ProjectDetail() {
   const applicantsIdsQuery = api.useGetApplicantsIdsQuery(
     project?.projectId || 0
   );
-  const applicantIds = isLeader ? applicantsIdsQuery.data?.userIds : [];
+  const applicants = isLeader ? applicantsIdsQuery.data : [];
 
   const staticMapCoords = {
     lat: project?.location.y || 0,
@@ -37,7 +38,11 @@ export default function ProjectDetail() {
 
   const handleApply = async () => {
     try {
-      await applyProject(id);
+      if (isApplied) {
+        await cancleApplyProject(id);
+      } else {
+        await applyProject(id);
+      }
       open();
     } catch (e) {
       console.error(e);
@@ -100,14 +105,14 @@ export default function ProjectDetail() {
         {isLeader && (
           <Stack>
             <Text size="lg" weight={500} mt="xl">
-              {applicantIds?.length !== 0 ? "팀 신청자" : ""}
+              {applicants?.length !== 0 ? "팀 신청자" : ""}
             </Text>
 
-            {applicantIds?.map((id) => (
+            {applicants?.map((user) => (
               <ApplicantBar
-                key={id}
+                key={user.userId}
                 projectId={project.projectId}
-                userId={id}
+                user={user}
               />
             ))}
           </Stack>

@@ -1,32 +1,32 @@
 import { Avatar, Box, Button, Flex, Group, Paper, Text } from "@mantine/core";
 import { api } from "app/api";
+import { User } from "types";
 
 export default function ApplicantBar({
   projectId,
-  userId,
+  user,
 }: {
   projectId: number;
-  userId: string;
+  user: User;
 }) {
-  const { data: item } = api.useGetUserQuery(userId);
   const acceptApplicant = api.useAcceptApplicantMutation()[0];
   const rejectApplicant = api.useRejectApplicantMutation()[0];
 
-  const handleAccept = () => acceptApplicant([projectId, userId]);
-  const handleReject = () => rejectApplicant([projectId, userId]);
+  const handleAccept = () => acceptApplicant([projectId, user.userId]);
+  const handleReject = () => rejectApplicant([projectId, user.userId]);
 
-  if (!item) return null;
+  if (!user) return null;
   return (
     <Paper w="100%" p="md" withBorder>
       <Flex justify="space-between">
         <Group spacing="sm">
-          <Avatar size={40} src={item.profileImageUrl} radius={40} />
+          <Avatar size={40} src={user.profileImageUrl} radius={40} />
           <div>
             <Text fz="sm" fw={500}>
-              {item.username}
+              {user.username}
             </Text>
             <Text c="dimmed" fz="xs">
-              {item.major}
+              {user.major}
             </Text>
           </div>
         </Group>

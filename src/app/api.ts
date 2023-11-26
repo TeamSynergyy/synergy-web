@@ -138,8 +138,8 @@ export const api = createApi({
     getMyAppliedProjects: build.query<number[], null>({
       query: () => "/applies/me",
       transformResponse: (response: {
-        body: { "me applied projects": number[] };
-      }) => response.body["me applied projects"],
+        body: { "me apply list": { userId: string; projectId: number }[] };
+      }) => response.body["me apply list"].map(({ projectId }) => projectId),
 
       providesTags: [{ type: "AppliedProjectId", id: "LIST" }],
     }),
@@ -505,10 +505,13 @@ export const api = createApi({
       invalidatesTags: [{ type: "AppliedProjectId", id: "LIST" }],
     }),
 
-    getApplicantsIds: build.query<{ userIds: string[] }, number>({
+    getApplicantsIds: build.query<User[], number>({
       query: (projectId) => ({
         url: `/applies/${projectId}`,
       }),
+      transformResponse: (response: {
+        body: { "apply user list": { users: User[] } };
+      }) => response.body["apply user list"].users,
       providesTags: (result, error, arg) => [
         { type: "ApplicantsIds", id: String(arg) },
       ],
@@ -516,10 +519,9 @@ export const api = createApi({
 
     acceptApplicant: build.mutation<void, [number, string]>({
       query: ([projectId, userId]) => ({
-        url: `/applies/accept`,
+        url: `/applies/accept/${projectId}`,
         method: "POST",
         body: {
-          projectId,
           userId,
         },
       }),
@@ -530,10 +532,9 @@ export const api = createApi({
 
     rejectApplicant: build.mutation<void, [number, string]>({
       query: ([projectId, userId]) => ({
-        url: `/applies/reject`,
+        url: `/applies/reject/${projectId}`,
         method: "DELETE",
         body: {
-          projectId,
           userId,
         },
       }),
