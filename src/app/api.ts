@@ -322,6 +322,7 @@ export const api = createApi({
 
     getTrendingPosts: build.query<Post[], null>({
       query: () => `/posts/week`,
+      transformResponse: (response: { content: Post[] }) => response.content,
     }),
 
     deletePost: build.mutation<void, number>({

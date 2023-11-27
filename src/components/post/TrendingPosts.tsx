@@ -29,13 +29,7 @@ const useStyles = createStyles((theme) => ({
 }));
 
 const TrendingPosts = () => {
-  const {
-    data: posts,
-    isLoading,
-    isSuccess,
-    isError,
-    error,
-  } = api.useGetTrendingPostsQuery(null);
+  const { data: posts, isLoading } = api.useGetTrendingPostsQuery(null);
 
   const { classes } = useStyles();
   const mediaQuery = useMediaQuery("(max-width: 1200px)");
