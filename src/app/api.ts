@@ -101,9 +101,6 @@ export const api = createApi({
     // MyInfo
     getMyInfo: build.query<User, null>({
       query: () => "/users/me/info",
-      transformResponse: (response: { body: { "user info": User } }) =>
-        response.body["user info"],
-      providesTags: [{ type: "MyInfo" }],
     }),
 
     editMyInfo: build.mutation<void, User>({
@@ -121,25 +118,18 @@ export const api = createApi({
     // my data
     getMyLikedPosts: build.query<{ content: Post[] }, null>({
       query: () => "/posts/me/likes",
-      transformResponse: (response: {
-        body: { "liked posts": { content: Post[] } };
-      }) => response.body["liked posts"],
+
       providesTags: [{ type: "LikedPostIds", id: "LIST" }],
     }),
 
     getMyLikedProjects: build.query<{ content: Project[] }, null>({
       query: () => "/projects/me/likes",
-      transformResponse: (response: {
-        body: { "liked project list": { content: Project[] } };
-      }) => response.body["liked project list"],
+
       providesTags: [{ type: "LikedProjectIds", id: "LIST" }],
     }),
 
     getMyAppliedProjects: build.query<number[], null>({
       query: () => "/applies/me",
-      transformResponse: (response: {
-        body: { "me apply list": { userId: string; projectId: number }[] };
-      }) => response.body["me apply list"].map(({ projectId }) => projectId),
 
       providesTags: [{ type: "AppliedProjectId", id: "LIST" }],
     }),
@@ -206,9 +196,6 @@ export const api = createApi({
 
     getMyFollowings: build.query<string[], null>({
       query: () => `/users/followings`,
-      transformResponse: (response: {
-        body: { followers: { userIds: string[] } };
-      }) => response.body.followers.userIds,
       providesTags: (result, error, arg) => [
         { type: "MyFollowings", id: "LIST" },
       ],
@@ -227,9 +214,11 @@ export const api = createApi({
     // Users
     getUser: build.query<User, string>({
       query: (id) => `/users/${id}`,
-      transformResponse: (response: { body: { "user info": User } }) =>
-        response.body["user info"],
       providesTags: (result, error, arg) => [{ type: "User", id: String(arg) }],
+    }),
+
+    getSimilarUsers: build.query<User[], string>({
+      query: (id) => `/users/similar/${id}?end=0`,
     }),
 
     // Post
@@ -247,8 +236,6 @@ export const api = createApi({
 
     getPost: build.query<Post, number>({
       query: (id) => `/posts/${id}`,
-      transformResponse: (response: { body: { post: Post } }) =>
-        response.body.post,
       providesTags: (result, error, arg) => [{ type: "Post", id: String(arg) }],
     }),
 
@@ -257,9 +244,6 @@ export const api = createApi({
       number | string
     >({
       query: (end) => `/posts/recent?end=${end}`,
-      transformResponse: (response: {
-        body: { "post list": { content: Post[]; next: boolean } };
-      }) => response.body["post list"],
       serializeQueryArgs: ({ endpointName }) => {
         return endpointName;
       },
@@ -287,9 +271,6 @@ export const api = createApi({
       number | string
     >({
       query: (end) => `/posts/feed?end=${end}`,
-      transformResponse: (response: {
-        body: { "post feed list": { content: Post[]; next: boolean } };
-      }) => response.body["post feed list"],
       serializeQueryArgs: ({ endpointName }) => {
         return endpointName;
       },
@@ -317,9 +298,6 @@ export const api = createApi({
       number | string
     >({
       query: (end) => `/posts/recommend?end=${end}`,
-      transformResponse: (response: {
-        body: { "post feed list": { content: Post[]; next: boolean } };
-      }) => response.body["post feed list"],
       serializeQueryArgs: ({ endpointName }) => {
         return endpointName;
       },
@@ -344,9 +322,6 @@ export const api = createApi({
 
     getTrendingPosts: build.query<Post[], null>({
       query: () => `/posts/week`,
-      transformResponse: (response: {
-        body: { "week best posts": { content: Post[] } };
-      }) => response.body["week best posts"].content,
     }),
 
     deletePost: build.mutation<void, number>({
@@ -361,9 +336,6 @@ export const api = createApi({
 
     getPostComments: build.query<Comment[], number>({
       query: (postId) => `/comments/${postId}`,
-      transformResponse: (response: {
-        body: { "comment list from post": Comment[] };
-      }) => response.body["comment list from post"],
       providesTags: (result, error, arg) =>
         result
           ? [
@@ -407,10 +379,6 @@ export const api = createApi({
 
     getProject: build.query<Project, number>({
       query: (id) => `/projects/${id}`,
-
-      transformResponse: (response: { body: { "project get": Project } }) =>
-        response.body["project get"],
-
       providesTags: (result) =>
         result
           ? [{ type: "Project", id: String(result.projectId) }]
@@ -422,9 +390,6 @@ export const api = createApi({
       number | string
     >({
       query: (end) => `/projects/recent?end=${end}`,
-      transformResponse: (response: {
-        body: { "project list": { content: Project[]; next: boolean } };
-      }) => response.body["project list"],
       serializeQueryArgs: ({ endpointName }) => {
         return endpointName;
       },
@@ -452,11 +417,6 @@ export const api = createApi({
       number | string
     >({
       query: (end) => `/projects/recommend?end=${end}`,
-      transformResponse: (response: {
-        body: {
-          "project recommend list": { content: Project[]; next: boolean };
-        };
-      }) => response.body["project recommend list"],
       serializeQueryArgs: ({ endpointName }) => {
         return endpointName;
       },
@@ -509,9 +469,6 @@ export const api = createApi({
       query: (projectId) => ({
         url: `/applies/${projectId}`,
       }),
-      transformResponse: (response: {
-        body: { "apply user list": { users: User[] } };
-      }) => response.body["apply user list"].users,
       providesTags: (result, error, arg) => [
         { type: "ApplicantsIds", id: String(arg) },
       ],
@@ -564,9 +521,6 @@ export const api = createApi({
 
     getProjectNotices: build.query<ProjectNotice[], number | string>({
       query: (projectId) => `/notices/${projectId}`,
-      transformResponse: (response: {
-        body: { "notice list": ProjectNotice[] };
-      }) => response.body["notice list"],
       providesTags: (result, error, arg) =>
         result
           ? [
@@ -604,9 +558,6 @@ export const api = createApi({
 
     getProjectSchedule: build.query<ProjectSchedule[], number | string>({
       query: (projectId) => `/schedules/${projectId}`,
-      transformResponse: (response: {
-        body: { "schedule list": ProjectSchedule[] };
-      }) => response.body["schedule list"],
       providesTags: (result, error, arg) =>
         result
           ? [
@@ -658,15 +609,6 @@ export const api = createApi({
       [string, number]
     >({
       query: ([search, page]) => `/posts?search=${search}&page=${page}`,
-      transformResponse: (response: {
-        body: {
-          "search Post list": {
-            content: Post[];
-            totalPages: number;
-            totalElements: number;
-          };
-        };
-      }) => response.body["search Post list"],
     }),
 
     searchProjects: build.query<
@@ -674,15 +616,6 @@ export const api = createApi({
       [string, number]
     >({
       query: ([search, page]) => `/projects?search=${search}&page=${page}`,
-      transformResponse: (response: {
-        body: {
-          "project search result": {
-            content: Project[];
-            totalPages: number;
-            totalElements: number;
-          };
-        };
-      }) => response.body["project search result"],
     }),
 
     searchUsers: build.query<
@@ -690,15 +623,6 @@ export const api = createApi({
       [string, number]
     >({
       query: ([search, page]) => `/users?search=${search}&page=${page}`,
-      transformResponse: (response: {
-        body: {
-          "search Post list": {
-            content: User[];
-            totalPages: number;
-            totalElements: number;
-          };
-        };
-      }) => response.body["search Post list"],
     }),
 
     getPostsByUser: build.query<
@@ -719,9 +643,6 @@ export const api = createApi({
 
     getProjectsByUser: build.query<Project[], string>({
       query: (userId) => `/projects/other?userId=${userId}`,
-      transformResponse: (response: {
-        body: { "project list by user": { content: Project[] } };
-      }) => response.body["project list by user"].content,
     }),
   }),
 });

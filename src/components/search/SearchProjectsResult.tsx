@@ -1,11 +1,8 @@
 import { api } from "app/api";
-import { Button, Stack, Text } from "@mantine/core";
+import { Stack, Text } from "@mantine/core";
 import { useSearchParams } from "react-router-dom";
-import { useIntersection } from "@mantine/hooks";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import ProjectCard from "components/project/ProjectCard";
-import PostSkeleton from "components/post/PostSkeleton";
-import usePage from "hooks/usePage";
 import SearchPagination from "./SearchPagination";
 
 export default function SearchProjectsResult() {

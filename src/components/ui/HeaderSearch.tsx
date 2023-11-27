@@ -16,7 +16,8 @@ import { ReactComponent as Logo } from "assets/logo.svg";
 import { Link, useLocation } from "react-router-dom";
 import { SearchInput } from "../search/SearchInput";
 import { api } from "app/api";
-import useAuth from "hooks/useAuth";
+import { setAccessToken } from "app/authSlice";
+import { useDispatch } from "react-redux";
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -69,9 +70,11 @@ interface HeaderSearchProps {
 }
 
 export function HeaderSearch({ links, children }: HeaderSearchProps) {
+  const dispatch = useDispatch();
   const activePage = useLocation().pathname.split("/")[1];
   const { classes, cx } = useStyles();
-  const { removeAuth } = useAuth();
+
+  const removeAccessToken = () => dispatch(setAccessToken(""));
 
   const [opened, { open, close }] = useDisclosure(false);
   const isSearchPage = activePage === "search";
@@ -131,7 +134,7 @@ export function HeaderSearch({ links, children }: HeaderSearchProps) {
                     to={`/`}
                     style={{ color: "inherit", textDecoration: "inherit" }}
                   >
-                    <Menu.Item onClick={removeAuth}>로그아웃</Menu.Item>
+                    <Menu.Item onClick={removeAccessToken}>로그아웃</Menu.Item>
                   </Link>
                 </Menu.Dropdown>
               </Menu>

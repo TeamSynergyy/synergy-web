@@ -5,7 +5,6 @@ import {
   Textarea,
   Dialog,
   Text,
-  MultiSelect,
   Flex,
   Checkbox,
   Select,
@@ -16,7 +15,6 @@ import { api } from "app/api";
 import { useNavigate } from "react-router-dom";
 import { DateInput } from "@mantine/dates";
 import dayjs from "dayjs";
-import usePage from "hooks/usePage";
 import MapInfo from "components/project/MapInfo";
 import { useState } from "react";
 

@@ -14,7 +14,7 @@ import Naver from "assets/Naver.svg";
 import Kakao from "assets/Kakao.svg";
 
 export default function Auth() {
-  const oauthProviderIds = ["google", "naver", "kakao"];
+  const oauthProviderIds = ["google"];
 
   const hostUrl = import.meta.env.VITE_API_URL;
 
@@ -22,10 +22,10 @@ export default function Auth() {
     switch (providerId) {
       case "google":
         return Google;
-      case "naver":
-        return Naver;
-      case "kakao":
-        return Kakao;
+      // case "naver":
+      //   return Naver;
+      // case "kakao":
+      //   return Kakao;
     }
   };
 
