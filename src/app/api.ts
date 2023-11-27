@@ -386,6 +386,11 @@ export const api = createApi({
           : [{ type: "Project", id: "LIST" }],
     }),
 
+    getProjectsByUser: build.query<Project[], string>({
+      query: (userId) => `/projects/other?userId=${userId}`,
+      transformResponse: (response: { content: Project[] }) => response.content,
+    }),
+
     getRecentProjects: build.query<
       { content: Project[]; next: boolean },
       number | string
@@ -640,10 +645,6 @@ export const api = createApi({
       forceRefetch({ currentArg, previousArg }) {
         return currentArg !== previousArg;
       },
-    }),
-
-    getProjectsByUser: build.query<Project[], string>({
-      query: (userId) => `/projects/other?userId=${userId}`,
     }),
   }),
 });
