@@ -1,4 +1,3 @@
-import { createContext, useEffect, useRef, useState } from "react";
 import {
   AppShell,
   Navbar,
@@ -7,43 +6,45 @@ import {
   MediaQuery,
   Burger,
   useMantineTheme,
-  Modal,
-  TextInput,
-  Button,
-  Group,
 } from "@mantine/core";
 import { HeaderSearch } from "components/ui/HeaderSearch";
 import { BottomNav } from "./BottomNav";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { NavbarContent } from "./NavbarContent";
 import AsideContent from "./AsideContent";
-import { StompProvider } from "app/StompContext";
 import FloatingActionButton from "./FloatingActionButton";
-import { SseProvider } from "app/SseContext";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "app/store";
-import { setNavbarOpen, toggleNavbar } from "./layoutSlice";
-import { useDisclosure, useMediaQuery } from "@mantine/hooks";
+import { toggleNavbar } from "./layoutSlice";
+
 import { api } from "app/api";
-import { useForm } from "@mantine/form";
-import { EditUserInfoModal } from "components/user/EditUserInfoModal";
+import {
+  IconBell,
+  IconHome,
+  IconMessage,
+  IconUsers,
+} from "@tabler/icons-react";
 
 const headerLinks = [
   {
     link: "/home",
     label: "홈",
+    icon: <IconHome />,
   },
   {
     link: "/people",
     label: "사람",
+    icon: <IconUsers />,
   },
   {
     link: "/chat",
     label: "채팅",
+    icon: <IconMessage />,
   },
   {
     link: "/notification",
     label: "알림",
+    icon: <IconBell />,
   },
 ];
 

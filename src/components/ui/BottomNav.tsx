@@ -1,6 +1,5 @@
-import { Avatar, createStyles, Group, rem } from "@mantine/core";
+import { Avatar, createStyles, Group, rem, Stack } from "@mantine/core";
 import { api } from "app/api";
-import { ChatInput } from "components/chat/ChatInput";
 import { Link, useLocation } from "react-router-dom";
 
 const useStyles = createStyles((theme) => ({
@@ -45,24 +44,31 @@ const useStyles = createStyles((theme) => ({
 }));
 
 interface BottomNavProps {
-  links: { link: string; label: string }[];
+  links: { link: string; label: string; icon: JSX.Element }[];
 }
 
 export function BottomNav({ links }: BottomNavProps) {
-  const activePage = useLocation().pathname.split("/")[1];
-  const { classes, cx } = useStyles();
+  const location = useLocation();
 
   const { data } = api.useGetMyInfoQuery(null);
+
+  const activePage = location.pathname.split("/")[1];
+  const isMyProfile =
+    activePage === "people" && location.pathname.split("/")[2] === data?.userId;
+  const { classes, cx } = useStyles();
 
   const items = links.map((link) => (
     <Link
       key={link.label}
       to={link.link}
       className={cx(classes.link, {
-        [classes.linkActive]: `/${activePage}` === link.link,
+        [classes.linkActive]: !isMyProfile && `/${activePage}` === link.link,
       })}
     >
-      {link.label}
+      <Stack align="center" spacing={2}>
+        {link.icon}
+        {link.label}
+      </Stack>
     </Link>
   ));
 
@@ -70,8 +76,16 @@ export function BottomNav({ links }: BottomNavProps) {
     <div className={classes.inner}>
       <Group w="100%" grow spacing={0}>
         {items}
-        <Link to={`/people/${data?.userId}`} className={cx(classes.link)}>
-          <Avatar src={data?.profileImageUrl} size="sm" radius="xl" />
+        <Link
+          to={`/people/${data?.userId}`}
+          className={cx(classes.link, {
+            [classes.linkActive]: isMyProfile,
+          })}
+        >
+          <Stack align="center" spacing={2}>
+            <Avatar src={data?.profileImageUrl} size={24} radius="xl" />내
+            프로필
+          </Stack>
         </Link>
       </Group>
     </div>
