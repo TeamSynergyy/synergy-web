@@ -58,13 +58,13 @@ interface ProjectTask {
   ticketId: number;
   projectId: number;
   title: string;
-  endAt: string;
+  endAt?: string;
   assignedTime?: number;
   tag?: string;
   tagColor?: string;
-  status: "Backlog" | "In_progress" | "Review" | "Done";
+  status: "BACKLOG" | "IN_PROGRESS" | "REVIEW" | "DONE";
   orderNumber: number;
-  assignedUserId?: string;
+  assignedUserIds: string[];
 }
 
 interface User {

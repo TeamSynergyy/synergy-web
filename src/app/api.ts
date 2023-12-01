@@ -646,17 +646,17 @@ export const api = createApi({
                   return acc;
                 },
                 {
-                  Backlog: [],
-                  In_progress: [],
-                  Review: [],
-                  Done: [],
+                  BACKLOG: [],
+                  IN_PROGRESS: [],
+                  REVIEW: [],
+                  DONE: [],
                 } as Record<ProjectTask["status"], ProjectTask[]>
               )
           : {
-              Backlog: [],
-              In_progress: [],
-              Review: [],
-              Done: [],
+              BACKLOG: [],
+              IN_PROGRESS: [],
+              REVIEW: [],
+              DONE: [],
             },
 
       providesTags: (result, error, arg) => [

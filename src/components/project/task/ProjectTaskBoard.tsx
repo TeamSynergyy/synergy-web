@@ -1,8 +1,5 @@
-import cx from "clsx";
-import { Badge, Container, Group, Stack, Text } from "@mantine/core";
-import { useListState } from "@mantine/hooks";
+import { Group, Stack } from "@mantine/core";
 import { DragDropContext, OnDragEndResponder } from "@hello-pangea/dnd";
-import classes from "./ProjectTaskBoard.module.css";
 import ProjectTaskColumn from "./ProjectTaskColumn";
 import { ProjectTask } from "types";
 import ProjectTab from "../ProjectTab";
@@ -15,7 +12,7 @@ import { useAppDispatch } from "app/store";
 export default function ProjectTaskBoard() {
   const id = Number(useParams().id);
   const [newTaskStatus, setNewTaskStatus] =
-    useState<ProjectTask["status"]>("Backlog");
+    useState<ProjectTask["status"]>("BACKLOG");
 
   const { data: tasks, isLoading } = api.useGetProjectTasksQuery(id);
 
@@ -73,14 +70,14 @@ export default function ProjectTaskBoard() {
       <ProjectTab projectId={id} />
       <NewProjectTaskModal status={newTaskStatus} />
       <DragDropContext onDragEnd={handleDragEnd}>
-        <Group>
-          <ProjectTaskColumn status="Backlog" tasks={tasks["Backlog"]} />
+        <Group grow>
+          <ProjectTaskColumn status="BACKLOG" tasks={tasks["BACKLOG"]} />
           <ProjectTaskColumn
-            status="In_progress"
-            tasks={tasks["In_progress"]}
+            status="IN_PROGRESS"
+            tasks={tasks["IN_PROGRESS"]}
           />
-          <ProjectTaskColumn status="Review" tasks={tasks["Review"]} />
-          <ProjectTaskColumn status="Done" tasks={tasks["Done"]} />
+          <ProjectTaskColumn status="REVIEW" tasks={tasks["REVIEW"]} />
+          <ProjectTaskColumn status="DONE" tasks={tasks["DONE"]} />
         </Group>
       </DragDropContext>
     </Stack>

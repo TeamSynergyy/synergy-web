@@ -1,8 +1,11 @@
 import {
   Button,
   ColorInput,
+  DEFAULT_THEME,
   Group,
+  MANTINE_COLORS,
   Modal,
+  MultiSelect,
   NumberInput,
   Select,
   TextInput,
@@ -11,6 +14,7 @@ import { DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { api } from "app/api";
+import dayjs from "dayjs";
 import { useParams } from "react-router-dom";
 import { ProjectTask } from "types";
 
@@ -20,6 +24,8 @@ export default function NewProjectTaskModal({
   status: ProjectTask["status"];
 }) {
   const id = useParams<{ id: string }>().id;
+  const { data: project } = api.useGetProjectQuery(Number(id));
+  const teamUserIds = project?.teamUserIds ?? [];
 
   const [opened, { open, close }] = useDisclosure(false);
 
@@ -28,12 +34,12 @@ export default function NewProjectTaskModal({
   const form = useForm({
     initialValues: {
       title: "",
-      endAt: "",
+      endAt: undefined,
       assignedTime: 0,
       tag: "",
       tagColor: "",
       status,
-      assignedUserId: "",
+      assignedUserIds: [],
     },
 
     validate: {},
@@ -44,11 +50,15 @@ export default function NewProjectTaskModal({
       <Modal opened={opened} onClose={close} title="Authentication">
         <form
           onSubmit={form.onSubmit((values) =>
-            createTask({ ...values, projectId: Number(id) })
+            createTask({
+              ...values,
+              projectId: Number(id),
+              endAt: dayjs(values.endAt).format("YYYY-MM-DDT00:00:00.000"),
+            })
           )}
         >
           <Select
-            data={["Backlog", "In progress", "Review", "Done"]}
+            data={["BACKLOG", "IN_PROGRESS", "REVIEW", "DONE"]}
             label="Status"
             {...form.getInputProps("status")}
           />
@@ -56,13 +66,13 @@ export default function NewProjectTaskModal({
           <TextInput
             withAsterisk
             label="Title"
-            placeholder="your@email.com"
+            placeholder="To Do"
             {...form.getInputProps("title")}
           />
 
           <DatePickerInput
             label="Deadline"
-            valueFormat="YYYY-MM-DDT00:00:00"
+            placeholder="Pick dates"
             {...form.getInputProps("endAt")}
           />
           <NumberInput
@@ -78,24 +88,15 @@ export default function NewProjectTaskModal({
           />
           <ColorInput
             label="Tag Color"
-            format="hex"
             withPicker={false}
-            swatches={[
-              "#25262b",
-              "#868e96",
-              "#fa5252",
-              "#e64980",
-              "#be4bdb",
-              "#7950f2",
-              "#4c6ef5",
-              "#228be6",
-              "#15aabf",
-              "#12b886",
-              "#40c057",
-              "#82c91e",
-              "#fab005",
-              "#fd7e14",
-            ]}
+            swatches={MANTINE_COLORS}
+            {...form.getInputProps("tagColor")}
+          />
+
+          <MultiSelect
+            data={teamUserIds}
+            label="Assigned User"
+            {...form.getInputProps("assignedUserIds")}
           />
 
           <Group position="right" mt="md">

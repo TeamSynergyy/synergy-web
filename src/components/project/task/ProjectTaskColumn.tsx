@@ -1,5 +1,5 @@
 import { Droppable } from "@hello-pangea/dnd";
-import { Paper, Text } from "@mantine/core";
+import { Paper, ScrollArea, Stack, Text } from "@mantine/core";
 import { ProjectTask } from "types";
 import ProjectTaskCard from "./ProjectTaskCard";
 
@@ -11,24 +11,32 @@ export default function ProjectTaskColumn({
   tasks: ProjectTask[];
 }) {
   return (
-    <>
-      <Text weight="bold" fz="lg"></Text>
-      <Droppable droppableId={status}>
-        {(droppableProvided) => (
-          <Paper
-            ref={droppableProvided.innerRef}
-            {...droppableProvided.droppableProps}
-            radius="md"
-            p="xs"
-            bg="#eee"
-          >
-            {tasks.map((task, index) => (
-              <ProjectTaskCard key={task.ticketId} task={task} index={index} />
-            ))}
-            {droppableProvided.placeholder}
-          </Paper>
-        )}
-      </Droppable>
-    </>
+    <Paper radius="md" bg="#eee">
+      <Stack>
+        <Text weight="normal" fz="lg">
+          {status}
+        </Text>
+        <Droppable droppableId={status}>
+          {(droppableProvided) => (
+            <ScrollArea h="60vh" w="100%" p="xs">
+              <Stack
+                ref={droppableProvided.innerRef}
+                {...droppableProvided.droppableProps}
+                spacing="xs"
+              >
+                {tasks.map((task, index) => (
+                  <ProjectTaskCard
+                    key={task.ticketId}
+                    task={task}
+                    index={index}
+                  />
+                ))}
+                {droppableProvided.placeholder}
+              </Stack>
+            </ScrollArea>
+          )}
+        </Droppable>
+      </Stack>
+    </Paper>
   );
 }

@@ -11,8 +11,9 @@ export const handlers = [
         projectId,
         title: "First ticket",
         endAt: "2021-09-01T04:56:55.074",
-        status: "Backlog",
+        status: "BACKLOG",
         orderNumber: 0,
+        assignedUserIds: ["100459046369714678800"],
       },
       {
         ticketId: 1,
@@ -21,7 +22,7 @@ export const handlers = [
         endAt: "2021-09-01T04:56:55.074",
         tag: "Frontend",
         tagColor: "#FF0000",
-        status: "Backlog",
+        status: "BACKLOG",
         orderNumber: 1,
       },
       {
@@ -29,7 +30,7 @@ export const handlers = [
         projectId,
         title: "Third ticket",
         endAt: "2021-09-01T04:56:55.074",
-        status: "In progress",
+        status: "IN_PROGRESS",
         orderNumber: 0,
       },
 
@@ -37,8 +38,7 @@ export const handlers = [
         ticketId: 3,
         projectId,
         title: "Fourth ticket",
-        endAt: "2023-12-01T04:56:55.074",
-        status: "In progress",
+        status: "IN_PROGRESS",
         orderNumber: 1,
       },
       {
@@ -46,7 +46,7 @@ export const handlers = [
         projectId,
         title: "Fifth ticket",
         endAt: "2023-12-01T04:56:55.074",
-        status: "Review",
+        status: "REVIEW",
         orderNumber: 0,
       },
       {
@@ -54,7 +54,7 @@ export const handlers = [
         projectId,
         title: "Sixth ticket",
         endAt: "2023-12-01T04:56:55.074",
-        status: "Review",
+        status: "REVIEW",
         orderNumber: 1,
       },
       {
@@ -62,7 +62,7 @@ export const handlers = [
         projectId,
         title: "Seventh ticket",
         endAt: "2023-12-01T04:56:55.074",
-        status: "Done",
+        status: "DONE",
         orderNumber: 0,
       },
     ];
