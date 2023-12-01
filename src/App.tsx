@@ -28,6 +28,7 @@ import OauthRedirect from "pages/OauthRedirect";
 import ProjectNotice from "components/project/ProjectNotice";
 import ProjectSchedule from "components/project/ProjectSchedule";
 import ProjectPeerRating from "components/project/ProjectPeerRating";
+import ProjectTaskBoard from "components/project/task/ProjectTaskBoard";
 
 const PrivateRoutes = () => {
   const auth = useSelector(selectCurrentToken);
@@ -37,7 +38,7 @@ const PrivateRoutes = () => {
 
 export default function App() {
   return (
-    <MantineProvider withGlobalStyles withNormalizeCSS>
+    <MantineProvider withCSSVariables withGlobalStyles withNormalizeCSS>
       <BrowserRouter>
         <Routes>
           <Route element={<PrivateRoutes />}>
@@ -73,6 +74,7 @@ export default function App() {
                   <Route index element={<ProjectDetail />} />
                   <Route path="notice" element={<ProjectNotice />} />
                   <Route path="schedule" element={<ProjectSchedule />} />
+                  <Route path="task" element={<ProjectTaskBoard />} />
                   <Route path="peer-rating" element={<ProjectPeerRating />} />
                 </Route>
               </Route>

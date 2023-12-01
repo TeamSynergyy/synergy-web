@@ -13,6 +13,7 @@ import {
   ProjectNotice,
   ProjectSchedule,
   ProjectPeerRating,
+  ProjectTask,
 } from "types";
 import { RootState } from "./store";
 import { setAccessToken } from "./authSlice";
@@ -96,6 +97,7 @@ export const api = createApi({
     "RecommendedProjects",
     "ProjectNotice",
     "ProjectSchedule",
+    "ProjectTask",
   ],
   endpoints: (build) => ({
     // MyInfo
@@ -196,6 +198,7 @@ export const api = createApi({
 
     getMyFollowings: build.query<string[], null>({
       query: () => `/users/followings`,
+      transformResponse: (response: { userIds: string[] }) => response.userIds,
       providesTags: (result, error, arg) => [
         { type: "MyFollowings", id: "LIST" },
       ],
@@ -218,7 +221,7 @@ export const api = createApi({
     }),
 
     getSimilarUsers: build.query<User[], string>({
-      query: (id) => `/users/similar/${id}?end=0`,
+      query: (id) => `/users/similar/${id}?end=`,
     }),
 
     // Post
@@ -475,6 +478,7 @@ export const api = createApi({
       query: (projectId) => ({
         url: `/applies/${projectId}`,
       }),
+      transformResponse: (response: { users: User[] }) => response.users,
       providesTags: (result, error, arg) => [
         { type: "ApplicantsIds", id: String(arg) },
       ],
@@ -564,6 +568,9 @@ export const api = createApi({
 
     getProjectSchedule: build.query<ProjectSchedule[], number | string>({
       query: (projectId) => `/schedules/${projectId}`,
+      transformResponse: (response: {
+        body: { "schedule list": ProjectSchedule[] };
+      }) => response.body["schedule list"],
       providesTags: (result, error, arg) =>
         result
           ? [
@@ -607,6 +614,76 @@ export const api = createApi({
       //   { type: "ProjectPeerRating", id: String(arg.projectId) },
       //   { type: "ProjectPeerRating", id: "LIST" },
       // ],
+    }),
+
+    // Project Task
+    createProjectTask: build.mutation<
+      void,
+      Omit<ProjectTask, "ticketId" | "orderNumber"> & { projectId: number }
+    >({
+      query: (task) => ({
+        url: `/tickets`,
+        method: "POST",
+        body: task,
+      }),
+      invalidatesTags: (result, error, arg) => [
+        { type: "ProjectTask", id: String(arg.projectId) },
+      ],
+    }),
+
+    getProjectTasks: build.query<
+      Record<ProjectTask["status"], ProjectTask[]>,
+      number
+    >({
+      query: (projectId) => `/tickets/${projectId}`,
+      transformResponse: (response: ProjectTask[]) =>
+        response
+          ? response
+              .sort((a, b) => a.orderNumber - b.orderNumber)
+              .reduce(
+                (acc, task) => {
+                  acc[task.status].push(task);
+                  return acc;
+                },
+                {
+                  Backlog: [],
+                  In_progress: [],
+                  Review: [],
+                  Done: [],
+                } as Record<ProjectTask["status"], ProjectTask[]>
+              )
+          : {
+              Backlog: [],
+              In_progress: [],
+              Review: [],
+              Done: [],
+            },
+
+      providesTags: (result, error, arg) => [
+        { type: "ProjectTask", id: String(arg) },
+      ],
+    }),
+
+    updateProjectTask: build.mutation<void, ProjectTask>({
+      query: (task) => ({
+        url: `/tickets/${task.ticketId}`,
+        method: "PUT",
+        body: task,
+      }),
+
+      invalidatesTags: (result, error, arg) => [
+        { type: "ProjectTask", id: String(arg.projectId) },
+      ],
+    }),
+
+    deleteProjectTask: build.mutation<void, ProjectTask>({
+      query: ({ ticketId }) => ({
+        url: `/tickets/${ticketId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (result, error, arg) => [
+        { type: "ProjectTask", id: String(arg.projectId) },
+      ],
     }),
 
     // Search

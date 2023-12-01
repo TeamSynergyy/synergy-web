@@ -1,3 +1,5 @@
+import { n } from "msw/lib/glossary-de6278a9";
+
 interface Post {
   postId: number;
   title: string;
@@ -52,6 +54,19 @@ interface ProjectPeerRating {
   score: number;
 }
 
+interface ProjectTask {
+  ticketId: number;
+  projectId: number;
+  title: string;
+  endAt: string;
+  assignedTime?: number;
+  tag?: string;
+  tagColor?: string;
+  status: "Backlog" | "In_progress" | "Review" | "Done";
+  orderNumber: number;
+  assignedUserId?: string;
+}
+
 interface User {
   userId: string;
   username: string;
@@ -96,6 +111,7 @@ export type {
   ProjectNotice,
   ProjectSchedule,
   ProjectPeerRating,
+  ProjectTask,
   User,
   Comment,
   ChatMessage,
