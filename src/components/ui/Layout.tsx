@@ -26,6 +26,7 @@ import {
   IconUsers,
 } from "@tabler/icons-react";
 import { useEffect } from "react";
+import { SseProvider } from "app/SseContext";
 
 const headerLinks = [
   {
@@ -83,75 +84,79 @@ export default function Layout() {
   //   );
 
   return (
-    // <SseProvider>
     //   <StompProvider>
-    <AppShell
-      styles={{
-        main: {
-          minHeight: 0,
-          background:
-            theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.white,
-        },
-      }}
-      navbarOffsetBreakpoint="md"
-      asideOffsetBreakpoint="md"
-      navbar={
-        <Navbar
-          p="xs"
-          hiddenBreakpoint="md"
-          hidden={!opened}
-          width={{ sm: 200, lg: 300 }}
-          bg={theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.white}
-          withBorder={false}
-        >
-          <Navbar.Section grow mt="md">
-            <NavbarContent />
-          </Navbar.Section>
-        </Navbar>
-      }
-      aside={
-        <MediaQuery smallerThan="md" styles={{ display: "none" }}>
-          <Aside
+    <SseProvider>
+      <AppShell
+        styles={{
+          main: {
+            minHeight: 0,
+            background:
+              theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.white,
+          },
+        }}
+        navbarOffsetBreakpoint="md"
+        asideOffsetBreakpoint="md"
+        navbar={
+          <Navbar
             p="xs"
             hiddenBreakpoint="md"
+            hidden={!opened}
             width={{ sm: 200, lg: 300 }}
             bg={
               theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.white
             }
             withBorder={false}
           >
-            <Aside.Section grow mt="md">
-              <AsideContent />
-            </Aside.Section>
-          </Aside>
-        </MediaQuery>
-      }
-      footer={
-        isChatRoom ? undefined : (
-          <MediaQuery largerThan="md" styles={{ display: "none" }}>
-            <Footer height={56}>
-              <BottomNav links={headerLinks} />
-            </Footer>
+            <Navbar.Section grow mt="md">
+              <NavbarContent />
+            </Navbar.Section>
+          </Navbar>
+        }
+        aside={
+          <MediaQuery smallerThan="md" styles={{ display: "none" }}>
+            <Aside
+              p="xs"
+              hiddenBreakpoint="md"
+              width={{ sm: 200, lg: 300 }}
+              bg={
+                theme.colorScheme === "dark"
+                  ? theme.colors.dark[8]
+                  : theme.white
+              }
+              withBorder={false}
+            >
+              <Aside.Section grow mt="md">
+                <AsideContent />
+              </Aside.Section>
+            </Aside>
           </MediaQuery>
-        )
-      }
-      header={
-        <HeaderSearch links={headerLinks}>
-          <MediaQuery largerThan="md" styles={{ display: "none" }}>
-            <Burger
-              opened={opened}
-              onClick={handleToggleNavbar}
-              size="sm"
-              color={theme.colors.gray[6]}
-            />
-          </MediaQuery>
-        </HeaderSearch>
-      }
-    >
-      <Outlet />
-      <FloatingActionButton />
-    </AppShell>
+        }
+        footer={
+          isChatRoom ? undefined : (
+            <MediaQuery largerThan="md" styles={{ display: "none" }}>
+              <Footer height={56}>
+                <BottomNav links={headerLinks} />
+              </Footer>
+            </MediaQuery>
+          )
+        }
+        header={
+          <HeaderSearch links={headerLinks}>
+            <MediaQuery largerThan="md" styles={{ display: "none" }}>
+              <Burger
+                opened={opened}
+                onClick={handleToggleNavbar}
+                size="sm"
+                color={theme.colors.gray[6]}
+              />
+            </MediaQuery>
+          </HeaderSearch>
+        }
+      >
+        <Outlet />
+        <FloatingActionButton />
+      </AppShell>
+    </SseProvider>
     //   </StompProvider>
-    // </SseProvider>
   );
 }

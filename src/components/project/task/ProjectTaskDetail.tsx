@@ -1,4 +1,5 @@
-import { Stack, Text } from "@mantine/core";
+import { Badge, Stack, Text } from "@mantine/core";
+import dayjs from "dayjs";
 import { ProjectTask } from "types";
 
 export default function ProjectTaskDetail({
@@ -12,12 +13,23 @@ export default function ProjectTaskDetail({
 }: ProjectTask) {
   return (
     <Stack>
-      <Text>{title}</Text>
-      <Text>{content}</Text>
-      <Text>{endAt}</Text>
-      {assignedTime !== 0 ? <Text>{assignedTime}</Text> : null}
-      <Text>{tag}</Text>
+      <Text weight={500} fz="xl">
+        {title}
+      </Text>
+
+      {tag && (
+        <div>
+          <Badge c={tagColor}>{tag}</Badge>
+        </div>
+      )}
+      {endAt && (
+        <Text c="dimmed">마감 기한: {dayjs(endAt).format("YYYY MMM D")}</Text>
+      )}
+      {assignedTime !== 0 ? (
+        <Text c="dimmed">작업 소요 시간: {assignedTime}시간</Text>
+      ) : null}
       <Text>{assignedUserIds}</Text>
+      <Text>{content}</Text>
     </Stack>
   );
 }
