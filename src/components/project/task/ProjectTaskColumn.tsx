@@ -11,18 +11,19 @@ export default function ProjectTaskColumn({
   tasks: ProjectTask[];
 }) {
   return (
-    <Paper radius="md" bg="#eee">
+    <Paper radius="md" p="xs" bg="#eee">
       <Stack>
         <Text weight="normal" fz="lg">
           {status}
         </Text>
         <Droppable droppableId={status}>
           {(droppableProvided) => (
-            <ScrollArea h="60vh" w="100%" p="xs">
+            <ScrollArea h="60vh">
               <Stack
                 ref={droppableProvided.innerRef}
                 {...droppableProvided.droppableProps}
                 spacing="xs"
+                mih="60vh"
               >
                 {tasks.map((task, index) => (
                   <ProjectTaskCard

@@ -38,10 +38,10 @@ export default function ProjectTaskBoard() {
     const sourceStatus = source.droppableId as ProjectTask["status"];
     const destinationStatus = destination.droppableId as ProjectTask["status"];
     const sourceTask = tasks[sourceStatus][source.index];
-    const destinationTask = tasks[destinationStatus][destination.index] ?? {
-      status: destinationStatus,
-      index: undefined, // undefined if dropped after the last item
-    };
+    // const destinationTask = tasks[destinationStatus][destination.index] ?? {
+    //   status: destinationStatus,
+    //   index: undefined, // undefined if dropped after the last item
+    // };
 
     const newTasks = updateTaskStatusLocal(
       sourceTask,
@@ -49,20 +49,17 @@ export default function ProjectTaskBoard() {
       { status: destinationStatus, index: destination.index },
       tasks
     );
-    const patchCollection = dispatch(
+
+    dispatch(
       api.util.updateQueryData("getProjectTasks", id, (draft) => {
         draft[sourceStatus] = newTasks[sourceStatus];
         draft[destinationStatus] = newTasks[destinationStatus];
       })
     );
 
-    console.log(patchCollection);
+    const updatedTask = newTasks[destinationStatus][destination.index];
 
-    updateTask({
-      ...sourceTask,
-      status: destinationStatus,
-      orderNumber: destinationTask.orderNumber,
-    });
+    updateTask(updatedTask);
   };
 
   return (
@@ -106,17 +103,19 @@ const updateTaskStatusLocal = (
     // 다른 컬럼으로 이동
     const sourceColumn = newTasksByStatus[source.status];
     const destinationColumn = newTasksByStatus[destination.status];
+
+    sourceTask = { ...sourceTask, status: destination.status };
     sourceColumn.splice(source.index, 1);
     destinationColumn.splice(
       destination.index ?? destinationColumn.length,
       0,
       sourceTask
     );
+    console.log(destination.status);
   }
 
   Object.values(newTasksByStatus).forEach((column) => {
     column.forEach((task, index) => {
-      // 새로운 객체를 생성하여 orderNumber를 업데이트
       column[index] = { ...task, orderNumber: index };
     });
   });

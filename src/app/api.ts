@@ -568,9 +568,6 @@ export const api = createApi({
 
     getProjectSchedule: build.query<ProjectSchedule[], number | string>({
       query: (projectId) => `/schedules/${projectId}`,
-      transformResponse: (response: {
-        body: { "schedule list": ProjectSchedule[] };
-      }) => response.body["schedule list"],
       providesTags: (result, error, arg) =>
         result
           ? [
