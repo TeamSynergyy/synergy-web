@@ -1,4 +1,4 @@
-import { Group, Stack } from "@mantine/core";
+import { Group, ScrollArea, Stack } from "@mantine/core";
 import { DragDropContext, OnDragEndResponder } from "@hello-pangea/dnd";
 import ProjectTaskColumn from "./ProjectTaskColumn";
 import { ProjectTask } from "types";
@@ -8,11 +8,21 @@ import { useState } from "react";
 import { api } from "app/api";
 import NewProjectTaskModal from "./NewProjectTaskModal";
 import { useAppDispatch } from "app/store";
+import { useDisclosure } from "@mantine/hooks";
 
 export default function ProjectTaskBoard() {
   const id = Number(useParams().id);
   const [newTaskStatus, setNewTaskStatus] =
     useState<ProjectTask["status"]>("BACKLOG");
+
+  const allStatuses: ProjectTask["status"][] = [
+    "BACKLOG",
+    "IN_PROGRESS",
+    "REVIEW",
+    "DONE",
+  ];
+
+  const [opened, { open, close }] = useDisclosure(false);
 
   const { data: tasks, isLoading } = api.useGetProjectTasksQuery(id);
 
@@ -65,18 +75,27 @@ export default function ProjectTaskBoard() {
   return (
     <Stack>
       <ProjectTab projectId={id} />
-      <NewProjectTaskModal status={newTaskStatus} />
-      <DragDropContext onDragEnd={handleDragEnd}>
-        <Group grow>
-          <ProjectTaskColumn status="BACKLOG" tasks={tasks["BACKLOG"]} />
-          <ProjectTaskColumn
-            status="IN_PROGRESS"
-            tasks={tasks["IN_PROGRESS"]}
-          />
-          <ProjectTaskColumn status="REVIEW" tasks={tasks["REVIEW"]} />
-          <ProjectTaskColumn status="DONE" tasks={tasks["DONE"]} />
-        </Group>
-      </DragDropContext>
+      <NewProjectTaskModal
+        status={newTaskStatus}
+        opened={opened}
+        open={open}
+        close={close}
+      />
+      <ScrollArea w="100%" pb="md">
+        <DragDropContext onDragEnd={handleDragEnd}>
+          <Group grow miw={750} align="flex-start" spacing="xs">
+            {allStatuses.map((status) => (
+              <ProjectTaskColumn
+                key={status}
+                status={status}
+                tasks={tasks[status]}
+                setNewTaskStatus={setNewTaskStatus}
+                openNewTaskModal={open}
+              />
+            ))}
+          </Group>
+        </DragDropContext>
+      </ScrollArea>
     </Stack>
   );
 }

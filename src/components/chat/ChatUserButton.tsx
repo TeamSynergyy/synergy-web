@@ -30,7 +30,7 @@ interface UserButtonProps extends UnstyledButtonProps {
   icon?: React.ReactNode;
 }
 
-export function UserButton({ userId, icon, ...others }: UserButtonProps) {
+export function ChatUserButton({ userId, icon, ...others }: UserButtonProps) {
   const { classes } = useStyles();
 
   const { data, isLoading, isError, error } = api.useGetUserQuery(userId);

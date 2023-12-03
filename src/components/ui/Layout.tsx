@@ -18,12 +18,14 @@ import { RootState } from "app/store";
 import { toggleNavbar } from "./layoutSlice";
 
 import { api } from "app/api";
+
 import {
   IconBell,
   IconHome,
   IconMessage,
   IconUsers,
 } from "@tabler/icons-react";
+import { useEffect } from "react";
 
 const headerLinks = [
   {
@@ -57,14 +59,19 @@ export default function Layout() {
     dispatch(toggleNavbar());
   };
 
-  const navigate = useNavigate();
-
   const location = useLocation();
+
   const isChatRoom =
     location.pathname.split("/")[1] === "chat" &&
     location.pathname.split("/")[2] !== undefined;
 
-  const { data: myInfo, isSuccess } = api.useGetMyInfoQuery(null);
+  useEffect(() => {
+    if (opened) dispatch(toggleNavbar());
+  }, [location.pathname]);
+
+  // const navigate = useNavigate();
+
+  // const { data: myInfo, isSuccess } = api.useGetMyInfoQuery(null);
 
   // if (isSuccess && !myInfo.organization)
   //   return (
@@ -86,12 +93,12 @@ export default function Layout() {
             theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.white,
         },
       }}
-      navbarOffsetBreakpoint="sm"
-      asideOffsetBreakpoint="sm"
+      navbarOffsetBreakpoint="md"
+      asideOffsetBreakpoint="md"
       navbar={
         <Navbar
           p="xs"
-          hiddenBreakpoint="sm"
+          hiddenBreakpoint="md"
           hidden={!opened}
           width={{ sm: 200, lg: 300 }}
           bg={theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.white}
@@ -103,10 +110,10 @@ export default function Layout() {
         </Navbar>
       }
       aside={
-        <MediaQuery smallerThan="sm" styles={{ display: "none" }}>
+        <MediaQuery smallerThan="md" styles={{ display: "none" }}>
           <Aside
             p="xs"
-            hiddenBreakpoint="sm"
+            hiddenBreakpoint="md"
             width={{ sm: 200, lg: 300 }}
             bg={
               theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.white
@@ -121,7 +128,7 @@ export default function Layout() {
       }
       footer={
         isChatRoom ? undefined : (
-          <MediaQuery largerThan="sm" styles={{ display: "none" }}>
+          <MediaQuery largerThan="md" styles={{ display: "none" }}>
             <Footer height={56}>
               <BottomNav links={headerLinks} />
             </Footer>
@@ -130,7 +137,7 @@ export default function Layout() {
       }
       header={
         <HeaderSearch links={headerLinks}>
-          <MediaQuery largerThan="sm" styles={{ display: "none" }}>
+          <MediaQuery largerThan="md" styles={{ display: "none" }}>
             <Burger
               opened={opened}
               onClick={handleToggleNavbar}

@@ -112,7 +112,7 @@ export function HeaderSearch({ links, children }: HeaderSearchProps) {
             <IconSearch size="1.3rem" stroke={1.5} />
           </ActionIcon>
 
-          <MediaQuery smallerThan="sm" styles={{ display: "none" }}>
+          <MediaQuery smallerThan="md" styles={{ display: "none" }}>
             <Group spacing={5}>
               {items}
               <Menu shadow="md" width={200} withinPortal>

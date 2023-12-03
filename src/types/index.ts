@@ -1,5 +1,3 @@
-import { n } from "msw/lib/glossary-de6278a9";
-
 interface Post {
   postId: number;
   title: string;
@@ -58,6 +56,7 @@ interface ProjectTask {
   ticketId: number;
   projectId: number;
   title: string;
+  content: string;
   endAt?: string;
   assignedTime?: number;
   tag?: string;

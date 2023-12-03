@@ -616,7 +616,7 @@ export const api = createApi({
     // Project Task
     createProjectTask: build.mutation<
       void,
-      Omit<ProjectTask, "ticketId" | "orderNumber"> & { projectId: number }
+      Omit<ProjectTask, "ticketId" | "orderNumber">
     >({
       query: (task) => ({
         url: `/tickets`,

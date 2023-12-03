@@ -6,6 +6,7 @@ import {
   Group,
   Menu,
   Paper,
+  Stack,
   Text,
   UnstyledButton,
 } from "@mantine/core";
@@ -17,13 +18,22 @@ import { ProjectTask } from "types";
 export default function ProjectTaskCard({
   task,
   index,
+  setSelectedTask,
+  openTaskDetail,
 }: {
   task: ProjectTask;
   index: number;
+  setSelectedTask: (task: ProjectTask) => void;
+  openTaskDetail: () => void;
 }) {
   const deleteTask = api.useDeleteProjectTaskMutation()[0];
 
-  const handleClick = () => deleteTask(task);
+  const handleClick = () => {
+    setSelectedTask(task);
+    openTaskDetail();
+  };
+
+  // const handleDelete = () => deleteTask(task);
   return (
     <Draggable draggableId={task.ticketId.toString()} index={index}>
       {(provided, snapshot) => (
@@ -35,10 +45,12 @@ export default function ProjectTaskCard({
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           ref={provided.innerRef}
+          onClick={handleClick}
+          p="xs"
         >
           <Group position="apart" mb="xs">
             <Text>{task.title}</Text>
-            <Menu shadow="md" width={200}>
+            {/* <Menu shadow="md" width={200}>
               <Menu.Target>
                 <ActionIcon>
                   <IconDotsVertical size={14} />
@@ -54,20 +66,27 @@ export default function ProjectTaskCard({
                   Delete
                 </Menu.Item>
               </Menu.Dropdown>
-            </Menu>
+            </Menu> */}
           </Group>
           <Group position="apart" mt="xs">
             <Text c="dimmed" size="sm">
-              {task.endAt ? dayjs(task.endAt).format("YY MMM D") : ""}
-              {task.assignedTime ? ` • ${task.assignedTime}H` : ""}
+              {task.endAt ? dayjs(task.endAt).format("MMM D") : ""}
+              {task.assignedTime && task.endAt ? " • " : ""}
+              {task.assignedTime ? `${task.assignedTime}H` : ""}
             </Text>
-            <Badge color={task.tagColor} variant="light">
-              {task.tag}
-            </Badge>
+            {task.tag && (
+              <Badge color={task.tagColor} variant="light">
+                {task.tag}
+              </Badge>
+            )}
           </Group>
-          {task.assignedUserIds?.map((userId) => (
-            <AssignedUserButton key={userId} userId={userId} />
-          ))}
+          {task.assignedUserIds.length > 0 && (
+            <Stack mt="xs" spacing="xs">
+              {task.assignedUserIds?.map((userId) => (
+                <AssignedUserButton key={userId} userId={userId} />
+              ))}
+            </Stack>
+          )}
         </Paper>
       )}
     </Draggable>
@@ -88,13 +107,9 @@ const AssignedUserButton = ({ userId }: { userId: string }) => {
 
   return (
     <UnstyledButton>
-      <Group spacing="xs">
-        <Avatar src={profileImageUrl} radius="sm" />
-        <div style={{ flex: 1 }}>
-          <Text size="sm" weight={500}>
-            {username}
-          </Text>
-        </div>
+      <Group spacing={2}>
+        <Avatar src={profileImageUrl} radius="xl" size="sm" />
+        <Text size="xs">{username}</Text>
       </Group>
     </UnstyledButton>
   );

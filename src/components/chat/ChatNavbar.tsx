@@ -1,7 +1,8 @@
 import { Stack } from "@mantine/core";
 import { api } from "app/api";
-import { UserButton } from "components/user/UserButton";
+
 import { Link } from "react-router-dom";
+import { ChatUserButton } from "./ChatUserButton";
 
 const ChatNavbar = () => {
   const { data } = api.useGetMyInfoQuery(null);
@@ -28,7 +29,7 @@ const ChatNavbar = () => {
 
       return (
         <Link key={i} to={`/chat/${roomId}`} style={{ textDecoration: "none" }}>
-          <UserButton userId={partnerId} />
+          <ChatUserButton userId={partnerId} />
         </Link>
       );
     });
