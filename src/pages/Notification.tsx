@@ -11,7 +11,7 @@ export default function Notification() {
   return (
     <Stack>
       {messageEvents.map((messageEvent, i) => (
-        <NotificationCard key={i} messageEvent={messageEvent} />
+        <NotificationCard key={i} index={i} messageEvent={messageEvent} />
       ))}
     </Stack>
   );

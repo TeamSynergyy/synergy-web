@@ -60,27 +60,29 @@ export default function NotificationCard({
   let handleClick;
   switch (type) {
     case "COMMENT":
-      body = <Text>~ 게시글에 댓글이 달렸습니다.</Text>;
+      body = <Text>{notificationInfo} 게시글에 댓글이 달렸습니다.</Text>;
       handleClick = () => navigate(`/post/${Number(content)}`);
       break;
     case "FOLLOW":
-      body = <Text>~님이 회원님을 팔로우하기 시작했습니다.</Text>;
+      body = (
+        <Text>{notificationInfo}님이 회원님을 팔로우하기 시작했습니다.</Text>
+      );
       handleClick = () => navigate(`/people/${content}`);
       break;
     case "PROJECT_APPLY":
-      body = <Text>~ 프로젝트에 지원자가 있습니다.</Text>;
+      body = <Text>{notificationInfo} 프로젝트에 지원자가 있습니다.</Text>;
       handleClick = () => navigate(`/project/${Number(content)}`);
       break;
     case "PROJECT_ACCEPT":
-      body = <Text>~ 프로젝트 지원이 수락되었습니다.</Text>;
+      body = <Text>{notificationInfo} 프로젝트 지원이 수락되었습니다.</Text>;
       handleClick = () => navigate(`/project/${Number(content)}`);
       break;
     case "PROJECT_REJECT":
-      body = <Text>~ 프로젝트 지원이 거절되었습니다.</Text>;
+      body = <Text>{notificationInfo} 프로젝트 지원이 거절되었습니다.</Text>;
       handleClick = () => navigate(`/project/${Number(content)}`);
       break;
     case "PROJECT_NOTICE":
-      body = <Text>~ 프로젝트에 새 공지사항이 있습니다.</Text>;
+      body = <Text>{notificationInfo} 프로젝트에 새 공지사항이 있습니다.</Text>;
       handleClick = () => navigate(`/project/${Number(content)}/notice`);
       break;
   }
