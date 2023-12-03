@@ -23,10 +23,10 @@ export default function ProjectTaskDetail({
         </div>
       )}
       {endAt && (
-        <Text c="dimmed">마감 기한: {dayjs(endAt).format("YYYY MMM D")}</Text>
+        <Text c="dimmed">마감 기한: {dayjs(endAt).format("MMMM D, YYYY")}</Text>
       )}
       {assignedTime !== 0 ? (
-        <Text c="dimmed">작업 소요 시간: {assignedTime}시간</Text>
+        <Text c="dimmed">소요 시간: {assignedTime}시간</Text>
       ) : null}
       <Text>{assignedUserIds}</Text>
       <Text>{content}</Text>

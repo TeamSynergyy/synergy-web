@@ -529,6 +529,10 @@ export const api = createApi({
       ],
     }),
 
+    getProjectNotice: build.query<ProjectNotice, number>({
+      query: (noticeId) => `/notices/${noticeId}`,
+    }),
+
     getProjectNotices: build.query<ProjectNotice[], number | string>({
       query: (projectId) => `/notices/${projectId}`,
       providesTags: (result, error, arg) =>

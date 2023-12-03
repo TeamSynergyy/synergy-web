@@ -16,9 +16,12 @@ export const sseSlice = createSlice({
     sseMessageReceived: (state, action: PayloadAction<MessageEvent>) => {
       state.messageEvents.push(action.payload);
     },
+    sseRemoveMessage: (state, action: PayloadAction<number>) => {
+      state.messageEvents.splice(action.payload, 1);
+    },
   },
 });
 
-export const { sseMessageReceived } = sseSlice.actions;
+export const { sseMessageReceived, sseRemoveMessage } = sseSlice.actions;
 
 export default sseSlice.reducer;

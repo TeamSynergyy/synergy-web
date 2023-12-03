@@ -26,8 +26,6 @@ export default function ProjectTaskCard({
   setSelectedTask: (task: ProjectTask) => void;
   openTaskDetail: () => void;
 }) {
-  const deleteTask = api.useDeleteProjectTaskMutation()[0];
-
   const handleClick = () => {
     setSelectedTask(task);
     openTaskDetail();
@@ -50,23 +48,6 @@ export default function ProjectTaskCard({
         >
           <Group position="apart" mb="xs">
             <Text>{task.title}</Text>
-            {/* <Menu shadow="md" width={200}>
-              <Menu.Target>
-                <ActionIcon>
-                  <IconDotsVertical size={14} />
-                </ActionIcon>
-              </Menu.Target>
-
-              <Menu.Dropdown>
-                <Menu.Item
-                  color="red"
-                  icon={<IconTrash size={14} />}
-                  onClick={handleClick}
-                >
-                  Delete
-                </Menu.Item>
-              </Menu.Dropdown>
-            </Menu> */}
           </Group>
           <Group position="apart" mt="xs">
             <Text c="dimmed" size="sm">

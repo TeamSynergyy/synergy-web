@@ -3,6 +3,7 @@ import {
   ActionIcon,
   Drawer,
   Group,
+  Menu,
   Paper,
   ScrollArea,
   Stack,
@@ -13,6 +14,8 @@ import ProjectTaskCard from "./ProjectTaskCard";
 import { useDisclosure } from "@mantine/hooks";
 import { useState } from "react";
 import ProjectTaskDetail from "./ProjectTaskDetail";
+import { IconDotsVertical, IconPencil, IconTrash } from "@tabler/icons-react";
+import { api } from "app/api";
 
 export default function ProjectTaskColumn({
   status,
@@ -31,6 +34,15 @@ export default function ProjectTaskColumn({
   const handleCreateTask = () => {
     setNewTaskStatus(status);
     openNewTaskModal();
+  };
+
+  const deleteTask = api.useDeleteProjectTaskMutation()[0];
+
+  const handleDelete = () => {
+    if (selectedTask) {
+      deleteTask(selectedTask);
+    }
+    close();
   };
 
   return (
@@ -65,9 +77,39 @@ export default function ProjectTaskColumn({
         </Stack>
       </Paper>
 
-      <Drawer opened={opened} onClose={close} title={status} position="right">
-        {selectedTask && <ProjectTaskDetail {...selectedTask} />}
-      </Drawer>
+      <Drawer.Root opened={opened} onClose={close} position="right">
+        <Drawer.Overlay />
+        <Drawer.Content>
+          <Drawer.Header>
+            <Drawer.Title>{status}</Drawer.Title>
+            <Group>
+              <Menu shadow="md">
+                <Menu.Target>
+                  <ActionIcon size={22}>
+                    <IconDotsVertical size={14} />
+                  </ActionIcon>
+                </Menu.Target>
+
+                <Menu.Dropdown>
+                  <Menu.Item icon={<IconPencil size={14} />}>수정</Menu.Item>
+                  <Menu.Item
+                    color="red"
+                    icon={<IconTrash size={14} />}
+                    onClick={handleDelete}
+                  >
+                    삭제
+                  </Menu.Item>
+                </Menu.Dropdown>
+              </Menu>
+
+              <Drawer.CloseButton />
+            </Group>
+          </Drawer.Header>
+          <Drawer.Body>
+            {selectedTask && <ProjectTaskDetail {...selectedTask} />}
+          </Drawer.Body>
+        </Drawer.Content>
+      </Drawer.Root>
     </>
   );
 }

@@ -1,53 +1,60 @@
 import { MessageEvent } from "event-source-polyfill";
-import { Button, Center, Flex, Group, Paper, Text } from "@mantine/core";
-import { Link } from "react-router-dom";
+import { ActionIcon, Button, Flex, Group, Text } from "@mantine/core";
+import { useNavigate } from "react-router-dom";
+import { IconX } from "@tabler/icons-react";
+import { useDispatch } from "react-redux";
+import { sseRemoveMessage } from "app/sseSlice";
 export default function NotificationCard({
+  index,
   messageEvent,
 }: {
+  index: number;
   messageEvent: MessageEvent;
 }) {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const removeMessage = () => dispatch(sseRemoveMessage(index));
   const data = messageEvent.data;
   if (data[0] !== "{") return null;
   const { type, content } = JSON.parse(data);
 
   let body;
+  let handleClick;
   switch (type) {
     case "COMMENT":
-      body = (
-        <>
-          <Text>게시글에 댓글이 달렸습니다.</Text>
-          <Link to={`/post/${Number(content)}`}>
-            <Button>게시글 바로가기</Button>
-          </Link>
-        </>
-      );
+      body = <Text>~ 게시글에 댓글이 달렸습니다.</Text>;
+      handleClick = () => navigate(`/post/${Number(content)}`);
       break;
     case "FOLLOW":
-      body = (
-        <>
-          <Text>팔로우를 받았습니다.</Text>
-          <Link to={`/people/${content}`}>
-            <Button>프로필 바로가기</Button>
-          </Link>
-        </>
-      );
+      body = <Text>~님이 회원님을 팔로우하기 시작했습니다.</Text>;
+      handleClick = () => navigate(`/people/${content}`);
       break;
-    case "APPLY":
-      body = (
-        <>
-          <Text>프로젝트에 지원자가 있습니다.</Text>
-          <Link to={`/project/${Number(content)}`}>
-            <Button>지원자 확인하기</Button>
-          </Link>
-        </>
-      );
+    case "PROJECT_APPLY":
+      body = <Text>~ 프로젝트에 지원자가 있습니다.</Text>;
+      handleClick = () => navigate(`/project/${Number(content)}`);
+      break;
+    case "PROJECT_ACCEPT":
+      body = <Text>~ 프로젝트 지원이 수락되었습니다.</Text>;
+      handleClick = () => navigate(`/project/${Number(content)}`);
+      break;
+    case "PROJECT_REJECT":
+      body = <Text>~ 프로젝트 지원이 거절되었습니다.</Text>;
+      handleClick = () => navigate(`/project/${Number(content)}`);
+      break;
+    case "NOTICE":
+      body = <Text>~ 프로젝트에 새 공지사항이 있습니다.</Text>;
+      handleClick = () => navigate(`/project/${Number(content)}/notice`);
       break;
   }
   return (
-    <Paper w="100%" withBorder>
-      <Flex justify="space-between" align="center" p="sm">
+    <Group position="apart">
+      <Button variant="subtle" color="dark" onClick={handleClick}>
         {body}
-      </Flex>
-    </Paper>
+      </Button>
+      <ActionIcon onClick={removeMessage}>
+        <IconX />
+      </ActionIcon>
+    </Group>
   );
 }

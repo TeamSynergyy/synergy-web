@@ -29,6 +29,7 @@ interface Project {
 
 interface ProjectNotice {
   noticeId: number;
+  projectId: number;
   content: string;
   updateAt: string;
 }
