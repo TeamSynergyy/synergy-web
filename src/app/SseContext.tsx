@@ -23,8 +23,9 @@ export const SseProvider = ({ children }: { children: JSX.Element }) => {
   const esRef = useRef<EventSourcePolyfill | null>(null);
 
   const sseHandler = (event: Event) => {
-    const messageEvent = event as unknown as MessageEvent;
+    const messageEvent = event as MessageEvent;
     console.log("SSE message received", messageEvent);
+    if (messageEvent.data[0] !== "{") return;
     dispatch(sseMessageReceived(messageEvent));
   };
 

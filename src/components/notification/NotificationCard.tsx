@@ -54,8 +54,6 @@ export default function NotificationCard({
     }
   }, [type, userData, projectData, postData]);
 
-  if (data[0] !== "{") return null;
-
   let body;
   let handleClick;
   switch (type) {
