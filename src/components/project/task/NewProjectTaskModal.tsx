@@ -9,24 +9,28 @@ import {
   TextInput,
   Text,
   Textarea,
+  MultiSelectValueProps,
+  SelectItemProps,
+  Box,
+  rem,
+  CloseButton,
 } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { api } from "app/api";
+import UserAvatarName from "components/user/UserAvatarName";
 import dayjs from "dayjs";
-import { useEffect } from "react";
+import { forwardRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { ProjectTask } from "types";
 
 export default function NewProjectTaskModal({
   status,
   opened,
-  open,
   close,
 }: {
   status: ProjectTask["status"];
   opened: boolean;
-  open: () => void;
   close: () => void;
 }) {
   const id = useParams<{ id: string }>().id;
@@ -124,6 +128,9 @@ export default function NewProjectTaskModal({
           <MultiSelect
             data={teamUserIds}
             label="Assigned User"
+            valueComponent={Value}
+            itemComponent={Item}
+            searchable
             {...form.getInputProps("assignedUserIds")}
           />
 
@@ -132,30 +139,38 @@ export default function NewProjectTaskModal({
           </Group>
         </form>
       </Modal>
-
-      <Group position="center">
-        <Button onClick={open}>새 작업 생성</Button>
-      </Group>
     </>
   );
 }
 
-const AssignedUser = ({ userId }: { userId: string }) => {
-  const { data, isLoading, isError, error } = api.useGetUserQuery(userId);
-
-  if (isLoading) return <p>"Loading..."</p>;
-  if (isError) {
-    console.error(error);
-    return <p>error! check the console message</p>;
-  }
-  if (!data) return <p>사용자의 데이터를 불러오지 못했습니다.</p>;
-
-  const { username, profileImageUrl } = data;
-
+function Value({
+  value,
+  onRemove,
+  ...others
+}: MultiSelectValueProps & { value: string }) {
   return (
-    <Group spacing={2}>
-      <Avatar src={profileImageUrl} radius="xl" size="sm" />
-      <Text size="xs">{username}</Text>
-    </Group>
+    <div {...others}>
+      <Group spacing={2} align="center">
+        <UserAvatarName userId={value} />
+        <CloseButton
+          onMouseDown={onRemove}
+          variant="transparent"
+          size={22}
+          iconSize={14}
+          tabIndex={-1}
+        />
+      </Group>
+    </div>
   );
-};
+}
+
+const Item = forwardRef<HTMLDivElement, SelectItemProps>(
+  ({ value, ...others }, ref) => {
+    if (!value) return null;
+    return (
+      <div ref={ref} {...others}>
+        <UserAvatarName userId={value} />
+      </div>
+    );
+  }
+);

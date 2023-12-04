@@ -11,11 +11,12 @@ import {
 } from "@mantine/core";
 import { ProjectTask } from "types";
 import ProjectTaskCard from "./ProjectTaskCard";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useToggle } from "@mantine/hooks";
 import { useState } from "react";
 import ProjectTaskDetail from "./ProjectTaskDetail";
 import { IconDotsVertical, IconPencil, IconTrash } from "@tabler/icons-react";
 import { api } from "app/api";
+import UpdateProjectTaskForm from "./UpdateProjectTaskForm";
 
 export default function ProjectTaskColumn({
   status,
@@ -30,6 +31,7 @@ export default function ProjectTaskColumn({
 }) {
   const [opened, { open, close }] = useDisclosure(false);
   const [selectedTask, setSelectedTask] = useState<ProjectTask | undefined>();
+  const [isUpdating, toggle] = useToggle([false, true]);
 
   const handleCreateTask = () => {
     setNewTaskStatus(status);
@@ -58,7 +60,7 @@ export default function ProjectTaskColumn({
               <Stack
                 ref={droppableProvided.innerRef}
                 {...droppableProvided.droppableProps}
-                spacing="xs"
+                spacing={0}
                 mih="60vh"
               >
                 {tasks.map((task, index) => (
@@ -81,7 +83,7 @@ export default function ProjectTaskColumn({
         <Drawer.Overlay />
         <Drawer.Content>
           <Drawer.Header>
-            <Drawer.Title>{status}</Drawer.Title>
+            <Drawer.Title>{selectedTask?.status}</Drawer.Title>
             <Group>
               <Menu shadow="md">
                 <Menu.Target>
@@ -91,7 +93,12 @@ export default function ProjectTaskColumn({
                 </Menu.Target>
 
                 <Menu.Dropdown>
-                  <Menu.Item icon={<IconPencil size={14} />}>수정</Menu.Item>
+                  <Menu.Item
+                    icon={<IconPencil size={14} />}
+                    onClick={() => toggle()}
+                  >
+                    수정
+                  </Menu.Item>
                   <Menu.Item
                     color="red"
                     icon={<IconTrash size={14} />}
@@ -106,7 +113,12 @@ export default function ProjectTaskColumn({
             </Group>
           </Drawer.Header>
           <Drawer.Body>
-            {selectedTask && <ProjectTaskDetail {...selectedTask} />}
+            {selectedTask &&
+              (isUpdating ? (
+                <UpdateProjectTaskForm task={selectedTask} toggle={toggle} />
+              ) : (
+                <ProjectTaskDetail {...selectedTask} />
+              ))}
           </Drawer.Body>
         </Drawer.Content>
       </Drawer.Root>

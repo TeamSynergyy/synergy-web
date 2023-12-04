@@ -12,6 +12,7 @@ import {
 } from "@mantine/core";
 import { IconDotsVertical, IconMenu, IconTrash } from "@tabler/icons-react";
 import { api } from "app/api";
+import UserAvatarName from "components/user/UserAvatarName";
 import dayjs from "dayjs";
 import { ProjectTask } from "types";
 
@@ -36,15 +37,13 @@ export default function ProjectTaskCard({
     <Draggable draggableId={task.ticketId.toString()} index={index}>
       {(provided, snapshot) => (
         <Paper
-          //   className={cx(classes.task, {
-          //     [classes.taskDragging]: snapshot.isDragging,
-          //   })}
-
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           ref={provided.innerRef}
           onClick={handleClick}
+          mb="xs"
           p="xs"
+          shadow={snapshot.isDragging ? "sm" : "none"}
         >
           <Group position="apart" mb="xs">
             <Text>{task.title}</Text>
@@ -64,7 +63,7 @@ export default function ProjectTaskCard({
           {task.assignedUserIds.length > 0 && (
             <Stack mt="xs" spacing="xs">
               {task.assignedUserIds?.map((userId) => (
-                <AssignedUserButton key={userId} userId={userId} />
+                <UserAvatarName key={userId} userId={userId} />
               ))}
             </Stack>
           )}
@@ -73,25 +72,3 @@ export default function ProjectTaskCard({
     </Draggable>
   );
 }
-
-const AssignedUserButton = ({ userId }: { userId: string }) => {
-  const { data, isLoading, isError, error } = api.useGetUserQuery(userId);
-
-  if (isLoading) return <p>"Loading..."</p>;
-  if (isError) {
-    console.error(error);
-    return <p>error! check the console message</p>;
-  }
-  if (!data) return <p>대화 상대방의 데이터를 불러오지 못했습니다.</p>;
-
-  const { username, profileImageUrl } = data;
-
-  return (
-    <UnstyledButton>
-      <Group spacing={2}>
-        <Avatar src={profileImageUrl} radius="xl" size="sm" />
-        <Text size="xs">{username}</Text>
-      </Group>
-    </UnstyledButton>
-  );
-};

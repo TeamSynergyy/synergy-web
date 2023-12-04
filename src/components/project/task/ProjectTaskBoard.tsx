@@ -78,7 +78,6 @@ export default function ProjectTaskBoard() {
       <NewProjectTaskModal
         status={newTaskStatus}
         opened={opened}
-        open={open}
         close={close}
       />
       <ScrollArea w="100%" pb="md">
