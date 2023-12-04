@@ -21,20 +21,20 @@ export default function NotificationCard({
   const removeMessage = () => dispatch(sseRemoveMessage(index));
   const data = messageEvent.data;
 
-  const { type, content } = JSON.parse(data);
+  const { type, entityId } = JSON.parse(data);
 
   // RTK Query hooks
-  const { data: userData } = api.useGetUserQuery(content, {
+  const { data: userData } = api.useGetUserQuery(entityId, {
     skip: type !== "FOLLOW",
   });
-  const { data: projectData } = api.useGetProjectQuery(Number(content), {
+  const { data: projectData } = api.useGetProjectQuery(Number(entityId), {
     skip:
       type !== "PROJECT_APPLY" &&
       type !== "PROJECT_ACCEPT" &&
       type !== "PROJECT_REJECT" &&
       type !== "PROJECT_NOTICE",
   });
-  const { data: postData } = api.useGetPostQuery(Number(content), {
+  const { data: postData } = api.useGetPostQuery(Number(entityId), {
     skip: type !== "COMMENT",
   });
 
@@ -59,29 +59,29 @@ export default function NotificationCard({
   switch (type) {
     case "COMMENT":
       body = <Text>{notificationInfo} 게시글에 댓글이 달렸습니다.</Text>;
-      handleClick = () => navigate(`/post/${Number(content)}`);
+      handleClick = () => navigate(`/post/${Number(entityId)}`);
       break;
     case "FOLLOW":
       body = (
         <Text>{notificationInfo}님이 회원님을 팔로우하기 시작했습니다.</Text>
       );
-      handleClick = () => navigate(`/people/${content}`);
+      handleClick = () => navigate(`/people/${entityId}`);
       break;
     case "PROJECT_APPLY":
       body = <Text>{notificationInfo} 프로젝트에 지원자가 있습니다.</Text>;
-      handleClick = () => navigate(`/project/${Number(content)}`);
+      handleClick = () => navigate(`/project/${Number(entityId)}`);
       break;
     case "PROJECT_ACCEPT":
       body = <Text>{notificationInfo} 프로젝트 지원이 수락되었습니다.</Text>;
-      handleClick = () => navigate(`/project/${Number(content)}`);
+      handleClick = () => navigate(`/project/${Number(entityId)}`);
       break;
     case "PROJECT_REJECT":
       body = <Text>{notificationInfo} 프로젝트 지원이 거절되었습니다.</Text>;
-      handleClick = () => navigate(`/project/${Number(content)}`);
+      handleClick = () => navigate(`/project/${Number(entityId)}`);
       break;
     case "PROJECT_NOTICE":
       body = <Text>{notificationInfo} 프로젝트에 새 공지사항이 있습니다.</Text>;
-      handleClick = () => navigate(`/project/${Number(content)}/notice`);
+      handleClick = () => navigate(`/project/${Number(entityId)}/notice`);
       break;
   }
   return (
