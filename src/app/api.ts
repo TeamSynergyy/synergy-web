@@ -668,6 +668,18 @@ export const api = createApi({
 
     updateProjectTask: build.mutation<void, ProjectTask>({
       query: (task) => ({
+        url: `/tickets/change/${task.ticketId}`,
+        method: "PUT",
+        body: task,
+      }),
+
+      invalidatesTags: (result, error, arg) => [
+        { type: "ProjectTask", id: String(arg.projectId) },
+      ],
+    }),
+
+    updateProjectTaskWithoutOrderNumber: build.mutation<void, ProjectTask>({
+      query: (task) => ({
         url: `/tickets/${task.ticketId}`,
         method: "PUT",
         body: task,

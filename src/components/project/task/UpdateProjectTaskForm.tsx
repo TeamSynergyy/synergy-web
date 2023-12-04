@@ -35,7 +35,7 @@ export default function UpdateProjectTaskForm({
   const { data: project } = api.useGetProjectQuery(Number(id));
   const teamUserIds = project?.teamUserIds ?? [];
 
-  const updateTask = api.useUpdateProjectTaskMutation()[0];
+  const updateTask = api.useUpdateProjectTaskWithoutOrderNumberMutation()[0];
 
   const form = useForm({
     initialValues: { ...task },
