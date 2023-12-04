@@ -56,7 +56,6 @@ export default function PostCard({
 
   const { data: author } = api.useGetUserQuery(post.userId);
 
-
   const closeSpoilerText = "숨기기";
   const openSpoiler = () => {
     if (
@@ -84,9 +83,7 @@ export default function PostCard({
         <Group position="apart">
           <Group>
             <Link to={`/people/${post.userId}`}>
-
               <Avatar src={author?.profileImageUrl} radius="xl" />
-
             </Link>
             <Text>{post.authorName}</Text>
 
@@ -132,9 +129,10 @@ export default function PostCard({
           </Text>
         </Spoiler>
       </Card.Section>
-      {post.imagesUrl && (
+
+      {(post.imagesUrl || post.thumbnailImageUrl) && (
         <Card.Section className={classes.section}>
-          <ImageCardModal images={post.imagesUrl} />
+          <ImageCardModal images={post.imagesUrl || [post.thumbnailImageUrl]} />
         </Card.Section>
       )}
 

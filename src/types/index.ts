@@ -5,6 +5,7 @@ interface Post {
   authorName: string;
   userId: string;
   authorAvatar: string;
+  thumbnailImageUrl: string;
   imagesUrl: string[];
   likes: number;
   createAt: string;

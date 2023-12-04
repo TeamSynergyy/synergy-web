@@ -65,7 +65,7 @@ const TrendingPosts = () => {
                 <Group spacing={5}>
                   <IconHeart color="pink" fill="pink" size={16} />
                   <Text c="gray" fz="xs">
-                    {post.likes || Math.floor((10 / (i + 1)) * 10)}
+                    {post.likes}
                   </Text>
                 </Group>
               </Group>
