@@ -222,6 +222,7 @@ export const api = createApi({
 
     getSimilarUsers: build.query<User[], string>({
       query: (id) => `/users/similar/${id}?end=`,
+      transformResponse: (response: { content: User[] }) => response.content,
     }),
 
     // Post
