@@ -33,12 +33,10 @@ export default function PostLike({
 
   // 임시 추천 재학습
   const fitModel = api.useFitModelMutation()[0];
-  const { refetch } = api.useGetRecommendedPostsQuery("");
 
   const handleLike = async () => {
     const payload1 = await like([postId, likeType]);
-    const payload2 = await fitModel(null);
-    refetch();
+    await fitModel(null);
   };
 
   return (

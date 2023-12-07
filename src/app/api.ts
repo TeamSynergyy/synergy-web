@@ -101,6 +101,10 @@ export const api = createApi({
         url: "/users/fit_model",
         method: "POST",
       }),
+      invalidatesTags: (result, error, arg) => [
+        { type: "RecommendedPosts", id: "LIST" },
+        { type: "RecommendedProjects", id: "LIST" },
+      ],
     }),
 
     // MyInfo
