@@ -1,6 +1,7 @@
 import { createStyles, Group, ActionIcon, Text } from "@mantine/core";
 import { IconHeart, IconHeartFilled } from "@tabler/icons-react";
 import { api } from "app/api";
+import { useAppDispatch } from "app/store";
 import { useState } from "react";
 
 const useStyles = createStyles((theme) => ({
@@ -33,9 +34,15 @@ export default function PostLike({
 
   // 임시 추천 재학습
   const fitModel = api.useFitModelMutation()[0];
+  const dispatch = useAppDispatch();
 
   const handleLike = async () => {
     const payload1 = await like([postId, likeType]);
+    const patchCollection = dispatch(
+      api.util.updateQueryData("getRecommendedPosts", "", (draftPosts) => {
+        draftPosts.content = [];
+      })
+    );
     await fitModel(null);
   };
 
