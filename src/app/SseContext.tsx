@@ -22,18 +22,18 @@ export const SseProvider = ({ children }: { children: JSX.Element }) => {
   const hostUrl = import.meta.env.VITE_API_URL;
   const token = useSelector(selectCurrentToken);
   const esRef = useRef<EventSourcePolyfill | null>(null);
-  const [lastEventId, setLastEventId] = useState<string | null>(null);
+  const lastEventIdRef = useRef<string | null>(null);
 
   const sseHandler = (event: Event) => {
     const messageEvent = event as MessageEvent;
     console.log("SSE message received", messageEvent);
 
-    // Store the last event ID
+    // Update the last event ID using a ref
     if (messageEvent.lastEventId) {
-      setLastEventId(messageEvent.lastEventId);
+      lastEventIdRef.current = messageEvent.lastEventId;
     }
 
-    console.log("lasteventid:", lastEventId);
+    console.log("lasteventid:", lastEventIdRef.current);
 
     if (messageEvent.data[0] !== "{") return;
     dispatch(sseMessageReceived(messageEvent));
@@ -46,12 +46,12 @@ export const SseProvider = ({ children }: { children: JSX.Element }) => {
       Authorization: `Bearer ${token}`,
     };
 
-    if (lastEventId) {
-      headers["Last-Event-Id"] = lastEventId;
+    if (lastEventIdRef.current) {
+      headers["Last-Event-Id"] = lastEventIdRef.current;
     }
 
     const eventSource = new EventSourcePolyfill(`${hostUrl}/api/v1/subscribe`, {
-      headers: headers,
+      headers,
     });
 
     eventSource.addEventListener("sse", sseHandler);
@@ -59,7 +59,7 @@ export const SseProvider = ({ children }: { children: JSX.Element }) => {
     return () => {
       eventSource.removeEventListener("sse", sseHandler);
     };
-  }, [hostUrl, token]);
+  }, [hostUrl, token]); // Do not include lastEventIdRef here
 
   return (
     <SseContext.Provider value={{ es: esRef.current }}>
