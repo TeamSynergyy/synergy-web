@@ -72,14 +72,17 @@ export default function Layout() {
     if (opened) dispatch(toggleNavbar());
   }, [location.pathname]);
 
-  const { data: myInfo, isSuccess } = api.useGetMyInfoQuery(null);
+  const { data: myInfo, isSuccess, refetch } = api.useGetMyInfoQuery(null);
 
   if (isSuccess && !myInfo.organization)
     return (
       <EditUserInfoModal
         isSignup
         opened={true}
-        close={() => navigate("/home/foryou")}
+        close={() => {
+          refetch();
+          // navigate("/home/foryou");
+        }}
       />
     );
 
