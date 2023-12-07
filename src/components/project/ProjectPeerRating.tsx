@@ -47,9 +47,6 @@ export default function ProjectPeerRating() {
 
       {isLeader && (
         <Center w="100%">
-          <Text size="sm" c="gray">
-            팀장 전용
-          </Text>
           <Button onClick={handleConfirmPeerRating}>평가 확정하기</Button>
         </Center>
       )}
