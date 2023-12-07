@@ -95,6 +95,14 @@ export const api = createApi({
     "ProjectTask",
   ],
   endpoints: (build) => ({
+    // 임시 모델 재학습
+    fitModel: build.mutation<void, null>({
+      query: () => ({
+        url: "/users/fit_model",
+        method: "POST",
+      }),
+    }),
+
     // MyInfo
     getMyInfo: build.query<User, null>({
       query: () => "/users/me/info",
