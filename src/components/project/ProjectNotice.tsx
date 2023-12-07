@@ -69,7 +69,7 @@ export default function ProjectNotice() {
         <Paper key={notice.noticeId} p="md" mt="md">
           <Group position="apart">
             <Text c="gray">
-              {dayjs(notice.updateAt).local().format("YYYY/MM/DD  hh:mm")}
+              {dayjs(notice.updateAt).local().format("YYYY/MM/DD  HH:mm")}
             </Text>
             {isLeader && (
               <CloseButton onClick={() => deleteNotice(notice.noticeId)} />

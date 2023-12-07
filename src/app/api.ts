@@ -58,14 +58,12 @@ const baseQueryWithReauth = async (
     });
 
     if (refreshResult.body?.token) {
-      console.log(refreshResult);
       const newAccessToken = refreshResult.body.token;
       api.dispatch(setAccessToken(newAccessToken));
       result = await baseQuery(args, api, extraOptions);
     }
 
     if (refreshResult.header?.code === 400) {
-      console.log(refreshResult);
       window.location.href = "/auth";
     }
   }
@@ -241,7 +239,7 @@ export const api = createApi({
     }),
 
     getRecentPosts: build.query<
-      { content: Post[]; next: boolean },
+      { content: Post[]; hasNext: boolean },
       number | string
     >({
       query: (end) => `/posts/recent?end=${end}`,
@@ -250,7 +248,7 @@ export const api = createApi({
       },
       merge: (currentCache, newItems) => {
         currentCache.content.push(...newItems.content);
-        currentCache.next = newItems.next;
+        currentCache.hasNext = newItems.hasNext;
       },
       forceRefetch({ currentArg, previousArg }) {
         return currentArg !== previousArg;
@@ -393,7 +391,7 @@ export const api = createApi({
     }),
 
     getRecentProjects: build.query<
-      { content: Project[]; next: boolean },
+      { content: Project[]; hasNext: boolean },
       number | string
     >({
       query: (end) => `/projects/recent?end=${end}`,
@@ -402,7 +400,7 @@ export const api = createApi({
       },
       merge: (currentCache, newItems) => {
         currentCache.content.push(...newItems.content);
-        currentCache.next = newItems.next;
+        currentCache.hasNext = newItems.hasNext;
       },
       forceRefetch({ currentArg, previousArg }) {
         return currentArg !== previousArg;

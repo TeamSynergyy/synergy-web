@@ -12,7 +12,7 @@ export default function RecentProject() {
 
   const { ref, entry } = useIntersection();
 
-  const hasNext = data?.next;
+  const hasNext = data?.hasNext;
 
   const handleEnd = () => {
     if (data?.content)
@@ -35,7 +35,7 @@ export default function RecentProject() {
     console.error(error);
     content = <p>error! check the console message</p>;
   }
-  console.log(data?.next);
+
   return (
     <>
       <Stack w="100%">{content}</Stack>

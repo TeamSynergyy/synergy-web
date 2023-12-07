@@ -22,7 +22,7 @@ export function ProjectNoticeNavBar() {
           {notices?.map((notice) => (
             <Paper key={notice.noticeId} p="md" mt="md">
               <Text c="gray">
-                {dayjs(notice.updateAt).format("YYYY/MM/DD  hh:mm")}
+                {dayjs(notice.updateAt).local().format("YYYY/MM/DD  HH:mm")}
               </Text>
 
               <Text>{notice.content}</Text>
