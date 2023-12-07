@@ -62,9 +62,13 @@ export default function UserProfileCard({
   console.log("🚀 ~ file: UserProfileCard.tsx:62 ~ isFollowing:", isFollowing);
   const followType = isFollowing ? "unfollow" : "follow";
   const [opened, { open, close }] = useDisclosure(false);
+
+  const { refetch } = api.useGetFollowingPostsQuery("");
+
   const follow = api.useFollowMutation()[0];
   const handleFollow = () => {
     follow([userId, followType, myId]);
+    refetch();
   };
 
   const isMe = myInfo?.userId !== userId;
