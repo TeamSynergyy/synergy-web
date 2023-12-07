@@ -124,7 +124,7 @@ export default function PostCard({
           hideLabel={closeSpoilerText}
           controlRef={spoilerControlRef}
         >
-          <Text mt="xs" onClick={openSpoiler}>
+          <Text mt="xs" sx={{ whiteSpace: "pre-wrap" }} onClick={openSpoiler}>
             {post.content}
           </Text>
         </Spoiler>
@@ -140,8 +140,11 @@ export default function PostCard({
         <Flex w="100%" justify="space-between" align="center">
           <PostLike {...post} />
           {!isDetail && (
-            <ActionIcon onClick={() => navigate(`/post/${post.postId}`)}>
-              <IconMessage size="1.25rem" />
+            <ActionIcon
+              size="xl"
+              onClick={() => navigate(`/post/${post.postId}`)}
+            >
+              <IconMessage size="1.5rem" />
             </ActionIcon>
           )}
         </Flex>

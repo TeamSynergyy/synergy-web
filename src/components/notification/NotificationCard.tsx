@@ -46,6 +46,7 @@ export default function NotificationCard({
       case "PROJECT_APPLY":
       case "PROJECT_ACCEPT":
       case "PROJECT_REJECT":
+      case "PROJECT_NOTICE":
         setNotificationInfo(projectData?.name || ""); // Replace 'name' with the actual project name field
         break;
       case "COMMENT":

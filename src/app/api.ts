@@ -50,25 +50,22 @@ const baseQueryWithReauth = async (
     const refreshResult: {
       header: { code: number; message: string };
       body: { token: string };
-    } = await axios.get(
-      import.meta.env.DEV
-        ? "/api/v1/auth/refresh"
-        : import.meta.env.VITE_API_URL + "/api/v1/auth/refresh",
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Credentials: "include",
-        },
-      }
-    );
+    } = await axios.get(import.meta.env.VITE_API_URL + "/api/v1/auth/refresh", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Credentials: "include",
+      },
+    });
 
     if (refreshResult.body?.token) {
+      console.log(refreshResult);
       const newAccessToken = refreshResult.body.token;
       api.dispatch(setAccessToken(newAccessToken));
       result = await baseQuery(args, api, extraOptions);
     }
 
     if (refreshResult.header?.code === 400) {
+      console.log(refreshResult);
       window.location.href = "/auth";
     }
   }

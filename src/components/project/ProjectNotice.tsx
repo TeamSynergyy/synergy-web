@@ -75,7 +75,7 @@ export default function ProjectNotice() {
               <CloseButton onClick={() => deleteNotice(notice.noticeId)} />
             )}
           </Group>
-          <Text>{notice.content}</Text>
+          <Text sx={{ whiteSpace: "pre-wrap" }}>{notice.content}</Text>
         </Paper>
       ))}
     </Stack>

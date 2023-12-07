@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
+    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "ec2deploy": "tsc && vite build && scp -i \"$EC2_SSH_KEY_PATH\" -r dist/* $EC2_USER@$EC2_HOST:$EC2_PATH"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",

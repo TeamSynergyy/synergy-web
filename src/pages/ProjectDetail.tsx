@@ -1,6 +1,15 @@
 import { api } from "app/api";
 import { useParams } from "react-router-dom";
-import { Text, Button, Box, Dialog, Flex, Stack } from "@mantine/core";
+import {
+  Text,
+  Button,
+  Box,
+  Dialog,
+  Flex,
+  Stack,
+  Center,
+  rem,
+} from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 
 import ApplicantBar from "components/user/ApplicantBar";
@@ -63,27 +72,29 @@ export default function ProjectDetail() {
             <Text c="dimmed" fz="sm" mt="md">
               진행 장소
             </Text>
-            <div
-              style={{
-                position: "relative",
-                width: "100%",
-                paddingBottom: "56.25%",
-                overflow: "hidden",
-              }}
-            >
-              <StaticMap
-                center={staticMapCoords}
+            <Center maw={rem(700)} mx="auto">
+              <div
                 style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
+                  position: "relative",
                   width: "100%",
-                  height: "100%",
+                  paddingBottom: "56.25%",
+                  overflow: "hidden",
                 }}
-                marker={{ position: staticMapCoords }}
-                level={3}
-              />
-            </div>
+              >
+                <StaticMap
+                  center={staticMapCoords}
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                  }}
+                  marker={{ position: staticMapCoords }}
+                  level={3}
+                />
+              </div>
+            </Center>
           </>
         )}
         {leader && (

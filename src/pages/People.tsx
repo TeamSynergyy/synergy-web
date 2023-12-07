@@ -10,57 +10,61 @@ export default function People() {
       key: "lastVisitedProfileUser",
     });
 
-  const { data: myInfo, isLoading } = api.useGetMyInfoQuery(null);
+  const myInfoQuery = api.useGetMyInfoQuery(null);
+  const similarToLastVisitedProfileUsersQuery = api.useGetSimilarUsersQuery(
+    lastVisitedProfileUser?.userId || ""
+  );
+  const similarToMeUsersQuery = api.useGetSimilarUsersQuery(
+    myInfoQuery.data?.userId || ""
+  );
+  const sameOrganizationUsersQuery = api.useSearchUsersQuery([
+    myInfoQuery.data?.organization || "",
+    0,
+  ]);
+  const sameInterestsUsersQuery = api.useSearchUsersQuery([
+    myInfoQuery.data?.interestAreas || "",
+    0,
+  ]);
+  const sameSkillsUsersQuery = api.useSearchUsersQuery([
+    myInfoQuery.data?.skills || "",
+    0,
+  ]);
 
-  if (!myInfo) {
-    if (isLoading) return <div>loading...</div>;
+  if (!myInfoQuery.data) {
+    if (myInfoQuery.isLoading) return <div>loading...</div>;
     return <div>내 정보를 불러오지 못했습니다.</div>;
   }
-
-  const { data: similarToLastVisitedProfileUsers } =
-    api.useGetSimilarUsersQuery(lastVisitedProfileUser?.userId);
-
-  const { data: similarToMeUsers } = api.useGetSimilarUsersQuery(myInfo.userId);
-
-  const { data: sameOrganizationUsers } = myInfo.organization
-    ? api.useSearchUsersQuery([myInfo.organization, 0])
-    : { data: null };
-
-  const { data: sameInterestsUsers } = myInfo.interestAreas
-    ? api.useSearchUsersQuery([myInfo.interestAreas, 0])
-    : { data: null };
-
-  const { data: sameSkillsUsers } = myInfo.skills
-    ? api.useSearchUsersQuery([myInfo.skills, 0])
-    : { data: null };
 
   return (
     <Stack>
       {lastVisitedProfileUser && (
         <UserGrid
           title={`${lastVisitedProfileUser.username}와 비슷한 사람들`}
-          users={similarToLastVisitedProfileUsers || []}
+          users={similarToLastVisitedProfileUsersQuery.data || []}
         />
       )}
 
-      <UserGrid title="나와 비슷한 사람들" users={similarToMeUsers || []} />
+      <UserGrid
+        title="나와 비슷한 사람들"
+        users={similarToMeUsersQuery.data || []}
+      />
 
-      {myInfo.organization && (
+      {myInfoQuery.data.organization && (
         <UserGrid
-          title={myInfo.organization}
-          users={sameOrganizationUsers?.content || []}
+          title={myInfoQuery.data.organization}
+          users={sameOrganizationUsersQuery.data?.content || []}
         />
       )}
-      {myInfo.interestAreas && (
+      {myInfoQuery.data.interestAreas && (
         <UserGrid
-          title={myInfo.interestAreas}
-          users={sameInterestsUsers?.content || []}
+          title={myInfoQuery.data.interestAreas}
+          users={sameInterestsUsersQuery.data?.content || []}
         />
       )}
-      {myInfo.skills && (
+      {myInfoQuery.data.skills && (
         <UserGrid
-          title={myInfo.skills}
-          users={sameSkillsUsers?.content || []}
+          title={myInfoQuery.data.skills}
+          users={sameSkillsUsersQuery.data?.content || []}
         />
       )}
     </Stack>

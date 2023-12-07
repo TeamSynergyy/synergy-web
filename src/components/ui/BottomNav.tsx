@@ -1,5 +1,7 @@
-import { Avatar, createStyles, Group, rem, Stack } from "@mantine/core";
+import { Avatar, Badge, createStyles, Group, rem, Stack } from "@mantine/core";
 import { api } from "app/api";
+import { RootState } from "app/store";
+import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 
 const useStyles = createStyles((theme) => ({
@@ -49,28 +51,57 @@ interface BottomNavProps {
 
 export function BottomNav({ links }: BottomNavProps) {
   const location = useLocation();
-
   const { data } = api.useGetMyInfoQuery(null);
+  const messageEvents = useSelector(
+    (state: RootState) => state.sse.messageEvents
+  );
+  const isNotiExist = messageEvents.length > 0;
 
   const activePage = location.pathname.split("/")[1];
   const isMyProfile =
     activePage === "people" && location.pathname.split("/")[2] === data?.userId;
   const { classes, cx } = useStyles();
 
-  const items = links.map((link) => (
-    <Link
-      key={link.label}
-      to={link.link}
-      className={cx(classes.link, {
-        [classes.linkActive]: !isMyProfile && `/${activePage}` === link.link,
-      })}
-    >
-      <Stack align="center" spacing={2}>
-        {link.icon}
-        {link.label}
-      </Stack>
-    </Link>
-  ));
+  const items = links.map((link) => {
+    const isNotiLink = link.label === "알림";
+
+    return (
+      <div key={link.label}>
+        <Link
+          to={link.link}
+          className={cx(classes.link, {
+            [classes.linkActive]:
+              !isMyProfile && `/${activePage}` === link.link,
+          })}
+        >
+          <Stack
+            align="center"
+            spacing={2}
+            pos={isNotiLink ? "relative" : "inherit"}
+          >
+            {link.icon}
+            {link.label}
+            {isNotiExist && isNotiLink && (
+              <Badge
+                pos="absolute"
+                top={5}
+                right={0}
+                sx={{
+                  transform: "translate(50%, -50%)",
+                }}
+                color="red"
+                variant="filled"
+                size="sm"
+                p={4.5}
+              >
+                {messageEvents.length}
+              </Badge>
+            )}
+          </Stack>
+        </Link>
+      </div>
+    );
+  });
 
   return (
     <div className={classes.inner}>
@@ -83,7 +114,7 @@ export function BottomNav({ links }: BottomNavProps) {
           })}
         >
           <Stack align="center" spacing={2}>
-            <Avatar src={data?.profileImageUrl} size={24} radius="xl" />내
+            <Avatar src={data?.profileImageUrl} size={24} radius="xl" />
             프로필
           </Stack>
         </Link>

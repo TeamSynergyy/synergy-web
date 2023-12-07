@@ -32,11 +32,10 @@ export const SseProvider = ({ children }: { children: JSX.Element }) => {
   useEffect(() => {
     if (!token) return;
 
-    const eventSource = new EventSourcePolyfill(`${hostUrl}/subscribe`, {
+    const eventSource = new EventSourcePolyfill(`${hostUrl}/api/v1/subscribe`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-      withCredentials: true,
       heartbeatTimeout: 600000,
     });
 

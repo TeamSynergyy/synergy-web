@@ -9,6 +9,7 @@ import {
   Avatar,
   Menu,
   Modal,
+  Badge,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconSearch } from "@tabler/icons-react";
@@ -17,7 +18,8 @@ import { Link, useLocation } from "react-router-dom";
 import { SearchInput } from "../search/SearchInput";
 import { api } from "app/api";
 import { setAccessToken } from "app/authSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "app/store";
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -80,7 +82,11 @@ export function HeaderSearch({ links, children }: HeaderSearchProps) {
   const isSearchPage = activePage === "search";
 
   const { data } = api.useGetMyInfoQuery(null);
-  console.log(data);
+  const messageEvents = useSelector(
+    (state: RootState) => state.sse.messageEvents
+  );
+  const isNotiExist = messageEvents.length > 0;
+
   const items = links.map((link) => (
     <Link
       key={link.label}
@@ -92,6 +98,40 @@ export function HeaderSearch({ links, children }: HeaderSearchProps) {
       {link.label}
     </Link>
   ));
+
+  if (isNotiExist) {
+    const notiIndex = links.findIndex(({ label }) => label === "알림");
+    const newNotiItem = (
+      <div style={{ position: "relative" }}>
+        <Link
+          key={links[notiIndex].label}
+          to={links[notiIndex].link}
+          className={cx(classes.link, {
+            [classes.linkActive]: `/${activePage}` === links[notiIndex].link,
+          })}
+        >
+          {links[notiIndex].label}
+        </Link>
+
+        <Badge
+          pos="absolute"
+          top="0"
+          right="0"
+          sx={{
+            transform: "translate(50%, -50%)",
+          }}
+          color="red"
+          variant="filled"
+          size="sm"
+          p={4.5}
+        >
+          {messageEvents.length}
+        </Badge>
+      </div>
+    );
+
+    items.splice(notiIndex, 1, newNotiItem);
+  }
 
   return (
     <Header height={56} className={classes.header}>

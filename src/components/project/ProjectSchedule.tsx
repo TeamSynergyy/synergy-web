@@ -85,7 +85,7 @@ export default function ProjectSchedule() {
 
         <ScrollArea w="100%" py="md">
           <Group
-            w={`${mondays.length * 40 * (matches ? 1 : 2)}%`}
+            w={`${Math.max(mondays.length, 1) * 40 * (matches ? 1 : 2)}%`}
             h="100%"
             pos="relative"
             pt="lg"
