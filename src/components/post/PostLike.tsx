@@ -38,12 +38,14 @@ export default function PostLike({
 
   const handleLike = async () => {
     const payload1 = await like([postId, likeType]);
+    await fitModel(null);
     const patchCollection = dispatch(
       api.util.updateQueryData("getRecommendedPosts", "", (draftPosts) => {
         draftPosts.content = [];
       })
     );
-    await fitModel(null);
+
+    api.util.invalidateTags([{ type: "RecommendedPosts", id: "LIST" }]);
   };
 
   return (
