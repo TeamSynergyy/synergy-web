@@ -27,6 +27,7 @@ import {
 } from "@tabler/icons-react";
 import { useEffect } from "react";
 import { SseProvider } from "app/SseContext";
+import { EditUserInfoModal } from "components/user/EditUserInfoModal";
 
 const headerLinks = [
   {
@@ -60,6 +61,7 @@ export default function Layout() {
     dispatch(toggleNavbar());
   };
 
+  const navigate = useNavigate();
   const location = useLocation();
 
   const isChatRoom =
@@ -70,18 +72,16 @@ export default function Layout() {
     if (opened) dispatch(toggleNavbar());
   }, [location.pathname]);
 
-  // const navigate = useNavigate();
+  const { data: myInfo, isSuccess } = api.useGetMyInfoQuery(null);
 
-  // const { data: myInfo, isSuccess } = api.useGetMyInfoQuery(null);
-
-  // if (isSuccess && !myInfo.organization)
-  //   return (
-  //     <EditUserInfoModal
-  //       isSignup
-  //       opened={true}
-  //       close={() => navigate("/home/foryou")}
-  //     />
-  //   );
+  if (isSuccess && !myInfo.organization)
+    return (
+      <EditUserInfoModal
+        isSignup
+        opened={true}
+        close={() => navigate("/home/foryou")}
+      />
+    );
 
   return (
     //   <StompProvider>

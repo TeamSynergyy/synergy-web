@@ -24,16 +24,22 @@ export default function NotificationCard({
   const { type, entityId } = JSON.parse(data);
 
   // RTK Query hooks
-  const { data: userData } = api.useGetUserQuery(entityId, {
-    skip: type !== "FOLLOW",
-  });
-  const { data: projectData } = api.useGetProjectQuery(Number(entityId), {
-    skip:
-      type !== "PROJECT_APPLY" &&
-      type !== "PROJECT_ACCEPT" &&
-      type !== "PROJECT_REJECT" &&
-      type !== "PROJECT_NOTICE",
-  });
+  const { data: userData, refetch: userRefetch } = api.useGetUserQuery(
+    entityId,
+    {
+      skip: type !== "FOLLOW",
+    }
+  );
+  const { data: projectData, refetch: projectRefetch } = api.useGetProjectQuery(
+    Number(entityId),
+    {
+      skip:
+        type !== "PROJECT_APPLY" &&
+        type !== "PROJECT_ACCEPT" &&
+        type !== "PROJECT_REJECT" &&
+        type !== "PROJECT_NOTICE",
+    }
+  );
   const { data: postData } = api.useGetPostQuery(Number(entityId), {
     skip: type !== "COMMENT",
   });
@@ -66,7 +72,10 @@ export default function NotificationCard({
       body = (
         <Text>{notificationInfo}님이 회원님을 팔로우하기 시작했습니다.</Text>
       );
-      handleClick = () => navigate(`/people/${entityId}`);
+      handleClick = () => {
+        userRefetch();
+        navigate(`/people/${entityId}`);
+      };
       break;
     case "PROJECT_APPLY":
       body = <Text>{notificationInfo} 프로젝트에 지원자가 있습니다.</Text>;
@@ -74,11 +83,17 @@ export default function NotificationCard({
       break;
     case "PROJECT_ACCEPT":
       body = <Text>{notificationInfo} 프로젝트 지원이 수락되었습니다.</Text>;
-      handleClick = () => navigate(`/project/${Number(entityId)}`);
+      handleClick = () => {
+        projectRefetch();
+        navigate(`/project/${Number(entityId)}`);
+      };
       break;
     case "PROJECT_REJECT":
       body = <Text>{notificationInfo} 프로젝트 지원이 거절되었습니다.</Text>;
-      handleClick = () => navigate(`/project/${Number(entityId)}`);
+      handleClick = () => {
+        projectRefetch();
+        navigate(`/project/${Number(entityId)}`);
+      };
       break;
     case "PROJECT_NOTICE":
       body = <Text>{notificationInfo} 프로젝트에 새 공지사항이 있습니다.</Text>;

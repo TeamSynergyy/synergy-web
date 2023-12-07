@@ -7,6 +7,8 @@ import {
   Rating,
   Textarea,
   Text,
+  Center,
+  Stack,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { api } from "app/api";
@@ -42,18 +44,28 @@ export default function ProjectPeerRating() {
   return (
     <>
       <ProjectTab projectId={project.projectId} />
+
       {isLeader && (
-        <Button onClick={handleConfirmPeerRating}>평가 확정하기</Button>
+        <Center w="100%">
+          <Text size="sm" c="gray">
+            팀장 전용
+          </Text>
+          <Button onClick={handleConfirmPeerRating}>평가 확정하기</Button>
+        </Center>
       )}
 
-      {isLeader &&
-        teamUsers.length > 0 &&
-        teamUsers.map((user) => (
-          <Group>
-            <UserAvatarName userId={user.userId} />
-            <Text>{user.temperature}</Text>
-          </Group>
-        ))}
+      {isLeader && teamUsers.length > 0 && (
+        <Center w="100%">
+          <Stack>
+            {teamUsers.map((user) => (
+              <Group>
+                <UserAvatarName userId={user.userId} />
+                <Text c="dark"> {user.temperature}°C</Text>
+              </Group>
+            ))}
+          </Stack>
+        </Center>
+      )}
       {project.teamUserIds.length > 1 ? (
         project.teamUserIds
           .filter((id) => id !== myInfo?.userId)
