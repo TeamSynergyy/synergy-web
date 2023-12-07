@@ -127,6 +127,9 @@ export const api = createApi({
 
     getMyAppliedProjects: build.query<number[], null>({
       query: () => "/applies/me",
+      transformResponse: (response: { projectId: number }[]) => {
+        return response.map(({ projectId }) => projectId);
+      },
 
       providesTags: [{ type: "AppliedProjectId", id: "LIST" }],
     }),
