@@ -1,16 +1,6 @@
 import { api } from "app/api";
 import { useParams } from "react-router-dom";
-import {
-  Text,
-  Button,
-  Box,
-  Dialog,
-  Flex,
-  Stack,
-  Center,
-  rem,
-} from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
+import { Text, Button, Box, Flex, Stack, Center, rem } from "@mantine/core";
 
 import ApplicantBar from "components/user/ApplicantBar";
 import { StaticMap } from "react-kakao-maps-sdk";
@@ -21,7 +11,6 @@ import ProjectTab from "components/project/ProjectTab";
 export default function ProjectDetail() {
   const id = parseInt(useParams().id as string);
   const { data: project, isFetching } = api.useGetProjectQuery(id);
-  const [opened, { open, close }] = useDisclosure(false);
 
   const myId = api.useGetMyInfoQuery(null).data?.userId;
   const { data: leader } = api.useGetUserQuery(project?.leaderId || "");
@@ -52,7 +41,6 @@ export default function ProjectDetail() {
       } else {
         await applyProject(id);
       }
-      open();
     } catch (e) {
       console.error(e);
     }
@@ -129,18 +117,6 @@ export default function ProjectDetail() {
           </Stack>
         )}
       </Box>
-
-      <Dialog
-        opened={opened}
-        withCloseButton
-        onClose={close}
-        size="lg"
-        radius="md"
-      >
-        <Text size="sm" weight={500}>
-          {isApplied ? "신청하기" : "신청 취소하기"} 완료
-        </Text>
-      </Dialog>
     </>
   );
 }

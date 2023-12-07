@@ -493,6 +493,7 @@ export const api = createApi({
       }),
       invalidatesTags: (result, error, arg) => [
         { type: "ApplicantsIds", id: String(arg[0]) },
+        { type: "Project", id: String(arg[0]) },
       ],
     }),
 
@@ -506,6 +507,7 @@ export const api = createApi({
       }),
       invalidatesTags: (result, error, arg) => [
         { type: "ApplicantsIds", id: String(arg[0]) },
+        { type: "Project", id: String(arg[0]) },
       ],
     }),
 
