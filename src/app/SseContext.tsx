@@ -33,6 +33,8 @@ export const SseProvider = ({ children }: { children: JSX.Element }) => {
       setLastEventId(messageEvent.lastEventId);
     }
 
+    console.log("lasteventid:", lastEventId);
+
     if (messageEvent.data[0] !== "{") return;
     dispatch(sseMessageReceived(messageEvent));
   };
@@ -50,7 +52,6 @@ export const SseProvider = ({ children }: { children: JSX.Element }) => {
 
     const eventSource = new EventSourcePolyfill(`${hostUrl}/api/v1/subscribe`, {
       headers: headers,
-      heartbeatTimeout: 600000,
     });
 
     eventSource.addEventListener("sse", sseHandler);
