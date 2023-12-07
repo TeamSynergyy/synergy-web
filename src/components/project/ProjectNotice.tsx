@@ -12,9 +12,12 @@ import { api } from "app/api";
 import { useParams } from "react-router-dom";
 
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 import ProjectTab from "./ProjectTab";
 import { useDisclosure } from "@mantine/hooks";
 import { useState } from "react";
+
+dayjs.extend(utc);
 
 export default function ProjectNotice() {
   const id = Number(useParams().id);

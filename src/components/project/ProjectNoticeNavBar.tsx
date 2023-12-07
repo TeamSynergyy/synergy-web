@@ -1,7 +1,10 @@
 import { Button, Group, Paper, ScrollArea, Stack, Text } from "@mantine/core";
 import { api } from "app/api";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 import { useLocation, useNavigate } from "react-router-dom";
+
+dayjs.extend(utc);
 
 export function ProjectNoticeNavBar() {
   const navigate = useNavigate();
@@ -19,15 +22,16 @@ export function ProjectNoticeNavBar() {
       </Text>
       <ScrollArea h="80vh">
         <Stack>
-          {notices?.map((notice) => (
-            <Paper key={notice.noticeId} p="md" mt="md">
-              <Text c="gray">
-                {dayjs(notice.updateAt).local().format("YYYY/MM/DD  HH:mm")}
-              </Text>
+          {notices &&
+            notices.map((notice) => (
+              <Paper key={notice.noticeId} p="md" mt="md">
+                <Text c="gray">
+                  {dayjs(notice.updateAt).local().format("YYYY/MM/DD  HH:mm")}
+                </Text>
 
-              <Text>{notice.content}</Text>
-            </Paper>
-          ))}
+                <Text>{notice.content}</Text>
+              </Paper>
+            ))}
         </Stack>
       </ScrollArea>
       <Button
