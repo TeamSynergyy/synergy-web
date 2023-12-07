@@ -81,7 +81,7 @@ export default function Layout() {
         opened={true}
         close={() => {
           refetch();
-          // navigate("/home/foryou");
+          navigate("/home/foryou");
         }}
       />
     );

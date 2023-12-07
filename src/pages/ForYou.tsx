@@ -18,7 +18,7 @@ export default function ForYou() {
 
   const { ref, entry } = useIntersection();
 
-  const hasNext = data?.next;
+  const hasNext = data?.hasNext;
 
   const handleEnd = () => {
     if (data?.content) setEnd(data?.content[data?.content.length - 1].postId);

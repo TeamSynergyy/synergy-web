@@ -18,11 +18,11 @@ export default function Profile() {
     });
 
   const id = useParams().id;
-  if (!id) return <p>id가 없습니다.</p>;
+  if (!id) return <p>잘못된 주소입니다.</p>;
 
   const { data: user, isFetching, isError, error } = api.useGetUserQuery(id);
   const { data: myInfo } = api.useGetMyInfoQuery(null);
-  const { data: similarUsers } = api.useGetSimilarUsersQuery(id);
+  const { data: similarUsers } = api.useGetSimilarUsersQuery(id, { skip: !id });
 
   if (isFetching) return <LoadingOverlay visible />;
   if (isError) {
@@ -51,7 +51,7 @@ export default function Profile() {
         </Tabs>
         {similarUsers && (
           <UserGrid
-            title={`${user.username}와 비슷한 사람들`}
+            title={`${user.username}님과 비슷한 사람들`}
             users={similarUsers || []}
           />
         )}

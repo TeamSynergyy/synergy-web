@@ -269,7 +269,7 @@ export const api = createApi({
     }),
 
     getFollowingPosts: build.query<
-      { content: Post[]; next: boolean },
+      { content: Post[]; hasNext: boolean },
       number | string
     >({
       query: (end) => `/posts/feed?end=${end}`,
@@ -278,7 +278,7 @@ export const api = createApi({
       },
       merge: (currentCache, newItems) => {
         currentCache.content.push(...newItems.content);
-        currentCache.next = newItems.next;
+        currentCache.hasNext = newItems.hasNext;
       },
       forceRefetch({ currentArg, previousArg }) {
         return currentArg !== previousArg;
@@ -296,7 +296,7 @@ export const api = createApi({
     }),
 
     getRecommendedPosts: build.query<
-      { content: Post[]; next: boolean },
+      { content: Post[]; hasNext: boolean },
       number | string
     >({
       query: (end) => `/posts/recommend?end=${end}`,
@@ -305,7 +305,7 @@ export const api = createApi({
       },
       merge: (currentCache, newItems) => {
         currentCache.content.push(...newItems.content);
-        currentCache.next = newItems.next;
+        currentCache.hasNext = newItems.hasNext;
       },
       forceRefetch({ currentArg, previousArg }) {
         return currentArg !== previousArg;
@@ -421,7 +421,7 @@ export const api = createApi({
     }),
 
     getRecommendedProjects: build.query<
-      { content: Project[]; next: boolean },
+      { content: Project[]; hasNext: boolean },
       number | string
     >({
       query: (end) => `/projects/recommend?end=${end}`,
@@ -430,7 +430,7 @@ export const api = createApi({
       },
       merge: (currentCache, newItems) => {
         currentCache.content.push(...newItems.content);
-        currentCache.next = newItems.next;
+        currentCache.hasNext = newItems.hasNext;
       },
       forceRefetch({ currentArg, previousArg }) {
         return currentArg !== previousArg;

@@ -7,6 +7,7 @@ interface UserCardProps {
   username: string;
   email: string;
   major: string;
+  minor?: string;
 }
 
 export default function UserCard({
@@ -15,6 +16,7 @@ export default function UserCard({
   username,
   email,
   major,
+  minor,
 }: UserCardProps) {
   return (
     <Paper
@@ -33,6 +35,11 @@ export default function UserCard({
       <Text ta="center" c="dimmed" fz="sm">
         {email} • {major}
       </Text>
+      {minor && (
+        <Text ta="center" c="dimmed" fz="sm">
+          복수/부전공: {minor}
+        </Text>
+      )}
       <Link to={`/people/${userId}`}>
         <Button variant="default" fullWidth mt="md">
           프로필 보기
