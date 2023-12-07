@@ -27,7 +27,7 @@ const data = [
   },
 ];
 
-const fields = ["머신러닝", "인공지능", "웹개발", "앱개발"];
+const fields = ["인공지능", "개발", "디자인", "Python", "Figma"];
 
 export function ContentCategory() {
   const { pathname } = useLocation();

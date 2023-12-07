@@ -17,8 +17,7 @@ import { DateInput } from "@mantine/dates";
 import dayjs from "dayjs";
 import MapInfo from "components/project/MapInfo";
 import { useState } from "react";
-
-const data = ["웹개발", "앱개발", "머신러닝", "인공지능"];
+import { interestAreasData } from "utils/commonData";
 
 export default function NewProject() {
   const setCreateProject = api.useCreateProjectMutation()[0];
@@ -96,7 +95,7 @@ export default function NewProject() {
 
         <Select
           required
-          data={data}
+          data={interestAreasData}
           label="field"
           placeholder="분야"
           {...form.getInputProps("field")}
