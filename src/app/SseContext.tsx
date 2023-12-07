@@ -47,7 +47,7 @@ export const SseProvider = ({ children }: { children: JSX.Element }) => {
     };
 
     if (lastEventIdRef.current) {
-      headers["Last-Event-Id"] = lastEventIdRef.current;
+      headers["Last-Event-ID"] = lastEventIdRef.current;
     }
 
     const eventSource = new EventSourcePolyfill(`${hostUrl}/api/v1/subscribe`, {
