@@ -1,4 +1,5 @@
 import { Badge, Stack, Text } from "@mantine/core";
+import UserAvatarName from "components/user/UserAvatarName";
 import dayjs from "dayjs";
 import { ProjectTask } from "types";
 
@@ -28,7 +29,13 @@ export default function ProjectTaskDetail({
       {assignedTime !== 0 ? (
         <Text c="dimmed">소요 시간: {assignedTime}시간</Text>
       ) : null}
-      <Text>{assignedUserIds}</Text>
+      {assignedUserIds && (
+        <Text>
+          {assignedUserIds.map((id) => (
+            <UserAvatarName userId={id} />
+          ))}
+        </Text>
+      )}
       <Text>{content}</Text>
     </Stack>
   );

@@ -80,7 +80,7 @@ export const ProjectCreateScheduleModal = ({
             <Button variant="outline" onClick={close}>
               취소
             </Button>
-            <Button type="submit">Submit</Button>
+            <Button type="submit">저장</Button>
           </Group>
         </form>
       </Modal>

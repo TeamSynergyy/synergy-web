@@ -128,7 +128,7 @@ export default function NewProject() {
         </div>
 
         <Group position="right" mt="md">
-          <Button type="submit">Submit</Button>
+          <Button type="submit">생성</Button>
         </Group>
       </form>
       <Dialog

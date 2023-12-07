@@ -104,7 +104,7 @@ export default function NewPost() {
         </Group>
 
         <Group position="right" mt="md">
-          <Button type="submit">Submit</Button>
+          <Button type="submit">작성</Button>
         </Group>
       </form>
       <Dialog
