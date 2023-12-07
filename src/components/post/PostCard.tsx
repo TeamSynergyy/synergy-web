@@ -88,7 +88,7 @@ export default function PostCard({
             <Text>{post.authorName}</Text>
 
             <Text fz="sm" c="gray">
-              {dayjs.utc(post.createAt?.replace("Z", "")).fromNow()}
+              {dayjs(post.createAt).local().fromNow()}
             </Text>
           </Group>
 
