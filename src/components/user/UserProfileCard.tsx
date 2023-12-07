@@ -66,9 +66,13 @@ export default function UserProfileCard({
   const { refetch } = api.useGetFollowingPostsQuery("");
 
   const follow = api.useFollowMutation()[0];
-  const handleFollow = () => {
-    follow([userId, followType, myId]);
-    refetch();
+  const handleFollow = async () => {
+    try {
+      const payload = await follow([userId, followType, myId]);
+      refetch();
+    } catch (error) {
+      console.error("rejected", error);
+    }
   };
 
   const isMe = myInfo?.userId !== userId;
