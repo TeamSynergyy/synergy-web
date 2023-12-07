@@ -22,7 +22,7 @@ export const SseProvider = ({ children }: { children: JSX.Element }) => {
   const hostUrl = import.meta.env.VITE_API_URL;
   const token = useSelector(selectCurrentToken);
   const esRef = useRef<EventSourcePolyfill | null>(null);
-  const lastEventIdRef = useRef<string | null>("null");
+  const lastEventIdRef = useRef<string | null>(null);
 
   const sseHandler = (event: Event) => {
     const messageEvent = event as MessageEvent;
