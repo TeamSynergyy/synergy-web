@@ -22,7 +22,7 @@ export const SseProvider = ({ children }: { children: JSX.Element }) => {
   const hostUrl = import.meta.env.VITE_API_URL;
   const token = useSelector(selectCurrentToken);
   const esRef = useRef<EventSourcePolyfill | null>(null);
-  const lastEventIdRef = useRef<string | null>(null);
+  const lastEventIdRef = useRef<string | null>("null");
 
   const sseHandler = (event: Event) => {
     const messageEvent = event as MessageEvent;
@@ -52,14 +52,17 @@ export const SseProvider = ({ children }: { children: JSX.Element }) => {
 
     const eventSource = new EventSourcePolyfill(`${hostUrl}/api/v1/subscribe`, {
       headers,
+      heartbeatTimeout: 10 * 60 * 1000,
     });
 
     eventSource.addEventListener("sse", sseHandler);
 
+    esRef.current = eventSource;
+
     return () => {
       eventSource.removeEventListener("sse", sseHandler);
     };
-  }, [hostUrl, token]); // Do not include lastEventIdRef here
+  }, [hostUrl, token]);
 
   return (
     <SseContext.Provider value={{ es: esRef.current }}>

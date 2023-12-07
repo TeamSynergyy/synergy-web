@@ -618,6 +618,20 @@ export const api = createApi({
       // ],
     }),
 
+    confirmPeerRating: build.mutation<
+      { userId: string; temperature: number }[],
+      number
+    >({
+      query: (projectId) => ({
+        url: `/rates/${projectId}/evaluations`,
+        method: "PUT",
+      }),
+      // invalidatesTags: (result, error, arg) => [
+      //   { type: "ProjectPeerRating", id: String(arg.projectId) },
+      //   { type: "ProjectPeerRating", id: "LIST" },
+      // ],
+    }),
+
     // Project Task
     createProjectTask: build.mutation<
       void,

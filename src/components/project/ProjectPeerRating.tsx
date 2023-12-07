@@ -13,6 +13,7 @@ import { api } from "app/api";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import ProjectTab from "./ProjectTab";
+import UserAvatarName from "components/user/UserAvatarName";
 
 export default function ProjectPeerRating() {
   const { pathname } = useLocation();
@@ -21,12 +22,38 @@ export default function ProjectPeerRating() {
 
   const { data: project, isLoading } = api.useGetProjectQuery(Number(id));
   const { data: myInfo } = api.useGetMyInfoQuery(null);
+  const isLeader = project?.leaderId === myInfo?.userId;
+
+  const confirmPeerRating = api.useConfirmPeerRatingMutation()[0];
+  const [teamUsers, setTeamUsers] = useState<
+    { userId: string; temperature: number }[]
+  >([]);
+  const handleConfirmPeerRating = async () => {
+    try {
+      const payload = await confirmPeerRating(Number(id)).unwrap();
+      setTeamUsers(payload);
+    } catch (error) {
+      console.error("rejected", error);
+    }
+  };
 
   if (isLoading) return <div>loading...</div>;
   if (!project) return <div>프로젝트를 불러오지 못했습니다.</div>;
   return (
     <>
       <ProjectTab projectId={project.projectId} />
+      {isLeader && (
+        <Button onClick={handleConfirmPeerRating}>평가 확정하기</Button>
+      )}
+
+      {isLeader &&
+        teamUsers.length > 0 &&
+        teamUsers.map((user) => (
+          <Group>
+            <UserAvatarName userId={user.userId} />
+            <Text>{user.temperature}</Text>
+          </Group>
+        ))}
       {project.teamUserIds.length > 1 ? (
         project.teamUserIds
           .filter((id) => id !== myInfo?.userId)
