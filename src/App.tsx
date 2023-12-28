@@ -24,8 +24,11 @@ import { selectCurrentToken } from "app/authSlice";
 import { useSelector } from "react-redux";
 import PostDetail from "pages/PostDetail";
 import Following from "pages/Following";
-
 import OauthRedirect from "pages/OauthRedirect";
+import ProjectNotice from "components/project/ProjectNotice";
+import ProjectSchedule from "components/project/ProjectSchedule";
+import ProjectPeerRating from "components/project/ProjectPeerRating";
+import ProjectTaskBoard from "components/project/task/ProjectTaskBoard";
 
 const PrivateRoutes = () => {
   const auth = useSelector(selectCurrentToken);
@@ -35,7 +38,7 @@ const PrivateRoutes = () => {
 
 export default function App() {
   return (
-    <MantineProvider withGlobalStyles withNormalizeCSS>
+    <MantineProvider withCSSVariables withGlobalStyles withNormalizeCSS>
       <BrowserRouter>
         <Routes>
           <Route element={<PrivateRoutes />}>
@@ -67,7 +70,13 @@ export default function App() {
                 <Route path=":id" element={<PostDetail />} />
               </Route>
               <Route path="project">
-                <Route path=":id" element={<ProjectDetail />} />
+                <Route path=":id">
+                  <Route index element={<ProjectDetail />} />
+                  <Route path="notice" element={<ProjectNotice />} />
+                  <Route path="schedule" element={<ProjectSchedule />} />
+                  <Route path="task" element={<ProjectTaskBoard />} />
+                  <Route path="peer-rating" element={<ProjectPeerRating />} />
+                </Route>
               </Route>
 
               <Route path="search" element={<Search />} />

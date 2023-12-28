@@ -20,6 +20,7 @@ import { useForm } from "@mantine/form";
 import { IconInfoCircle } from "@tabler/icons-react";
 import { api } from "app/api";
 import { useEffect } from "react";
+import { EditUserInfoModal } from "./EditUserInfoModal";
 
 const useStyles = createStyles((theme) => ({
   card: {
@@ -56,14 +57,22 @@ export default function UserProfileCard({
   const { classes, theme } = useStyles();
   const { data: myInfo } = api.useGetMyInfoQuery(null);
   const myId = myInfo?.userId || "";
-  const myFollowing = api.useGetFollowsQuery(myId)?.data?.followings;
+  const myFollowing = api.useGetMyFollowingsQuery(null)?.data;
   const isFollowing = myFollowing?.includes(userId);
+  console.log("🚀 ~ file: UserProfileCard.tsx:62 ~ isFollowing:", isFollowing);
   const followType = isFollowing ? "unfollow" : "follow";
-  const editMyInfo = api.useEditMyInfoMutation()[0];
   const [opened, { open, close }] = useDisclosure(false);
+
+  const { refetch } = api.useGetFollowingPostsQuery("");
+
   const follow = api.useFollowMutation()[0];
-  const handleFollow = () => {
-    follow([userId, followType, myId]);
+  const handleFollow = async () => {
+    try {
+      const payload = await follow([userId, followType, myId]);
+      refetch();
+    } catch (error) {
+      console.error("rejected", error);
+    }
   };
 
   const isMe = myInfo?.userId !== userId;
@@ -150,42 +159,7 @@ export default function UserProfileCard({
           </Button>
         )}
       </Card>
-      <Modal opened={opened} onClose={close} title="프로필 편집" centered>
-        <form onSubmit={form.onSubmit((values) => editMyInfo(values))}>
-          <TextInput
-            label="이름"
-            placeholder="사용할 이름을 입력하세요"
-            {...form.getInputProps("name")}
-          />
-          <TextInput
-            label="전공"
-            placeholder="전공을 입력하세요"
-            {...form.getInputProps("major")}
-          />
-          <TextInput
-            label="자기소개"
-            placeholder="자기소개를 입력하세요"
-            {...form.getInputProps("bio")}
-          />
-          <TextInput
-            label="배경 이미지 주소"
-            placeholder="배경 이미지 주소을 입력하세요"
-            {...form.getInputProps("backImage")}
-          />
-
-          <TextInput
-            label="프로필 사진 주소"
-            placeholder="사용할 프로필 사진 주소를 입력하세요"
-            {...form.getInputProps("avatar")}
-          />
-
-          <Group position="right" mt="md">
-            <Button type="submit" onClick={close}>
-              저장
-            </Button>
-          </Group>
-        </form>
-      </Modal>
+      <EditUserInfoModal {...{ opened, close }} />
     </>
   );
 }

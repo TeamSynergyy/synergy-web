@@ -56,7 +56,6 @@ export default function PostCard({
 
   const { data: author } = api.useGetUserQuery(post.userId);
 
-
   const closeSpoilerText = "숨기기";
   const openSpoiler = () => {
     if (
@@ -84,14 +83,12 @@ export default function PostCard({
         <Group position="apart">
           <Group>
             <Link to={`/people/${post.userId}`}>
-
               <Avatar src={author?.profileImageUrl} radius="xl" />
-
             </Link>
             <Text>{post.authorName}</Text>
 
             <Text fz="sm" c="gray">
-              {dayjs.utc(post.createAt?.replace("Z", "")).fromNow()}
+              {dayjs(post.createAt).local().fromNow()}
             </Text>
           </Group>
 
@@ -127,14 +124,15 @@ export default function PostCard({
           hideLabel={closeSpoilerText}
           controlRef={spoilerControlRef}
         >
-          <Text mt="xs" onClick={openSpoiler}>
+          <Text mt="xs" sx={{ whiteSpace: "pre-wrap" }} onClick={openSpoiler}>
             {post.content}
           </Text>
         </Spoiler>
       </Card.Section>
-      {post.imagesUrl && (
+
+      {(post.imagesUrl || post.thumbnailImageUrl) && (
         <Card.Section className={classes.section}>
-          <ImageCardModal images={post.imagesUrl} />
+          <ImageCardModal images={post.imagesUrl || [post.thumbnailImageUrl]} />
         </Card.Section>
       )}
 
@@ -142,8 +140,11 @@ export default function PostCard({
         <Flex w="100%" justify="space-between" align="center">
           <PostLike {...post} />
           {!isDetail && (
-            <ActionIcon onClick={() => navigate(`/post/${post.postId}`)}>
-              <IconMessage size="1.25rem" />
+            <ActionIcon
+              size="xl"
+              onClick={() => navigate(`/post/${post.postId}`)}
+            >
+              <IconMessage size="1.5rem" />
             </ActionIcon>
           )}
         </Flex>

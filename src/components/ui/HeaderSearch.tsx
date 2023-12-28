@@ -9,6 +9,7 @@ import {
   Avatar,
   Menu,
   Modal,
+  Badge,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconSearch } from "@tabler/icons-react";
@@ -16,7 +17,9 @@ import { ReactComponent as Logo } from "assets/logo.svg";
 import { Link, useLocation } from "react-router-dom";
 import { SearchInput } from "../search/SearchInput";
 import { api } from "app/api";
-import useAuth from "hooks/useAuth";
+import { setAccessToken } from "app/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "app/store";
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -69,15 +72,21 @@ interface HeaderSearchProps {
 }
 
 export function HeaderSearch({ links, children }: HeaderSearchProps) {
+  const dispatch = useDispatch();
   const activePage = useLocation().pathname.split("/")[1];
   const { classes, cx } = useStyles();
-  const { removeAuth } = useAuth();
+
+  const removeAccessToken = () => dispatch(setAccessToken(""));
 
   const [opened, { open, close }] = useDisclosure(false);
   const isSearchPage = activePage === "search";
 
   const { data } = api.useGetMyInfoQuery(null);
-  console.log(data);
+  const messageEvents = useSelector(
+    (state: RootState) => state.sse.messageEvents
+  );
+  const isNotiExist = messageEvents.length > 0;
+
   const items = links.map((link) => (
     <Link
       key={link.label}
@@ -90,6 +99,40 @@ export function HeaderSearch({ links, children }: HeaderSearchProps) {
     </Link>
   ));
 
+  if (isNotiExist) {
+    const notiIndex = links.findIndex(({ label }) => label === "알림");
+    const newNotiItem = (
+      <div style={{ position: "relative" }}>
+        <Link
+          key={links[notiIndex].label}
+          to={links[notiIndex].link}
+          className={cx(classes.link, {
+            [classes.linkActive]: `/${activePage}` === links[notiIndex].link,
+          })}
+        >
+          {links[notiIndex].label}
+        </Link>
+
+        <Badge
+          pos="absolute"
+          top="0"
+          right="0"
+          sx={{
+            transform: "translate(50%, -50%)",
+          }}
+          color="red"
+          variant="filled"
+          size="sm"
+          p={4.5}
+        >
+          {messageEvents.length}
+        </Badge>
+      </div>
+    );
+
+    items.splice(notiIndex, 1, newNotiItem);
+  }
+
   return (
     <Header height={56} className={classes.header}>
       <div className={classes.inner}>
@@ -99,7 +142,7 @@ export function HeaderSearch({ links, children }: HeaderSearchProps) {
           style={{ color: "inherit", textDecoration: "inherit" }}
         >
           <Group mx="sm">
-            <Logo width={28} />
+            <Logo width={28} height={28} />
             <Title size={"h3"}>Synergy</Title>
           </Group>
         </Link>
@@ -109,7 +152,7 @@ export function HeaderSearch({ links, children }: HeaderSearchProps) {
             <IconSearch size="1.3rem" stroke={1.5} />
           </ActionIcon>
 
-          <MediaQuery smallerThan="sm" styles={{ display: "none" }}>
+          <MediaQuery smallerThan="md" styles={{ display: "none" }}>
             <Group spacing={5}>
               {items}
               <Menu shadow="md" width={200} withinPortal>
@@ -131,7 +174,7 @@ export function HeaderSearch({ links, children }: HeaderSearchProps) {
                     to={`/`}
                     style={{ color: "inherit", textDecoration: "inherit" }}
                   >
-                    <Menu.Item onClick={removeAuth}>로그아웃</Menu.Item>
+                    <Menu.Item onClick={removeAccessToken}>로그아웃</Menu.Item>
                   </Link>
                 </Menu.Dropdown>
               </Menu>

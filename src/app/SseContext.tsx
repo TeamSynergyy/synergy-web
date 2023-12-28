@@ -1,12 +1,14 @@
-import { createContext, useEffect, useRef } from "react";
+import { createContext, useEffect, useRef, useState } from "react";
 import {
   EventSourcePolyfill,
   MessageEvent,
   Event,
+  EventSourcePolyfillInit,
 } from "event-source-polyfill";
 import { useDispatch, useSelector } from "react-redux";
 import { selectCurrentToken } from "./authSlice";
 import { sseMessageReceived } from "./sseSlice";
+import { api } from "./api";
 
 interface SseContextProps {
   es: EventSourcePolyfill | null;
@@ -19,24 +21,27 @@ export const SseContext = createContext<SseContextProps>({
 export const SseProvider = ({ children }: { children: JSX.Element }) => {
   const dispatch = useDispatch();
   const hostUrl = import.meta.env.VITE_API_URL;
-  const token =
-    useSelector(selectCurrentToken) || localStorage.getItem("token");
+  const token = useSelector(selectCurrentToken);
   const esRef = useRef<EventSourcePolyfill | null>(null);
 
   const sseHandler = (event: Event) => {
-    const messageEvent = event as unknown as MessageEvent;
+    const messageEvent = event as MessageEvent;
     console.log("SSE message received", messageEvent);
+
+    if (messageEvent.data[0] !== "{") return;
     dispatch(sseMessageReceived(messageEvent));
   };
 
   useEffect(() => {
     if (!token) return;
 
-    const eventSource = new EventSourcePolyfill(`${hostUrl}/subscribe`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      withCredentials: true,
+    const headers: { [name: string]: string } = {
+      Authorization: `Bearer ${token}`,
+    };
+
+    const eventSource = new EventSourcePolyfill(`${hostUrl}/api/v1/subscribe`, {
+      headers,
+      heartbeatTimeout: 10 * 60 * 1000,
     });
 
     eventSource.addEventListener("sse", sseHandler);

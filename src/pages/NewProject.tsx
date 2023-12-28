@@ -5,7 +5,6 @@ import {
   Textarea,
   Dialog,
   Text,
-  MultiSelect,
   Flex,
   Checkbox,
   Select,
@@ -16,17 +15,15 @@ import { api } from "app/api";
 import { useNavigate } from "react-router-dom";
 import { DateInput } from "@mantine/dates";
 import dayjs from "dayjs";
-import usePage from "hooks/usePage";
 import MapInfo from "components/project/MapInfo";
 import { useState } from "react";
-
-const data = ["웹개발", "앱개발", "머신러닝", "인공지능"];
+import { interestAreasData } from "utils/commonData";
 
 export default function NewProject() {
   const setCreateProject = api.useCreateProjectMutation()[0];
-  const { initPage } = usePage();
   const navigate = useNavigate();
   const [opened, { open, close }] = useDisclosure(false);
+  const [mapOpened, setMapOpen] = useState(true);
   const [coord, setCoord] = useState<[number, number]>([0, 0]);
   const form = useForm({
     initialValues: {
@@ -66,16 +63,15 @@ export default function NewProject() {
             const startAt =
               dayjs(values.startAt).format("YYYY-MM-DD") + "T00:00:00.000Z";
             const endAt = values.endAt
-              ? dayjs(values.startAt).format("YYYY-MM-DD") + "T00:00:00.000Z"
+              ? dayjs(values.endAt).format("YYYY-MM-DD") + "T00:00:00.000Z"
               : "";
             await setCreateProject({
               ...values,
               startAt,
               endAt,
-              latitude: coord[0],
-              longitude: coord[1],
+              latitude: mapOpened ? coord[0] : 0,
+              longitude: mapOpened ? coord[1] : 0,
             }).unwrap();
-            initPage("recentProject");
             navigate(`/home/recent/project`);
           } catch (e) {
             open();
@@ -99,7 +95,7 @@ export default function NewProject() {
 
         <Select
           required
-          data={data}
+          data={interestAreasData}
           label="field"
           placeholder="분야"
           {...form.getInputProps("field")}
@@ -114,19 +110,25 @@ export default function NewProject() {
         />
 
         <DateInput
+          required
           valueFormat="YYYY-MM-DD"
           label="endAt"
-          placeholder="종료예정일"
+          placeholder="종료일"
           {...form.getInputProps("endAt")}
         />
 
         <div>
           <br />
-          <MapInfo coord={coord} setCoord={setCoord} />
+          <Checkbox
+            label="장소 없음"
+            checked={!mapOpened}
+            onChange={() => setMapOpen(!mapOpened)}
+          />
+          {mapOpened && <MapInfo coord={coord} setCoord={setCoord} />}
         </div>
 
         <Group position="right" mt="md">
-          <Button type="submit">Submit</Button>
+          <Button type="submit">생성</Button>
         </Group>
       </form>
       <Dialog

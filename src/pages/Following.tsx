@@ -13,7 +13,7 @@ export default function Following() {
 
   const { ref, entry } = useIntersection();
 
-  const hasNext = data?.next;
+  const hasNext = data?.hasNext;
 
   const handleEnd = () => {
     if (data?.content) setEnd(data?.content[data?.content.length - 1].postId);
@@ -34,7 +34,7 @@ export default function Following() {
     console.error(error);
     content = <p>error! check the console message</p>;
   }
-  console.log(data?.next);
+
   return (
     <>
       <HomeTab />

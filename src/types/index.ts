@@ -3,10 +3,9 @@ interface Post {
   title: string;
   content: string;
   authorName: string;
-
   userId: string;
-
   authorAvatar: string;
+  thumbnailImageUrl: string;
   imagesUrl: string[];
   likes: number;
   createAt: string;
@@ -29,13 +28,57 @@ interface Project {
   leaderId: string;
 }
 
+interface ProjectNotice {
+  noticeId: number;
+  projectId: number;
+  content: string;
+  updateAt: string;
+}
+
+interface ProjectSchedule {
+  scheduleId: number;
+  projectId?: number;
+  title: string;
+  content: string;
+  label: string;
+  startAt: string;
+  endAt: string;
+}
+
+interface ProjectPeerRating {
+  rateId: number;
+  projectId: number;
+  giveUserId: string;
+  receiveUserId: string;
+  content: string;
+  score: number;
+}
+
+interface ProjectTask {
+  ticketId: number;
+  projectId: number;
+  title: string;
+  content: string;
+  endAt?: string;
+  assignedTime?: number;
+  tag?: string;
+  tagColor?: string;
+  status: "BACKLOG" | "IN_PROGRESS" | "REVIEW" | "DONE";
+  orderNumber: number;
+  assignedUserIds: string[];
+}
+
 interface User {
   userId: string;
   username: string;
   email: string;
   profileImageUrl: string;
   backImage: string;
+  organization: string;
   major: string;
+  minor: string;
+  interestAreas: string;
+  skills: string;
   temperature: number;
   bio: string;
 }
@@ -63,4 +106,15 @@ interface ChatMessage {
   sendTime: string;
 }
 
-export type { Post, Project, User, Comment, ChatMessage, ChatRoom };
+export type {
+  Post,
+  Project,
+  ProjectNotice,
+  ProjectSchedule,
+  ProjectPeerRating,
+  ProjectTask,
+  User,
+  Comment,
+  ChatMessage,
+  ChatRoom,
+};

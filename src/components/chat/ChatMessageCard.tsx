@@ -45,7 +45,9 @@ const ChatMessageCard: React.FC<{
           };
         }}
       >
-        <Text c={fromMe ? "white" : "dark"}>{text}</Text>
+        <Text c={fromMe ? "white" : "dark"} sx={{ whiteSpace: "pre-wrap" }}>
+          {text}
+        </Text>
       </Paper>
     </Group>
   );

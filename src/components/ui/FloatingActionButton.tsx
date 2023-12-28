@@ -8,9 +8,11 @@ export default function FloatingActionButton() {
   const matches = useMediaQuery("(min-width: 48em)");
   const location = useLocation();
   const pathArray = location.pathname.split("/");
+
+  if (pathArray[1] !== "home") return;
+
   let linkTo = "/new/post";
   let icon = <IconPencilPlus size="1.5rem" />;
-  if (pathArray[1] === "new") return;
 
   if (pathArray.find((path) => path === "project")) {
     linkTo = "/new/project";

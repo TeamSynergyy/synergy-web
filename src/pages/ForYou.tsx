@@ -5,18 +5,25 @@ import { useEffect, useState } from "react";
 import { useIntersection } from "@mantine/hooks";
 import PostSkeleton from "components/post/PostSkeleton";
 import HomeTab from "components/ui/HomeTab";
+import { Post } from "types";
+import ProjectCard from "components/project/ProjectCard";
 
 export default function ForYou() {
   const [end, setEnd] = useState<string | number>("");
+  const [projectEnd, setProjectEnd] = useState<string | number>("");
   const { data, isLoading, isSuccess, isError, error } =
     api.useGetRecommendedPostsQuery(end);
 
+  const { data: projects } = api.useGetRecommendedProjectsQuery(projectEnd);
+
   const { ref, entry } = useIntersection();
 
-  const hasNext = data?.next;
+  const hasNext = data?.hasNext;
 
   const handleEnd = () => {
     if (data?.content) setEnd(data?.content[data?.content.length - 1].postId);
+    if (projects?.content)
+      setProjectEnd(projects?.content[projects?.content.length - 1].projectId);
   };
 
   useEffect(() => {
@@ -24,16 +31,32 @@ export default function ForYou() {
     if (!hasNext) return;
   }, [entry?.isIntersecting, isSuccess]);
 
-  let content;
   if (isLoading) {
-    content = <p>"Loading..."</p>;
-  } else if (isSuccess) {
-    content = data.content.map((post, i) => <PostCard key={i} post={post} />);
-  } else if (isError) {
-    console.error(error);
-    content = <p>error! check the console message</p>;
+    return <p>"Loading..."</p>;
   }
-  console.log(data?.next);
+
+  if (isError) {
+    console.log(error);
+    return <p>error! check the console message</p>;
+  }
+
+  let content;
+  if (data?.content) {
+    content = data.content.map((post: Post, i) => {
+      if (i % 5 === 0 && projects?.content[i / 5])
+        return (
+          <>
+            <PostCard key={"post" + i} post={post} />
+            <ProjectCard
+              key={"project" + i}
+              project={projects?.content[i / 5]}
+            />
+          </>
+        );
+      else return <PostCard key={"post" + i} post={post} />;
+    });
+  }
+
   return (
     <>
       <HomeTab />
@@ -44,7 +67,6 @@ export default function ForYou() {
         <Button m="auto" onClick={handleEnd}>
           더 보기
         </Button>
-
       </Stack>
     </>
   );

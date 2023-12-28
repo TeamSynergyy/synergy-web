@@ -28,47 +28,30 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-const TrendingPosts = () => {
-  const { data: posts, isLoading } = api.useGetTrendingPostsQuery(null);
+const MyProjects = () => {
+  const { data: myInfo } = api.useGetMyInfoQuery(null);
+  const { data, isLoading, isSuccess, isError, error } =
+    api.useGetProjectsByUserQuery(myInfo?.userId || "");
 
   const { classes } = useStyles();
   const mediaQuery = useMediaQuery("(max-width: 1200px)");
 
-  const titleLength = mediaQuery ? 18 : 28;
-
   return (
     <Card shadow="sm" padding={!mediaQuery ? "md" : "xs"}>
-      <Title order={5}>Trending</Title>
+      <Title order={5}>내 프로젝트</Title>
 
       {isLoading ? (
         <Text>Loading...</Text>
       ) : (
-        posts?.slice(0, 5).map((post, i) => (
+        data &&
+        data.slice(0, 5)?.map((project, i) => (
           <Link
-            to={`/post/${post.postId}`}
+            to={`/project/${project.projectId}`}
             style={{ textDecoration: "none" }}
             key={i}
           >
             <Card className={classes.card} w="100%" p="xs" h="auto">
-              <Text>
-                {post.title
-                  ? post.title.slice(0, titleLength) +
-                    (post.title.length > titleLength ? "..." : "")
-                  : post.content.slice(0, titleLength) +
-                    (post.content.length > titleLength ? "..." : "")}
-              </Text>
-
-              <Group position="apart">
-                <Text c="gray" fz="xs">
-                  {post.authorName}
-                </Text>
-                <Group spacing={5}>
-                  <IconHeart color="pink" fill="pink" size={16} />
-                  <Text c="gray" fz="xs">
-                    {post.likes}
-                  </Text>
-                </Group>
-              </Group>
+              <Text>{project.name}</Text>
             </Card>
           </Link>
         ))
@@ -77,4 +60,4 @@ const TrendingPosts = () => {
   );
 };
 
-export default TrendingPosts;
+export default MyProjects;

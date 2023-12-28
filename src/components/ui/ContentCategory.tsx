@@ -1,27 +1,33 @@
 import {
-  IconGauge,
-  IconFingerprint,
   IconChevronRight,
+  IconBlockquote,
+  IconRocket,
+  IconSearch,
+  IconLine,
+  IconMinusVertical,
 } from "@tabler/icons-react";
 import { NavLink } from "@mantine/core";
 import { Link, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { toggleNavbar } from "./layoutSlice";
+import MyProjects from "components/project/MyProjects";
 
 const data = [
   {
-    icon: IconGauge,
+    icon: IconBlockquote,
     label: "최근 글",
     rightSection: <IconChevronRight size="1rem" stroke={1.5} />,
     path: "/home/recent/post",
   },
   {
-    icon: IconFingerprint,
+    icon: IconRocket,
     label: "최근 프로젝트",
     rightSection: <IconChevronRight size="1rem" stroke={1.5} />,
     path: "/home/recent/project",
   },
 ];
+
+const fields = ["인공지능", "개발", "디자인", "Python", "Figma"];
 
 export function ContentCategory() {
   const { pathname } = useLocation();
@@ -48,6 +54,22 @@ export function ContentCategory() {
           />
         </Link>
       ))}
+      <br />
+      {fields.map((field) => (
+        <Link
+          to={`/search?query=${field}`}
+          key={field}
+          style={{ color: "inherit", textDecoration: "inherit" }}
+          onClick={handleToggleNavbar}
+        >
+          <NavLink
+            label={field}
+            rightSection={<IconSearch size="1rem" stroke={1} />}
+          />
+        </Link>
+      ))}
+      <br />
+      <MyProjects />
     </>
   );
 }

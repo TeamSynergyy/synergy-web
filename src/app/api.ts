@@ -4,7 +4,17 @@ import {
   createApi,
   fetchBaseQuery,
 } from "@reduxjs/toolkit/query/react";
-import { Post, Project, User, ChatRoom, Comment } from "types";
+import {
+  Post,
+  Project,
+  User,
+  ChatRoom,
+  Comment,
+  ProjectNotice,
+  ProjectSchedule,
+  ProjectPeerRating,
+  ProjectTask,
+} from "types";
 import { RootState } from "./store";
 import { setAccessToken } from "./authSlice";
 import axios from "axios";
@@ -40,17 +50,12 @@ const baseQueryWithReauth = async (
     const refreshResult: {
       header: { code: number; message: string };
       body: { token: string };
-    } = await axios.get(
-      import.meta.env.DEV
-        ? "/api/v1/auth/refresh"
-        : import.meta.env.VITE_API_URL + "/api/v1/auth/refresh",
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Credentials: "include",
-        },
-      }
-    );
+    } = await axios.get(import.meta.env.VITE_API_URL + "/api/v1/auth/refresh", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Credentials: "include",
+      },
+    });
 
     if (refreshResult.body?.token) {
       const newAccessToken = refreshResult.body.token;
@@ -74,7 +79,7 @@ export const api = createApi({
     "Project",
     "LikedPostIds",
     "LikedProjectIds",
-    "Follows",
+    "MyFollowings",
     "AppliedProjectId",
     "ChatRoom",
     "User",
@@ -83,14 +88,28 @@ export const api = createApi({
     "ApplicantsIds",
     "PostComments",
     "FollowingPosts",
+    "RecommendedPosts",
+    "RecommendedProjects",
+    "ProjectNotice",
+    "ProjectSchedule",
+    "ProjectTask",
   ],
   endpoints: (build) => ({
+    // 임시 모델 재학습
+    fitModel: build.mutation<void, null>({
+      query: () => ({
+        url: "/users/fit_model",
+        method: "POST",
+      }),
+      invalidatesTags: (result, error, arg) => [
+        { type: "RecommendedPosts", id: "LIST" },
+        { type: "RecommendedProjects", id: "LIST" },
+      ],
+    }),
+
     // MyInfo
     getMyInfo: build.query<User, null>({
       query: () => "/users/me/info",
-      transformResponse: (response: { body: { "user info": User } }) =>
-        response.body["user info"],
-      providesTags: [{ type: "MyInfo" }],
     }),
 
     editMyInfo: build.mutation<void, User>({
@@ -108,22 +127,21 @@ export const api = createApi({
     // my data
     getMyLikedPosts: build.query<{ content: Post[] }, null>({
       query: () => "/posts/me/likes",
-      transformResponse: (response: {
-        body: { "liked posts": { content: Post[] } };
-      }) => response.body["liked posts"],
+
       providesTags: [{ type: "LikedPostIds", id: "LIST" }],
     }),
 
-    getMyLikedProjects: build.query<{ projectIds: number[] }, null>({
+    getMyLikedProjects: build.query<{ content: Project[] }, null>({
       query: () => "/projects/me/likes",
+
       providesTags: [{ type: "LikedProjectIds", id: "LIST" }],
     }),
 
     getMyAppliedProjects: build.query<number[], null>({
       query: () => "/applies/me",
-      transformResponse: (response: {
-        body: { "me applied projects": number[] };
-      }) => response.body["me applied projects"],
+      transformResponse: (response: { projectId: number }[]) => {
+        return response.map(({ projectId }) => projectId);
+      },
 
       providesTags: [{ type: "AppliedProjectId", id: "LIST" }],
     }),
@@ -184,17 +202,16 @@ export const api = createApi({
         },
       }),
       invalidatesTags: (result, error, arg) => [
-        { type: "Follows", id: arg[2] },
-        { type: "Follows", id: String(arg[0]) },
+        { type: "MyFollowings", id: "LIST" },
       ],
     }),
 
-    getFollows: build.query<
-      { followers: string[]; followings: string[] },
-      string
-    >({
-      query: (id) => `/follows/${id}`,
-      providesTags: (result, error, arg) => [{ type: "Follows", id: arg }],
+    getMyFollowings: build.query<string[], null>({
+      query: () => `/users/followings`,
+      transformResponse: (response: { userIds: string[] }) => response.userIds,
+      providesTags: (result, error, arg) => [
+        { type: "MyFollowings", id: "LIST" },
+      ],
     }),
 
     createChatRoom: build.mutation<void, string>({
@@ -210,9 +227,12 @@ export const api = createApi({
     // Users
     getUser: build.query<User, string>({
       query: (id) => `/users/${id}`,
-      transformResponse: (response: { body: { "user info": User } }) =>
-        response.body["user info"],
       providesTags: (result, error, arg) => [{ type: "User", id: String(arg) }],
+    }),
+
+    getSimilarUsers: build.query<User[], string>({
+      query: (id) => `/users/similar/${id}?end=`,
+      transformResponse: (response: { content: User[] }) => response.content,
     }),
 
     // Post
@@ -230,25 +250,20 @@ export const api = createApi({
 
     getPost: build.query<Post, number>({
       query: (id) => `/posts/${id}`,
-      transformResponse: (response: { body: { post: Post } }) =>
-        response.body.post,
       providesTags: (result, error, arg) => [{ type: "Post", id: String(arg) }],
     }),
 
     getRecentPosts: build.query<
-      { content: Post[]; next: boolean },
+      { content: Post[]; hasNext: boolean },
       number | string
     >({
       query: (end) => `/posts/recent?end=${end}`,
-      transformResponse: (response: {
-        body: { "post list": { content: Post[]; next: boolean } };
-      }) => response.body["post list"],
       serializeQueryArgs: ({ endpointName }) => {
         return endpointName;
       },
       merge: (currentCache, newItems) => {
         currentCache.content.push(...newItems.content);
-        currentCache.next = newItems.next;
+        currentCache.hasNext = newItems.hasNext;
       },
       forceRefetch({ currentArg, previousArg }) {
         return currentArg !== previousArg;
@@ -266,19 +281,16 @@ export const api = createApi({
     }),
 
     getFollowingPosts: build.query<
-      { content: Post[]; next: boolean },
+      { content: Post[]; hasNext: boolean },
       number | string
     >({
       query: (end) => `/posts/feed?end=${end}`,
-      transformResponse: (response: {
-        body: { "post feed list": { content: Post[]; next: boolean } };
-      }) => response.body["post feed list"],
       serializeQueryArgs: ({ endpointName }) => {
         return endpointName;
       },
       merge: (currentCache, newItems) => {
         currentCache.content.push(...newItems.content);
-        currentCache.next = newItems.next;
+        currentCache.hasNext = newItems.hasNext;
       },
       forceRefetch({ currentArg, previousArg }) {
         return currentArg !== previousArg;
@@ -296,19 +308,16 @@ export const api = createApi({
     }),
 
     getRecommendedPosts: build.query<
-      { content: Post[]; next: boolean },
+      { content: Post[]; hasNext: boolean },
       number | string
     >({
       query: (end) => `/posts/recommend?end=${end}`,
-      transformResponse: (response: {
-        body: { "post feed list": { content: Post[]; next: boolean } };
-      }) => response.body["post feed list"],
       serializeQueryArgs: ({ endpointName }) => {
         return endpointName;
       },
       merge: (currentCache, newItems) => {
         currentCache.content.push(...newItems.content);
-        currentCache.next = newItems.next;
+        currentCache.hasNext = newItems.hasNext;
       },
       forceRefetch({ currentArg, previousArg }) {
         return currentArg !== previousArg;
@@ -317,12 +326,17 @@ export const api = createApi({
         result
           ? [
               ...result.content.map(({ postId }) => ({
-                type: "FollowingPosts" as const,
+                type: "RecommendedPosts" as const,
                 id: String(postId),
               })),
-              { type: "FollowingPosts", id: "LIST" },
+              { type: "RecommendedPosts", id: "LIST" },
             ]
-          : [{ type: "FollowingPosts", id: "LIST" }],
+          : [{ type: "RecommendedPosts", id: "LIST" }],
+    }),
+
+    getTrendingPosts: build.query<Post[], null>({
+      query: () => `/posts/week`,
+      transformResponse: (response: { content: Post[] }) => response.content,
     }),
 
     deletePost: build.mutation<void, number>({
@@ -337,9 +351,6 @@ export const api = createApi({
 
     getPostComments: build.query<Comment[], number>({
       query: (postId) => `/comments/${postId}`,
-      transformResponse: (response: {
-        body: { "comment list from post": Comment[] };
-      }) => response.body["comment list from post"],
       providesTags: (result, error, arg) =>
         result
           ? [
@@ -381,32 +392,30 @@ export const api = createApi({
       ],
     }),
 
-    getProject: build.query<Project, { id: number }>({
-      query: ({ id }) => `/projects/${id}`,
-
-      transformResponse: (response: { body: { "project get": Project } }) =>
-        response.body["project get"],
-
+    getProject: build.query<Project, number>({
+      query: (id) => `/projects/${id}`,
       providesTags: (result) =>
         result
           ? [{ type: "Project", id: String(result.projectId) }]
           : [{ type: "Project", id: "LIST" }],
     }),
 
+    getProjectsByUser: build.query<Project[], string>({
+      query: (userId) => `/projects/other?userId=${userId}`,
+      transformResponse: (response: { content: Project[] }) => response.content,
+    }),
+
     getRecentProjects: build.query<
-      { content: Project[]; next: boolean },
+      { content: Project[]; hasNext: boolean },
       number | string
     >({
       query: (end) => `/projects/recent?end=${end}`,
-      transformResponse: (response: {
-        body: { "project list": { content: Project[]; next: boolean } };
-      }) => response.body["project list"],
       serializeQueryArgs: ({ endpointName }) => {
         return endpointName;
       },
       merge: (currentCache, newItems) => {
         currentCache.content.push(...newItems.content);
-        currentCache.next = newItems.next;
+        currentCache.hasNext = newItems.hasNext;
       },
       forceRefetch({ currentArg, previousArg }) {
         return currentArg !== previousArg;
@@ -421,6 +430,33 @@ export const api = createApi({
               { type: "RecentProjects", id: "LIST" },
             ]
           : [{ type: "RecentProjects", id: "LIST" }],
+    }),
+
+    getRecommendedProjects: build.query<
+      { content: Project[]; hasNext: boolean },
+      number | string
+    >({
+      query: (end) => `/projects/recommend?end=${end}`,
+      serializeQueryArgs: ({ endpointName }) => {
+        return endpointName;
+      },
+      merge: (currentCache, newItems) => {
+        currentCache.content.push(...newItems.content);
+        currentCache.hasNext = newItems.hasNext;
+      },
+      forceRefetch({ currentArg, previousArg }) {
+        return currentArg !== previousArg;
+      },
+      providesTags: (result, error, arg) =>
+        result
+          ? [
+              ...result.content.map(({ projectId }) => ({
+                type: "RecommendedProjects" as const,
+                id: String(projectId),
+              })),
+              { type: "RecommendedProjects", id: "LIST" },
+            ]
+          : [{ type: "RecommendedProjects", id: "LIST" }],
     }),
 
     deleteProject: build.mutation<void, { id: number }>({
@@ -449,10 +485,11 @@ export const api = createApi({
       invalidatesTags: [{ type: "AppliedProjectId", id: "LIST" }],
     }),
 
-    getApplicantsIds: build.query<{ userIds: string[] }, number>({
+    getApplicantsIds: build.query<User[], number>({
       query: (projectId) => ({
         url: `/applies/${projectId}`,
       }),
+      transformResponse: (response: { users: User[] }) => response.users,
       providesTags: (result, error, arg) => [
         { type: "ApplicantsIds", id: String(arg) },
       ],
@@ -460,29 +497,232 @@ export const api = createApi({
 
     acceptApplicant: build.mutation<void, [number, string]>({
       query: ([projectId, userId]) => ({
-        url: `/applies/accept`,
+        url: `/applies/accept/${projectId}`,
         method: "POST",
         body: {
-          projectId,
           userId,
         },
       }),
       invalidatesTags: (result, error, arg) => [
         { type: "ApplicantsIds", id: String(arg[0]) },
+        { type: "Project", id: String(arg[0]) },
       ],
     }),
 
     rejectApplicant: build.mutation<void, [number, string]>({
       query: ([projectId, userId]) => ({
-        url: `/applies/reject`,
+        url: `/applies/reject/${projectId}`,
         method: "DELETE",
         body: {
-          projectId,
           userId,
         },
       }),
       invalidatesTags: (result, error, arg) => [
         { type: "ApplicantsIds", id: String(arg[0]) },
+        { type: "Project", id: String(arg[0]) },
+      ],
+    }),
+
+    // Project Notice
+    createProjectNotice: build.mutation<
+      void,
+      { projectId: number; content: string }
+    >({
+      query: ({ projectId, content }) => ({
+        url: `/notices`,
+        method: "POST",
+        body: {
+          projectId,
+          content,
+        },
+      }),
+      invalidatesTags: (result, error, arg) => [
+        { type: "ProjectNotice", id: String(arg.projectId) },
+        { type: "ProjectNotice", id: "LIST" },
+      ],
+    }),
+
+    getProjectNotice: build.query<ProjectNotice, number>({
+      query: (noticeId) => `/notices/${noticeId}`,
+    }),
+
+    getProjectNotices: build.query<ProjectNotice[], number | string>({
+      query: (projectId) => `/notices/${projectId}`,
+      providesTags: (result, error, arg) =>
+        result
+          ? [
+              { type: "ProjectNotice", id: String(arg) },
+              { type: "ProjectNotice", id: "LIST" },
+            ]
+          : [{ type: "ProjectNotice", id: "LIST" }],
+    }),
+
+    deleteProjectNotice: build.mutation<void, number>({
+      query: (id) => ({
+        url: `/notices/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (result, error, arg) => [
+        { type: "ProjectNotice", id: String(arg) },
+      ],
+    }),
+
+    // Project Schedule
+    createProjectSchedule: build.mutation<
+      void,
+      Omit<ProjectSchedule, "scheduleId">
+    >({
+      query: (schedule) => ({
+        url: `/schedules`,
+        method: "POST",
+        body: schedule,
+      }),
+      invalidatesTags: (result, error, arg) => [
+        { type: "ProjectSchedule", id: String(arg.projectId) },
+        { type: "ProjectSchedule", id: "LIST" },
+      ],
+    }),
+
+    getProjectSchedule: build.query<ProjectSchedule[], number | string>({
+      query: (projectId) => `/schedules/${projectId}`,
+      providesTags: (result, error, arg) =>
+        result
+          ? [
+              { type: "ProjectSchedule", id: String(arg) },
+              { type: "ProjectSchedule", id: "LIST" },
+            ]
+          : [{ type: "ProjectSchedule", id: "LIST" }],
+    }),
+
+    updateProjectSchedule: build.mutation<void, ProjectSchedule>({
+      query: (schedule) => ({
+        url: `/schedules/${schedule.scheduleId}`,
+        method: "PUT",
+        body: schedule,
+      }),
+      invalidatesTags: (result, error, arg) => [
+        { type: "ProjectSchedule", id: String(arg.projectId) },
+        { type: "ProjectSchedule", id: "LIST" },
+      ],
+    }),
+
+    deleteProjectSchedule: build.mutation<void, ProjectSchedule>({
+      query: (schedule) => ({
+        url: `/schedules/${schedule.scheduleId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (result, error, arg) => [
+        { type: "ProjectSchedule", id: String(arg.projectId) },
+        { type: "ProjectSchedule", id: "LIST" },
+      ],
+    }),
+
+    // Project peer evaluation
+    ratePeer: build.mutation<void, Omit<ProjectPeerRating, "rateId">>({
+      query: (rating) => ({
+        url: `/rates`,
+        method: "POST",
+        body: rating,
+      }),
+      // invalidatesTags: (result, error, arg) => [
+      //   { type: "ProjectPeerRating", id: String(arg.projectId) },
+      //   { type: "ProjectPeerRating", id: "LIST" },
+      // ],
+    }),
+
+    confirmPeerRating: build.mutation<
+      { userId: string; temperature: number }[],
+      number
+    >({
+      query: (projectId) => ({
+        url: `/rates/${projectId}/evaluations`,
+        method: "PUT",
+      }),
+      // invalidatesTags: (result, error, arg) => [
+      //   { type: "ProjectPeerRating", id: String(arg.projectId) },
+      //   { type: "ProjectPeerRating", id: "LIST" },
+      // ],
+    }),
+
+    // Project Task
+    createProjectTask: build.mutation<
+      void,
+      Omit<ProjectTask, "ticketId" | "orderNumber">
+    >({
+      query: (task) => ({
+        url: `/tickets`,
+        method: "POST",
+        body: task,
+      }),
+      invalidatesTags: (result, error, arg) => [
+        { type: "ProjectTask", id: String(arg.projectId) },
+      ],
+    }),
+
+    getProjectTasks: build.query<
+      Record<ProjectTask["status"], ProjectTask[]>,
+      number
+    >({
+      query: (projectId) => `/tickets/${projectId}`,
+      transformResponse: (response: ProjectTask[]) =>
+        response
+          ? response
+              .sort((a, b) => a.orderNumber - b.orderNumber)
+              .reduce(
+                (acc, task) => {
+                  acc[task.status].push(task);
+                  return acc;
+                },
+                {
+                  BACKLOG: [],
+                  IN_PROGRESS: [],
+                  REVIEW: [],
+                  DONE: [],
+                } as Record<ProjectTask["status"], ProjectTask[]>
+              )
+          : {
+              BACKLOG: [],
+              IN_PROGRESS: [],
+              REVIEW: [],
+              DONE: [],
+            },
+
+      providesTags: (result, error, arg) => [
+        { type: "ProjectTask", id: String(arg) },
+      ],
+    }),
+
+    updateProjectTask: build.mutation<void, ProjectTask>({
+      query: (task) => ({
+        url: `/tickets/change/${task.ticketId}`,
+        method: "PUT",
+        body: task,
+      }),
+
+      invalidatesTags: (result, error, arg) => [
+        { type: "ProjectTask", id: String(arg.projectId) },
+      ],
+    }),
+
+    updateProjectTaskWithoutOrderNumber: build.mutation<void, ProjectTask>({
+      query: (task) => ({
+        url: `/tickets/${task.ticketId}`,
+        method: "PUT",
+        body: task,
+      }),
+
+      invalidatesTags: (result, error, arg) => [
+        { type: "ProjectTask", id: String(arg.projectId) },
+      ],
+    }),
+
+    deleteProjectTask: build.mutation<void, ProjectTask>({
+      query: ({ ticketId }) => ({
+        url: `/tickets/${ticketId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (result, error, arg) => [
+        { type: "ProjectTask", id: String(arg.projectId) },
       ],
     }),
 
@@ -491,24 +731,21 @@ export const api = createApi({
       { content: Post[]; totalPages: number; totalElements: number },
       [string, number]
     >({
-      query: ([keyword, page]) =>
-        `/posts/search?keyword=${keyword}&page=${page}`,
+      query: ([search, page]) => `/posts?search=${search}&page=${page}`,
     }),
 
     searchProjects: build.query<
       { content: Project[]; totalPages: number; totalElements: number },
       [string, number]
     >({
-      query: ([keyword, page]) =>
-        `/projects/search?keyword=${keyword}&page=${page}`,
+      query: ([search, page]) => `/projects?search=${search}&page=${page}`,
     }),
 
     searchUsers: build.query<
       { content: User[]; totalPages: number; totalElements: number },
       [string, number]
     >({
-      query: ([keyword, page]) =>
-        `/users/search?keyword=${keyword}&page=${page}`,
+      query: ([search, page]) => `/users?search=${search}&page=${page}`,
     }),
 
     getPostsByUser: build.query<
@@ -526,11 +763,5 @@ export const api = createApi({
         return currentArg !== previousArg;
       },
     }),
-
-    getProjectsByUser: build.query<{ infoProjectResponses: Project[] }, string>(
-      {
-        query: (userId) => `/projects/other?userId=${userId}`,
-      }
-    ),
   }),
 });

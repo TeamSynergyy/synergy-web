@@ -1,6 +1,7 @@
 import { createStyles, Group, ActionIcon, Text } from "@mantine/core";
 import { IconHeart, IconHeartFilled } from "@tabler/icons-react";
 import { api } from "app/api";
+import { useAppDispatch } from "app/store";
 import { useState } from "react";
 
 const useStyles = createStyles((theme) => ({
@@ -31,10 +32,20 @@ export default function PostLike({
 
   const like = api.useLikePostMutation()[0];
 
-  const [tempLikes, setTempLikes] = useState(likes);
-  const handleLike = () => {
-    isLiked ? setTempLikes(tempLikes - 1) : setTempLikes(tempLikes + 1);
-    like([postId, likeType]);
+  // 임시 추천 재학습
+  const fitModel = api.useFitModelMutation()[0];
+  const dispatch = useAppDispatch();
+
+  const handleLike = async () => {
+    const payload1 = await like([postId, likeType]);
+    await fitModel(null);
+    const patchCollection = dispatch(
+      api.util.updateQueryData("getRecommendedPosts", "", (draftPosts) => {
+        draftPosts.content = [];
+      })
+    );
+
+    api.util.invalidateTags([{ type: "RecommendedPosts", id: "LIST" }]);
   };
 
   return (
@@ -50,8 +61,8 @@ export default function PostLike({
           <IconHeart size="1.1rem" className={classes.likeIcon} stroke={1.5} />
         )}
       </ActionIcon>
-      {tempLikes > 0 ? (
-        <Text className={classes.likesNumber}>좋아요 {tempLikes}</Text>
+      {likes > 0 ? (
+        <Text className={classes.likesNumber}>좋아요 {likes}</Text>
       ) : null}
     </Group>
   );
