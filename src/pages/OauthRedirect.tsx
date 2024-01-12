@@ -1,12 +1,13 @@
 import { setAccessToken } from "app/authSlice";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 
 function OauthRedirect() {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const redirectUrl = localStorage.getItem("redirect-url-after-auth") || "/";
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -14,7 +15,8 @@ function OauthRedirect() {
     if (token) dispatch(setAccessToken(token));
 
     console.log(token);
-    navigate("/");
+    console.log(redirectUrl);
+    navigate(redirectUrl);
   }, [location.search]);
 
   return null;

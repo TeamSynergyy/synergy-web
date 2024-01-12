@@ -1,10 +1,11 @@
-import { MantineProvider } from "@mantine/core";
+import { LoadingOverlay, MantineProvider } from "@mantine/core";
 import {
   BrowserRouter,
   Navigate,
   Outlet,
   Route,
   Routes,
+  useNavigate,
 } from "react-router-dom";
 import Layout from "components/ui/Layout";
 import ChatRoom from "components/chat/ChatRoom";
@@ -20,8 +21,8 @@ import Notification from "pages/Notification";
 import RecentPost from "pages/RecentPost";
 import RecentProject from "pages/RecentProject";
 import Search from "pages/Search";
-import { selectCurrentToken } from "app/authSlice";
-import { useSelector } from "react-redux";
+import { selectCurrentToken, setAccessToken } from "app/authSlice";
+import { useDispatch, useSelector } from "react-redux";
 import PostDetail from "pages/PostDetail";
 import Following from "pages/Following";
 import OauthRedirect from "pages/OauthRedirect";
@@ -29,11 +30,23 @@ import ProjectNotice from "components/project/ProjectNotice";
 import ProjectSchedule from "components/project/ProjectSchedule";
 import ProjectPeerRating from "components/project/ProjectPeerRating";
 import ProjectTaskBoard from "components/project/task/ProjectTaskBoard";
+import { useEffect } from "react";
+import { useLocalStorage } from "@mantine/hooks";
 
 const PrivateRoutes = () => {
-  const auth = useSelector(selectCurrentToken);
-  console.log(auth);
-  return auth ? <Outlet /> : <Navigate to="/auth" />;
+  const dispatch = useDispatch();
+  const token = useSelector(selectCurrentToken);
+
+  if (!token) {
+    localStorage.setItem("redirect-url-after-auth", window.location.pathname);
+    window.location.href =
+      import.meta.env.VITE_API_URL +
+      `/oauth2/authorization/google?redirect_uri=${window.location.origin}/oauth/redirect`;
+    return <LoadingOverlay visible />;
+  }
+
+  localStorage.removeItem("redirect-url-after-auth");
+  return <Outlet />;
 };
 
 export default function App() {

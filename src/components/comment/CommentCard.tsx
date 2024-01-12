@@ -10,7 +10,7 @@ export default function CommentCard({ userId, comment, updateAt }: Comment) {
 
   dayjs.extend(relativeTime);
   dayjs.extend(utc);
-  const fromNow = dayjs(updateAt).local().fromNow();
+  const fromNow = dayjs.utc(updateAt).local().fromNow();
 
   return (
     <Paper w="100%" p="sm">

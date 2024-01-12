@@ -20,6 +20,7 @@ const authSlice = createSlice({
 });
 
 export const { setAccessToken } = authSlice.actions;
+
 export default authSlice.reducer;
 
 export const selectCurrentToken = (state: RootState) => state.auth.token;
