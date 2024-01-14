@@ -14,7 +14,7 @@ import {
 import { useDisclosure } from "@mantine/hooks";
 import { IconSearch } from "@tabler/icons-react";
 import { ReactComponent as Logo } from "assets/logo.svg";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { SearchInput } from "../search/SearchInput";
 import { api } from "app/api";
 import { setAccessToken } from "app/authSlice";
@@ -73,6 +73,7 @@ interface HeaderSearchProps {
 
 export function HeaderSearch({ links, children }: HeaderSearchProps) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const activePage = useLocation().pathname.split("/")[1];
   const { classes, cx } = useStyles();
 
@@ -171,7 +172,7 @@ export function HeaderSearch({ links, children }: HeaderSearchProps) {
                     <Menu.Item>내 프로필</Menu.Item>
                   </Link>
                   <Link
-                    to={`/`}
+                    to={`/auth`}
                     style={{ color: "inherit", textDecoration: "inherit" }}
                   >
                     <Menu.Item onClick={removeAccessToken}>로그아웃</Menu.Item>

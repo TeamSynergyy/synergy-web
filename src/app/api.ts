@@ -41,8 +41,7 @@ const baseQueryWithReauth = async (
   extraOptions: object
 ) => {
   let result = await baseQuery(args, api, extraOptions);
-  // if (result.error && result.error.status === 401) {
-  if (result.error) {
+  if (result.error && result.error.status === 401) {
     const state = api.getState() as RootState;
     console.log("state", state);
     const token = state.auth.token;
@@ -53,7 +52,6 @@ const baseQueryWithReauth = async (
     } = await axios.get(import.meta.env.VITE_API_URL + "/api/v1/auth/refresh", {
       headers: {
         Authorization: `Bearer ${token}`,
-        Credentials: "include",
       },
     });
 
@@ -64,7 +62,8 @@ const baseQueryWithReauth = async (
     }
 
     if (refreshResult.header?.code === 400) {
-      window.location.href = "/auth";
+      console.log(refreshResult);
+      // window.location.href = "/auth";
     }
   }
 
@@ -110,6 +109,7 @@ export const api = createApi({
     // MyInfo
     getMyInfo: build.query<User, null>({
       query: () => "/users/me/info",
+      providesTags: [{ type: "MyInfo" }],
     }),
 
     editMyInfo: build.mutation<void, User>({
@@ -752,7 +752,7 @@ export const api = createApi({
       { content: Post[]; totalPages: number },
       [string, number]
     >({
-      query: ([userId, page]) => `/posts?authorId=${userId}&page=${page}`,
+      query: ([userId, page]) => `/posts/other?userId=${userId}&page=${page}`,
       serializeQueryArgs: ({ queryArgs, endpointName }) => {
         return endpointName + queryArgs[0];
       },
