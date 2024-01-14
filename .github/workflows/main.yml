@@ -1,0 +1,45 @@
+name: Build and Deploy to EC2 with PNPM
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [closed]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '20'
+        cache: 'pnpm'
+
+    - name: Install PNPM
+      run: npm install -g pnpm
+
+    - name: Install Dependencies
+      run: pnpm install
+
+    - name: Build
+      run: pnpm run build
+
+    - name: Copy Files to EC2
+      env:
+        EC2_SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+        EC2_USER: ${{ secrets.EC2_USER }}
+        EC2_HOST: ${{ secrets.EC2_HOST }}
+        EC2_DIRECTORY: ${{ secrets.EC2_DIRECTORY }}
+      run: |
+        SSH_PRIVATE_KEY_FILE=$(mktemp)
+        echo "$EC2_SSH_PRIVATE_KEY" > $SSH_PRIVATE_KEY_FILE
+        chmod 600 $SSH_PRIVATE_KEY_FILE
+
+        scp -i $SSH_PRIVATE_KEY_FILE -r dist/* $EC2_USER@$EC2_HOST:$EC2_DIRECTORY
+
+        rm -f $SSH_PRIVATE_KEY_FILE
