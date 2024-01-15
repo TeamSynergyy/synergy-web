@@ -87,6 +87,10 @@ export default function Layout() {
       />
     );
 
+  if (isSuccess && myInfo.userId) {
+    localStorage.setItem("last-login-user-id", myInfo.userId);
+  }
+
   return (
     <StompProvider>
       <SseProvider>

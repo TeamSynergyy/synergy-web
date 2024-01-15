@@ -30,19 +30,40 @@ import ProjectNotice from "components/project/ProjectNotice";
 import ProjectSchedule from "components/project/ProjectSchedule";
 import ProjectPeerRating from "components/project/ProjectPeerRating";
 import ProjectTaskBoard from "components/project/task/ProjectTaskBoard";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useLocalStorage } from "@mantine/hooks";
+import axios from "axios";
 
 const PrivateRoutes = () => {
   const dispatch = useDispatch();
   const token = useSelector(selectCurrentToken);
 
+  const refetchToken = useCallback(async () => {
+    if (token) return;
+
+    const userId = localStorage.getItem("last-login-user-id");
+    if (userId) {
+      try {
+        const refreshResult: {
+          header: { code: number; message: string };
+          body: { token: string };
+        } = await axios.get(
+          import.meta.env.VITE_API_URL + "/api/v1/auth/refresh/" + userId
+        );
+        // 성공적인 요청에 대한 처리
+
+        if (refreshResult.body?.token) {
+          const newAccessToken = refreshResult.body.token;
+          dispatch(setAccessToken(newAccessToken));
+        }
+      } catch (error) {
+        // 에러 처리
+      }
+    }
+  }, [token]); // 의존성 배열에 token 추가
+
   if (!token) {
-    localStorage.setItem("redirect-url-after-auth", window.location.pathname);
-    window.location.href =
-      import.meta.env.VITE_API_URL +
-      `/oauth2/authorization/google?redirect_uri=${window.location.origin}/oauth/redirect`;
-    return <LoadingOverlay visible />;
+    refetchToken();
   }
 
   localStorage.removeItem("redirect-url-after-auth");

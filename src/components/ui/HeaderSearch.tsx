@@ -77,7 +77,10 @@ export function HeaderSearch({ links, children }: HeaderSearchProps) {
   const activePage = useLocation().pathname.split("/")[1];
   const { classes, cx } = useStyles();
 
-  const removeAccessToken = () => dispatch(setAccessToken(""));
+  const handleLogout = () => {
+    localStorage.removeItemItem("last-login-user-id");
+    dispatch(setAccessToken(""));
+  };
 
   const [opened, { open, close }] = useDisclosure(false);
   const isSearchPage = activePage === "search";
@@ -175,7 +178,7 @@ export function HeaderSearch({ links, children }: HeaderSearchProps) {
                     to={`/auth`}
                     style={{ color: "inherit", textDecoration: "inherit" }}
                   >
-                    <Menu.Item onClick={removeAccessToken}>로그아웃</Menu.Item>
+                    <Menu.Item onClick={handleLogout}>로그아웃</Menu.Item>
                   </Link>
                 </Menu.Dropdown>
               </Menu>
