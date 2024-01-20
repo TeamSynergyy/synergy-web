@@ -10,6 +10,7 @@ import {
   Menu,
   Modal,
   Badge,
+  Button,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconSearch } from "@tabler/icons-react";
@@ -17,7 +18,7 @@ import { ReactComponent as Logo } from "assets/logo.svg";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { SearchInput } from "../search/SearchInput";
 import { api } from "app/api";
-import { setAccessToken } from "app/authSlice";
+import { selectIsLogin, setAccessToken, setIsLogin } from "app/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "app/store";
 
@@ -77,9 +78,12 @@ export function HeaderSearch({ links, children }: HeaderSearchProps) {
   const activePage = useLocation().pathname.split("/")[1];
   const { classes, cx } = useStyles();
 
+  const isLogin = useSelector(selectIsLogin);
+
   const handleLogout = () => {
     localStorage.removeItemItem("last-login-user-id");
     dispatch(setAccessToken(""));
+    dispatch(setIsLogin(false));
   };
 
   const [opened, { open, close }] = useDisclosure(false);
@@ -159,29 +163,38 @@ export function HeaderSearch({ links, children }: HeaderSearchProps) {
           <MediaQuery smallerThan="md" styles={{ display: "none" }}>
             <Group spacing={5}>
               {items}
-              <Menu shadow="md" width={200} withinPortal>
-                <Menu.Target>
-                  <ActionIcon mx="sm">
-                    <Avatar src={data?.profileImageUrl} size={32} radius="xl" />
-                  </ActionIcon>
-                </Menu.Target>
+              {isLogin && (
+                <Menu shadow="md" width={200} withinPortal>
+                  <Menu.Target>
+                    <ActionIcon mx="sm">
+                      <Avatar
+                        src={data?.profileImageUrl}
+                        size={32}
+                        radius="xl"
+                      />
+                    </ActionIcon>
+                  </Menu.Target>
 
-                <Menu.Dropdown>
-                  <Menu.Label>Account</Menu.Label>
-                  <Link
-                    to={`/people/${data?.userId}`}
-                    style={{ color: "inherit", textDecoration: "inherit" }}
-                  >
-                    <Menu.Item>내 프로필</Menu.Item>
-                  </Link>
-                  <Link
-                    to={`/auth`}
-                    style={{ color: "inherit", textDecoration: "inherit" }}
-                  >
-                    <Menu.Item onClick={handleLogout}>로그아웃</Menu.Item>
-                  </Link>
-                </Menu.Dropdown>
-              </Menu>
+                  <Menu.Dropdown>
+                    <Menu.Label>Account</Menu.Label>
+                    <Link
+                      to={`/people/${data?.userId}`}
+                      style={{ color: "inherit", textDecoration: "inherit" }}
+                    >
+                      <Menu.Item>내 프로필</Menu.Item>
+                    </Link>
+                    <Link
+                      to={`/auth`}
+                      style={{ color: "inherit", textDecoration: "inherit" }}
+                    >
+                      <Menu.Item onClick={handleLogout}>로그아웃</Menu.Item>
+                    </Link>
+                  </Menu.Dropdown>
+                </Menu>
+              )}
+              {!isLogin && (
+                <Button onClick={() => navigate("/auth")}> 로그인 </Button>
+              )}
             </Group>
           </MediaQuery>
         </Group>

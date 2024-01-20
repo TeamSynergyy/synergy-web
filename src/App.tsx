@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { LoadingOverlay, MantineProvider } from "@mantine/core";
 import {
   BrowserRouter,
@@ -21,7 +22,11 @@ import Notification from "pages/Notification";
 import RecentPost from "pages/RecentPost";
 import RecentProject from "pages/RecentProject";
 import Search from "pages/Search";
-import { selectCurrentToken, setAccessToken } from "app/authSlice";
+import {
+  selectCurrentToken,
+  selectIsLogin,
+  setAccessToken,
+} from "app/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import PostDetail from "pages/PostDetail";
 import Following from "pages/Following";
@@ -30,35 +35,31 @@ import ProjectNotice from "components/project/ProjectNotice";
 import ProjectSchedule from "components/project/ProjectSchedule";
 import ProjectPeerRating from "components/project/ProjectPeerRating";
 import ProjectTaskBoard from "components/project/task/ProjectTaskBoard";
-import { useCallback, useEffect } from "react";
-import { useLocalStorage } from "@mantine/hooks";
+
 import axios from "axios";
 
 const PrivateRoutes = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const token = useSelector(selectCurrentToken);
 
   const refetchToken = useCallback(async () => {
     if (token) return;
 
     const userId = localStorage.getItem("last-login-user-id");
-    if (userId) {
-      try {
-        const refreshResult: {
-          header: { code: number; message: string };
-          body: { token: string };
-        } = await axios.get(
-          import.meta.env.VITE_API_URL + "/api/v1/auth/refresh/" + userId
-        );
-        // 성공적인 요청에 대한 처리
+    if (!userId) navigate("/auth");
 
-        if (refreshResult.body?.token) {
-          const newAccessToken = refreshResult.body.token;
-          dispatch(setAccessToken(newAccessToken));
-        }
-      } catch (error) {
-        // 에러 처리
-      }
+    const refreshResult: {
+      header: { code: number; message: string };
+      body: { token: string };
+    } = await axios.get(
+      import.meta.env.VITE_API_URL + "/api/v1/auth/refresh/" + userId
+    );
+    // 성공적인 요청에 대한 처리
+
+    if (refreshResult.body?.token) {
+      const newAccessToken = refreshResult.body.token;
+      dispatch(setAccessToken(newAccessToken));
     }
   }, [token]); // 의존성 배열에 token 추가
 
@@ -66,26 +67,39 @@ const PrivateRoutes = () => {
     refetchToken();
   }
 
-  localStorage.removeItem("redirect-url-after-auth");
-  return <Outlet />;
+  return token ? <Outlet /> : <Navigate to="/auth" />;
 };
 
 export default function App() {
+  const token = useSelector(selectCurrentToken);
+
   return (
     <MantineProvider withCSSVariables withGlobalStyles withNormalizeCSS>
       <BrowserRouter>
         <Routes>
+          <Route
+            index
+            element={<Navigate to={token ? "/home/foryou" : "/welcome"} />}
+          />
+
+          {/* <Route path="/welcome" element={<Welcome />} /> */}
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/oauth/redirect" element={<OauthRedirect />} />
+          <Route path="/home/recent" element={<Layout />}>
+            <Route path="post" element={<RecentPost />} />
+            <Route path="project" element={<RecentProject />} />
+          </Route>
+
           <Route element={<PrivateRoutes />}>
             <Route path="/" element={<Layout />}>
-              <Route index element={<Navigate to="/home/foryou" />} />
               <Route path="home">
                 <Route index element={<Navigate to="foryou" />} />
                 <Route path="foryou" element={<ForYou />} />
                 <Route path="following" element={<Following />} />
-                <Route path="recent">
+                {/* <Route path="recent">
                   <Route path="post" element={<RecentPost />} />
                   <Route path="project" element={<RecentProject />} />
-                </Route>
+                </Route> */}
               </Route>
 
               <Route path="people">
@@ -119,9 +133,6 @@ export default function App() {
               <Route path="new/project" element={<NewProject />} />
             </Route>
           </Route>
-
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/oauth/redirect" element={<OauthRedirect />} />
         </Routes>
       </BrowserRouter>
     </MantineProvider>

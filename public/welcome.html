@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Synergy | 팀프로젝트 협업 SNS</title>
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      .hero {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        text-align: left;
+      }
+
+      .content {
+        flex-basis: 50%;
+        /* 추가적인 스타일링 */
+      }
+
+      .image {
+        flex-basis: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        /* 추가적인 스타일링 */
+      }
+
+      .image img {
+        max-width: 100%;
+        height: auto;
+      }
+
+      /* 반응형 디자인 */
+      @media (max-width: 768px) {
+        .hero {
+          flex-direction: column;
+        }
+
+        .content,
+        .image {
+          flex-basis: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="hero">
+      <div class="content">
+        <h1>Welcome to Our Website!</h1>
+        <p>This is an awesome hero section.</p>
+        <!-- 추가적인 내용은 여기에 -->
+      </div>
+      <div class="image">
+        <!-- SVG 이미지를 여기에 삽입 -->
+        <img src="welcome.svg" alt="SVG Image" />
+      </div>
+    </div>
+  </body>
+</html>
