@@ -1,4 +1,5 @@
 import { useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { LoadingOverlay, MantineProvider } from "@mantine/core";
 import {
   BrowserRouter,
@@ -8,6 +9,12 @@ import {
   Routes,
   useNavigate,
 } from "react-router-dom";
+import axios from "axios";
+import {
+  selectCurrentToken,
+  selectIsLogin,
+  setAccessToken,
+} from "app/authSlice";
 import Layout from "components/ui/Layout";
 import ChatRoom from "components/chat/ChatRoom";
 import Profile from "pages/Profile";
@@ -22,12 +29,6 @@ import Notification from "pages/Notification";
 import RecentPost from "pages/RecentPost";
 import RecentProject from "pages/RecentProject";
 import Search from "pages/Search";
-import {
-  selectCurrentToken,
-  selectIsLogin,
-  setAccessToken,
-} from "app/authSlice";
-import { useDispatch, useSelector } from "react-redux";
 import PostDetail from "pages/PostDetail";
 import Following from "pages/Following";
 import OauthRedirect from "pages/OauthRedirect";
@@ -36,7 +37,7 @@ import ProjectSchedule from "components/project/ProjectSchedule";
 import ProjectPeerRating from "components/project/ProjectPeerRating";
 import ProjectTaskBoard from "components/project/task/ProjectTaskBoard";
 
-import axios from "axios";
+import { Welcome } from "pages/Welcome";
 
 const PrivateRoutes = () => {
   const dispatch = useDispatch();
@@ -82,7 +83,7 @@ export default function App() {
             element={<Navigate to={token ? "/home/foryou" : "/welcome"} />}
           />
 
-          {/* <Route path="/welcome" element={<Welcome />} /> */}
+          <Route path="/welcome" element={<Welcome />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/oauth/redirect" element={<OauthRedirect />} />
           <Route path="/home/recent" element={<Layout />}>
