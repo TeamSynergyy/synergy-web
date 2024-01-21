@@ -54,15 +54,16 @@ const PrivateRoutes = () => {
       header: { code: number; message: string };
       body: { token: string };
     } = await axios.get(
-      import.meta.env.VITE_API_URL + "/api/v1/auth/refresh/" + userId
+      import.meta.env.VITE_API_URL +
+        "/api/v1/auth/reissue-with-refreshtoken/" +
+        userId
     );
-    // 성공적인 요청에 대한 처리
 
     if (refreshResult.body?.token) {
       const newAccessToken = refreshResult.body.token;
       dispatch(setAccessToken(newAccessToken));
     }
-  }, [token]); // 의존성 배열에 token 추가
+  }, [token]);
 
   if (!token) {
     refetchToken();
@@ -97,10 +98,6 @@ export default function App() {
                 <Route index element={<Navigate to="foryou" />} />
                 <Route path="foryou" element={<ForYou />} />
                 <Route path="following" element={<Following />} />
-                {/* <Route path="recent">
-                  <Route path="post" element={<RecentPost />} />
-                  <Route path="project" element={<RecentProject />} />
-                </Route> */}
               </Route>
 
               <Route path="people">
