@@ -49,11 +49,14 @@ const baseQueryWithReauth = async (
     const refreshResult: {
       header: { code: number; message: string };
       body: { token: string };
-    } = await axios.get(import.meta.env.VITE_API_URL + "/api/v1/auth/refresh", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    } = await axios.get(
+      import.meta.env.VITE_API_URL + "/api/v1/auth/reissue-with-accesstoken",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     if (refreshResult.body?.token) {
       const newAccessToken = refreshResult.body.token;
