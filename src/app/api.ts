@@ -35,46 +35,46 @@ const baseQuery = fetchBaseQuery({
   },
 });
 
-const baseQueryWithReauth = async (
-  args: string | FetchArgs,
-  api: BaseQueryApi,
-  extraOptions: object
-) => {
-  let result = await baseQuery(args, api, extraOptions);
-  if (result.error && result.error.status === 401) {
-    const state = api.getState() as RootState;
-    console.log("state", state);
-    const token = state.auth.token;
-    console.log("token", token);
-    const refreshResult: {
-      header: { code: number; message: string };
-      body: { token: string };
-    } = await axios.get(
-      import.meta.env.VITE_API_URL + "/api/v1/auth/reissue-with-accesstoken",
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+// const baseQueryWithReauth = async (
+//   args: string | FetchArgs,
+//   api: BaseQueryApi,
+//   extraOptions: object
+// ) => {
+//   let result = await baseQuery(args, api, extraOptions);
+//   if (result.error && result.error.status === 401) {
+//     const state = api.getState() as RootState;
+//     console.log("state", state);
+//     const token = state.auth.token;
+//     console.log("token", token);
+//     const refreshResult: {
+//       header: { code: number; message: string };
+//       body: { token: string };
+//     } = await axios.get(
+//       import.meta.env.VITE_API_URL + "/api/v1/auth/reissue-with-accesstoken",
+//       {
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//         },
+//       }
+//     );
 
-    if (refreshResult.body?.token) {
-      const newAccessToken = refreshResult.body.token;
-      api.dispatch(setAccessToken(newAccessToken));
-      result = await baseQuery(args, api, extraOptions);
-    }
+//     if (refreshResult.body?.token) {
+//       const newAccessToken = refreshResult.body.token;
+//       api.dispatch(setAccessToken(newAccessToken));
+//       result = await baseQuery(args, api, extraOptions);
+//     }
 
-    if (refreshResult.header?.code === 400) {
-      console.log(refreshResult);
-      // window.location.href = "/auth";
-    }
-  }
+//     if (refreshResult.header?.code === 400) {
+//       console.log(refreshResult);
+//       // window.location.href = "/auth";
+//     }
+//   }
 
-  return result;
-};
+//   return result;
+// };
 
 export const api = createApi({
-  baseQuery: baseQueryWithReauth,
+  baseQuery,
   tagTypes: [
     "MyInfo",
     "Post",

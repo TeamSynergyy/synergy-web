@@ -31,13 +31,13 @@ import RecentProject from "pages/RecentProject";
 import Search from "pages/Search";
 import PostDetail from "pages/PostDetail";
 import Following from "pages/Following";
-import OauthRedirect from "pages/OauthRedirect";
 import ProjectNotice from "components/project/ProjectNotice";
 import ProjectSchedule from "components/project/ProjectSchedule";
 import ProjectPeerRating from "components/project/ProjectPeerRating";
 import ProjectTaskBoard from "components/project/task/ProjectTaskBoard";
 
 import { Welcome } from "pages/Welcome";
+import SignUpAuthCode from "pages/SignUpAuthCode";
 
 const PrivateRoutes = () => {
   const dispatch = useDispatch();
@@ -86,7 +86,7 @@ export default function App() {
 
           <Route path="/welcome" element={<Welcome />} />
           <Route path="/auth" element={<Auth />} />
-          <Route path="/oauth/redirect" element={<OauthRedirect />} />
+          <Route path="/auth/code" element={<SignUpAuthCode />} />
           <Route path="/home/recent" element={<Layout />}>
             <Route path="post" element={<RecentPost />} />
             <Route path="project" element={<RecentProject />} />

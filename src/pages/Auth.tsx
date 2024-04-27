@@ -1,60 +1,142 @@
+import { useToggle, upperFirst } from "@mantine/hooks";
+import { useForm } from "@mantine/form";
 import {
-  Button,
-  Image,
-  Group,
-  Paper,
+  TextInput,
+  PasswordInput,
   Text,
-  Center,
-  Stack,
+  Paper,
+  Group,
+  Button,
   Anchor,
+  Stack,
+  Center,
 } from "@mantine/core";
-import axios, { AxiosResponse } from "axios";
-import Google from "assets/Google.svg";
-import Naver from "assets/Naver.svg";
-import Kakao from "assets/Kakao.svg";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { setAccessToken, setIsLogin } from "app/authSlice";
+import { useDispatch } from "react-redux";
 
 export default function Auth() {
-  const oauthProviderIds = ["google"];
+  const [type, toggle] = useToggle(["login", "register"]);
+  const form = useForm({
+    initialValues: {
+      email: "",
+      password: "",
+      // terms: true,
+    },
 
-  const hostUrl = import.meta.env.VITE_API_URL;
+    validate: {
+      email: (val) => (/^\S+@\S+$/.test(val) ? null : "Invalid email"),
+      password: (val) =>
+        val.length <= 6
+          ? "Password should include at least 6 characters"
+          : null,
+    },
+  });
 
-  const getSocialIcon = (providerId: string) => {
-    switch (providerId) {
-      case "google":
-        return Google;
-      // case "naver":
-      //   return Naver;
-      // case "kakao":
-      //   return Kakao;
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleSignUp = async (email: string, password: string) => {
+    try {
+      await axios.post("/api/v1/auth/register", {
+        email,
+        password,
+      });
+      navigate("/auth/code");
+    } catch (error) {
+      console.error("Sign up error:", error);
+    }
+  };
+
+  const handleLogin = async (email: string, password: string) => {
+    try {
+      const response = await axios.post("/api/v1/auth/login", {
+        email,
+        password,
+      });
+
+      const accessToken = response.headers["access-token"];
+      dispatch(setAccessToken(accessToken));
+      dispatch(setIsLogin(true));
+      navigate("/home");
+    } catch (error) {
+      console.error("Login error:", error);
     }
   };
 
   return (
-    <Center h="100vh">
+    <Center w="100vw" h="100vh">
       <Paper radius="md" p="xl" withBorder>
         <Text size="lg" fw={500}>
-          Welcome to Synergy, Continue with
+          Welcome to Synergy, {type} with
         </Text>
 
-        <Stack mb="md" mt="md">
-          {oauthProviderIds.map((providerId) => (
+        <form
+          onSubmit={form.onSubmit(({ email, password }) => {
+            if (type === "register") {
+              handleSignUp(email, password);
+            } else {
+              handleLogin(email, password);
+            }
+          })}
+        >
+          <Stack>
+            <TextInput
+              required
+              label="Email"
+              placeholder="hello@mantine.dev"
+              value={form.values.email}
+              onChange={(event) =>
+                form.setFieldValue("email", event.currentTarget.value)
+              }
+              error={form.errors.email && "Invalid email"}
+              radius="md"
+            />
+
+            <PasswordInput
+              required
+              label="Password"
+              placeholder="Your password"
+              value={form.values.password}
+              onChange={(event) =>
+                form.setFieldValue("password", event.currentTarget.value)
+              }
+              error={
+                form.errors.password &&
+                "Password should include at least 6 characters"
+              }
+              radius="md"
+            />
+
+            {/* {type === "register" && (
+            <Checkbox
+              label="I accept terms and conditions"
+              checked={form.values.terms}
+              onChange={(event) =>
+                form.setFieldValue("terms", event.currentTarget.checked)
+              }
+            />
+          )} */}
+          </Stack>
+
+          <Group position="apart" mt="xl">
             <Anchor
-              key={providerId}
-              href={`${hostUrl}/oauth2/authorization/${providerId}?redirect_uri=${window.location.origin}/oauth/redirect`}
+              component="button"
+              type="button"
+              c="dimmed"
+              onClick={() => toggle()}
+              size="xs"
             >
-              <Button
-                disabled={providerId !== "google"}
-                fullWidth
-                size="md"
-                radius="xl"
-                variant="default"
-                leftIcon={<Image src={getSocialIcon(providerId)} />}
-              >
-                {providerId.charAt(0).toUpperCase() + providerId.slice(1)}
-              </Button>
+              {type === "register"
+                ? "Already have an account? Login"
+                : "Don't have an account? Register"}
             </Anchor>
-          ))}
-        </Stack>
+            <Button type="submit" radius="xl">
+              {upperFirst(type)}
+            </Button>
+          </Group>
+        </form>
       </Paper>
     </Center>
   );
