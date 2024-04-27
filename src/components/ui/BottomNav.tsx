@@ -1,8 +1,17 @@
-import { Avatar, Badge, createStyles, Group, rem, Stack } from "@mantine/core";
+import {
+  Avatar,
+  Badge,
+  Button,
+  createStyles,
+  Group,
+  rem,
+  Stack,
+} from "@mantine/core";
 import { api } from "app/api";
+import { selectIsLogin } from "app/authSlice";
 import { RootState } from "app/store";
 import { useSelector } from "react-redux";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const useStyles = createStyles((theme) => ({
   inner: {
@@ -50,17 +59,28 @@ interface BottomNavProps {
 }
 
 export function BottomNav({ links }: BottomNavProps) {
+  const { classes, cx } = useStyles();
   const location = useLocation();
+  const navigate = useNavigate();
   const { data } = api.useGetMyInfoQuery(null);
   const messageEvents = useSelector(
     (state: RootState) => state.sse.messageEvents
   );
+  const isLogin = useSelector(selectIsLogin);
+  if (!isLogin)
+    return (
+      <div className={classes.inner}>
+        <Button onClick={() => navigate("/auth")}>
+          로그인하여 전체 기능을 이용해보세요!
+        </Button>
+      </div>
+    );
+
   const isNotiExist = messageEvents.length > 0;
 
   const activePage = location.pathname.split("/")[1];
   const isMyProfile =
     activePage === "people" && location.pathname.split("/")[2] === data?.userId;
-  const { classes, cx } = useStyles();
 
   const items = links.map((link) => {
     const isNotiLink = link.label === "알림";

@@ -1,3 +1,5 @@
+import { useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { LoadingOverlay, MantineProvider } from "@mantine/core";
 import {
   BrowserRouter,
@@ -7,6 +9,12 @@ import {
   Routes,
   useNavigate,
 } from "react-router-dom";
+import axios from "axios";
+import {
+  selectCurrentToken,
+  selectIsLogin,
+  setAccessToken,
+} from "app/authSlice";
 import Layout from "components/ui/Layout";
 import ChatRoom from "components/chat/ChatRoom";
 import Profile from "pages/Profile";
@@ -21,8 +29,6 @@ import Notification from "pages/Notification";
 import RecentPost from "pages/RecentPost";
 import RecentProject from "pages/RecentProject";
 import Search from "pages/Search";
-import { selectCurrentToken, setAccessToken } from "app/authSlice";
-import { useDispatch, useSelector } from "react-redux";
 import PostDetail from "pages/PostDetail";
 import Following from "pages/Following";
 import OauthRedirect from "pages/OauthRedirect";
@@ -30,41 +36,68 @@ import ProjectNotice from "components/project/ProjectNotice";
 import ProjectSchedule from "components/project/ProjectSchedule";
 import ProjectPeerRating from "components/project/ProjectPeerRating";
 import ProjectTaskBoard from "components/project/task/ProjectTaskBoard";
-import { useEffect } from "react";
-import { useLocalStorage } from "@mantine/hooks";
+
+import { Welcome } from "pages/Welcome";
 
 const PrivateRoutes = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const token = useSelector(selectCurrentToken);
 
-  if (!token) {
-    localStorage.setItem("redirect-url-after-auth", window.location.pathname);
-    window.location.href =
+  const refetchToken = useCallback(async () => {
+    if (token) return;
+
+    const userId = localStorage.getItem("last-login-user-id");
+    if (!userId) navigate("/auth");
+
+    const refreshResult: {
+      header: { code: number; message: string };
+      body: { token: string };
+    } = await axios.get(
       import.meta.env.VITE_API_URL +
-      `/oauth2/authorization/google?redirect_uri=${window.location.origin}/oauth/redirect`;
-    return <LoadingOverlay visible />;
+        "/api/v1/auth/reissue-with-refreshtoken/" +
+        userId
+    );
+
+    if (refreshResult.body?.token) {
+      const newAccessToken = refreshResult.body.token;
+      dispatch(setAccessToken(newAccessToken));
+    }
+  }, [token]);
+
+  if (!token) {
+    refetchToken();
   }
 
-  localStorage.removeItem("redirect-url-after-auth");
-  return <Outlet />;
+  return token ? <Outlet /> : <Navigate to="/auth" />;
 };
 
 export default function App() {
+  const token = useSelector(selectCurrentToken);
+
   return (
     <MantineProvider withCSSVariables withGlobalStyles withNormalizeCSS>
       <BrowserRouter>
         <Routes>
+          <Route
+            index
+            element={<Navigate to={token ? "/home/foryou" : "/welcome"} />}
+          />
+
+          <Route path="/welcome" element={<Welcome />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/oauth/redirect" element={<OauthRedirect />} />
+          <Route path="/home/recent" element={<Layout />}>
+            <Route path="post" element={<RecentPost />} />
+            <Route path="project" element={<RecentProject />} />
+          </Route>
+
           <Route element={<PrivateRoutes />}>
             <Route path="/" element={<Layout />}>
-              <Route index element={<Navigate to="/home/foryou" />} />
               <Route path="home">
                 <Route index element={<Navigate to="foryou" />} />
                 <Route path="foryou" element={<ForYou />} />
                 <Route path="following" element={<Following />} />
-                <Route path="recent">
-                  <Route path="post" element={<RecentPost />} />
-                  <Route path="project" element={<RecentProject />} />
-                </Route>
               </Route>
 
               <Route path="people">
@@ -98,9 +131,6 @@ export default function App() {
               <Route path="new/project" element={<NewProject />} />
             </Route>
           </Route>
-
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/oauth/redirect" element={<OauthRedirect />} />
         </Routes>
       </BrowserRouter>
     </MantineProvider>

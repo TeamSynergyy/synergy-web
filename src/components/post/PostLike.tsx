@@ -1,8 +1,9 @@
 import { createStyles, Group, ActionIcon, Text } from "@mantine/core";
 import { IconHeart, IconHeartFilled } from "@tabler/icons-react";
 import { api } from "app/api";
+import { selectIsLogin } from "app/authSlice";
 import { useAppDispatch } from "app/store";
-import { useState } from "react";
+import { useSelector } from "react-redux";
 
 const useStyles = createStyles((theme) => ({
   likesNumber: {
@@ -23,6 +24,8 @@ export default function PostLike({
   likes: number;
 }) {
   const { classes } = useStyles();
+
+  const isLogin = useSelector(selectIsLogin);
 
   const isLiked = api
     .useGetMyLikedPostsQuery(null)
@@ -50,7 +53,13 @@ export default function PostLike({
 
   return (
     <Group>
-      <ActionIcon onClick={handleLike} variant="default" radius="md" size={36}>
+      <ActionIcon
+        onClick={handleLike}
+        variant="default"
+        radius="md"
+        size={36}
+        disabled={!isLogin}
+      >
         {isLiked ? (
           <IconHeartFilled
             size="1.1rem"
