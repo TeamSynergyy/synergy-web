@@ -1,9 +1,13 @@
 import { Button, Center, Paper, PinInput, Stack, Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function SignUpAuthCode() {
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const email = params.get("email");
+
   const navigate = useNavigate();
   const form = useForm({
     initialValues: {
@@ -19,7 +23,7 @@ export default function SignUpAuthCode() {
   const handleSubmit = async (values: { code: string }) => {
     console.log(values.code); // 여기서 코드를 로그로 찍어봅니다.
     try {
-      await axios.post("/api/v1/auth/verify", { code: values.code });
+      await axios.post("/api/v1/auth/verify", { email, code: values.code });
       navigate("/auth");
     } catch (error) {
       console.error("Sign up code error:", error);

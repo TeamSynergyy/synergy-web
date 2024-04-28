@@ -43,7 +43,7 @@ export default function Auth() {
         email,
         password,
       });
-      navigate("/auth/code");
+      navigate("/auth/code?email=" + email);
     } catch (error) {
       console.error("Sign up error:", error);
     }
