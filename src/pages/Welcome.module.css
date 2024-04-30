@@ -1,8 +1,6 @@
 .inner {
   display: flex;
   justify-content: space-between;
-  padding-top: calc(var(--mantine-spacing-xl) * 4);
-  padding-bottom: calc(var(--mantine-spacing-xl) * 4);
 }
 
 .content {
@@ -39,6 +37,15 @@
 
   @media (max-width: 62em) {
     display: none;
+  }
+}
+
+.mobile_image {
+  width: 23.5rem; /* 376px / 16 */
+  display: none;
+  margin-bottom: 1rem;
+  @media (max-width: 62em) {
+    display: block;
   }
 }
 
