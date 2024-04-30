@@ -19,7 +19,6 @@
     "@mantine/form": "6.0.21",
     "@mantine/hooks": "6.0.21",
     "@reduxjs/toolkit": "^1.9.7",
-    "@stomp/stompjs": "^7.0.0",
     "@tabler/icons-react": "^2.39.0",
     "axios": "^1.5.1",
     "clsx": "^2.0.0",
