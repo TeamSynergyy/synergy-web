@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { api } from "./api";
-import stompReducer from "./stompSlice";
+import socketReducer from "./socketSlice";
 import { useDispatch } from "react-redux";
 import authReducer from "./authSlice";
 import sseReducer from "./sseSlice";
@@ -9,7 +9,7 @@ import layoutReducer from "components/ui/layoutSlice";
 export const store = configureStore({
   reducer: {
     [api.reducerPath]: api.reducer,
-    stomp: stompReducer,
+    socket: socketReducer,
     auth: authReducer,
     sse: sseReducer,
     layout: layoutReducer,

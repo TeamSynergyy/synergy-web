@@ -11,7 +11,7 @@ import { IconSend } from "@tabler/icons-react";
 import { useForm } from "@mantine/form";
 import { api } from "app/api";
 import dayjs from "dayjs";
-import { StompContext } from "app/StompContext";
+import { SocketContext } from "app/SocketContext";
 
 export function ChatInput({ roomId }: { roomId: number }) {
   const { data } = api.useGetMyInfoQuery(null);
@@ -24,7 +24,26 @@ export function ChatInput({ roomId }: { roomId: number }) {
     },
   });
 
-  const { client } = useContext(StompContext);
+  const socket = useContext(SocketContext);
+
+  // const handleSend = (text: string) => {
+  //   if (text !== "") {
+  //     const message = {
+  //       type: "TALK",
+  //       roomId,
+  //       text,
+  //       senderId: data?.userId,
+  //       sendTime: dayjs().toISOString(),
+  //     };
+
+  //     if (!socket) return console.error("WebSocket is not connected");
+
+  //     socket.publish({
+  //       destination: "/pub/chat/room/" + String(roomId),
+  //       body: JSON.stringify(message),
+  //     });
+  //   }
+  // };
 
   const handleSend = (text: string) => {
     if (text !== "") {
@@ -36,12 +55,9 @@ export function ChatInput({ roomId }: { roomId: number }) {
         sendTime: dayjs().toISOString(),
       };
 
-      if (!client) return console.error("WebSocket is not connected");
+      if (!socket) return console.error("Socket is not connected");
 
-      client.publish({
-        destination: "/pub/chat/room/" + String(roomId),
-        body: JSON.stringify(message),
-      });
+      socket.emit("chat message", message); // 'chat message' 이벤트로 메시지 전송
     }
   };
 

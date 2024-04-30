@@ -28,7 +28,7 @@ import {
 import { useEffect } from "react";
 import { SseProvider } from "app/SseContext";
 import { EditUserInfoModal } from "components/user/EditUserInfoModal";
-import { StompProvider } from "app/StompContext";
+import { SocketProvider } from "app/SocketContext";
 
 const headerLinks = [
   {
@@ -92,7 +92,7 @@ export default function Layout() {
   }
 
   return (
-    <StompProvider>
+    <SocketProvider>
       <SseProvider>
         <AppShell
           styles={{
@@ -169,6 +169,6 @@ export default function Layout() {
           <FloatingActionButton />
         </AppShell>
       </SseProvider>
-    </StompProvider>
+    </SocketProvider>
   );
 }
