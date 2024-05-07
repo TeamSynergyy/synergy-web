@@ -93,15 +93,15 @@ interface Comment {
 
 interface ChatRoom {
   roomId: number;
-  participantIds: string[];
-  messages: ChatMessage[];
+  participantIds: string[]; // 이름 userIds 변경하시죠
+  messages: ChatMessage[]; // 없어짐
 }
 
 interface ChatMessage {
   id: number;
   type: string;
   roomId: number;
-  text: string;
+  message: string;
   senderId: string;
   sendTime: string;
 }

@@ -4,11 +4,11 @@ import { api } from "app/api";
 import { Link } from "react-router-dom";
 
 const ChatMessageCard: React.FC<{
-  text: string;
+  message: string;
   fromMe?: boolean;
   isLast?: boolean;
   senderId?: string;
-}> = ({ text, fromMe = false, isLast = false, senderId }) => {
+}> = ({ message, fromMe = false, isLast = false, senderId }) => {
   const { data } = senderId ? api.useGetUserQuery(senderId) : { data: null };
 
   return (
@@ -46,7 +46,7 @@ const ChatMessageCard: React.FC<{
         }}
       >
         <Text c={fromMe ? "white" : "dark"} sx={{ whiteSpace: "pre-wrap" }}>
-          {text}
+          {message}
         </Text>
       </Paper>
     </Group>

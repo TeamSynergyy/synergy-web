@@ -12,15 +12,17 @@ import { useForm } from "@mantine/form";
 import { api } from "app/api";
 import dayjs from "dayjs";
 import { SocketContext } from "app/SocketContext";
+import { selectCurrentToken } from "app/authSlice";
+import { useSelector } from "react-redux";
 
 export function ChatInput({ roomId }: { roomId: number }) {
   const { data } = api.useGetMyInfoQuery(null);
-
+  const token = useSelector(selectCurrentToken);
   const theme = useMantineTheme();
 
   const form = useForm({
     initialValues: {
-      text: "",
+      inputText: "",
     },
   });
 
@@ -45,19 +47,20 @@ export function ChatInput({ roomId }: { roomId: number }) {
   //   }
   // };
 
-  const handleSend = (text: string) => {
-    if (text !== "") {
-      const message = {
+  const handleSend = (inputText: string) => {
+    if (inputText !== "") {
+      const msg = {
         type: "TALK",
         roomId,
-        text,
+        message: inputText,
         senderId: data?.userId,
         sendTime: dayjs().toISOString(),
+        token,
       };
 
       if (!socket) return console.error("Socket is not connected");
 
-      socket.emit("chat message", message); // 'chat message' 이벤트로 메시지 전송
+      socket.emit("chat message", msg);
     }
   };
 
@@ -74,12 +77,12 @@ export function ChatInput({ roomId }: { roomId: number }) {
       >
         <form
           onSubmit={form.onSubmit((value) => {
-            handleSend(value.text);
-            value.text = "";
+            handleSend(value.inputText);
+            value.inputText = "";
           })}
         >
           <TextInput
-            {...form.getInputProps("text")}
+            {...form.getInputProps("inputText")}
             radius="xl"
             size="md"
             w="100%"
