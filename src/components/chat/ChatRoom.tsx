@@ -6,7 +6,7 @@ import { redirect, useParams } from "react-router-dom";
 import { api } from "app/api";
 import ChatMessageCard from "./ChatMessageCard";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ChatMessage, ChatRoom } from "types";
+import type { ChatMessage, ChatRoom } from "types";
 import dayjs from "dayjs";
 import { ChatHeader } from "./ChatHeader";
 
@@ -34,7 +34,7 @@ export default function ChatRoom() {
     }
   }, [isSuccess, data, id, isError, error]);
 
-  const newMessages = useSelector((state: RootState) => state.stomp.messages)
+  const newMessages = useSelector((state: RootState) => state.socket.messages)
     .filter((message) => message.topic === "/topic/" + id)
     .map((message) => {
       return JSON.parse(message.body);

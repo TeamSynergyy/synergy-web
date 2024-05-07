@@ -5,16 +5,16 @@ interface Message {
   body: string;
 }
 
-interface StompState {
+interface SocketState {
   messages: Message[];
 }
 
-const initialState: StompState = {
+const initialState: SocketState = {
   messages: [],
 };
 
-export const stompSlice = createSlice({
-  name: "stomp",
+export const socketSlice = createSlice({
+  name: "socket",
   initialState,
   reducers: {
     messageReceived: (state, action: PayloadAction<Message>) => {
@@ -23,6 +23,6 @@ export const stompSlice = createSlice({
   },
 });
 
-export const { messageReceived } = stompSlice.actions;
+export const { messageReceived } = socketSlice.actions;
 
-export default stompSlice.reducer;
+export default socketSlice.reducer;
