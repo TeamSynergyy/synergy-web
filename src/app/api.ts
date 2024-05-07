@@ -219,8 +219,8 @@ export const api = createApi({
 
     createChatRoom: build.mutation<void, string>({
       query: (userId) => ({
-        url: `/chat/create/${userId}`,
-        method: "PUT",
+        url: `/chat-rooms/${userId}`,
+        method: "POST",
       }),
       invalidatesTags: (result, error, arg) => [
         { type: "ChatRoom", id: "LIST" },

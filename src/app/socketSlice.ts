@@ -1,8 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface Message {
-  topic: string;
-  body: string;
+  roomId: string;
+  senderId: string;
+  sendTime: string;
+  message: string;
 }
 
 interface SocketState {
@@ -18,6 +20,7 @@ export const socketSlice = createSlice({
   initialState,
   reducers: {
     messageReceived: (state, action: PayloadAction<Message>) => {
+      console.log("messageReceived", action.payload);
       state.messages.push(action.payload);
     },
   },
