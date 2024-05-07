@@ -18,10 +18,14 @@ import { useDispatch } from "react-redux";
 
 export default function Auth() {
   const [type, toggle] = useToggle(["login", "register"]);
+  const host = import.meta.env.VITE_API_URL;
+
   const form = useForm({
     initialValues: {
       email: "",
       password: "",
+      name: "",
+      major: "",
       // terms: true,
     },
 
@@ -31,19 +35,32 @@ export default function Auth() {
         val.length <= 6
           ? "Password should include at least 6 characters"
           : null,
+      name: (val) =>
+        type === "register" && val.length < 1 ? "Invalid name" : null,
+      major: (val) =>
+        type === "register" && val.length < 1 ? "Invalid major" : null,
     },
   });
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const handleSignUp = async (email: string, password: string) => {
+  const handleSignUp = async (
+    email: string,
+    password: string,
+    name: string,
+    major: string
+  ) => {
     try {
-      await axios.post("/api/v1/auth/register", {
+      await axios.post(host + "/api/v1/users", {
         email,
         password,
+        name,
+        major,
       });
-      navigate("/auth/code?email=" + email);
+      // navigate("/auth/code?email=" + email);
+
+      toggle();
     } catch (error) {
       console.error("Sign up error:", error);
     }
@@ -51,12 +68,12 @@ export default function Auth() {
 
   const handleLogin = async (email: string, password: string) => {
     try {
-      const response = await axios.post("/api/v1/auth/login", {
+      const response = await axios.post(host + "/api/v1/users/login", {
         email,
         password,
       });
 
-      const accessToken = response.headers["access-token"];
+      const accessToken = response.headers["authorization"].split(" ")[1];
       dispatch(setAccessToken(accessToken));
       dispatch(setIsLogin(true));
       navigate("/home");
@@ -73,9 +90,9 @@ export default function Auth() {
         </Text>
 
         <form
-          onSubmit={form.onSubmit(({ email, password }) => {
+          onSubmit={form.onSubmit(({ email, password, name, major }) => {
             if (type === "register") {
-              handleSignUp(email, password);
+              handleSignUp(email, password, name, major);
             } else {
               handleLogin(email, password);
             }
@@ -109,15 +126,40 @@ export default function Auth() {
               radius="md"
             />
 
-            {/* {type === "register" && (
-            <Checkbox
-              label="I accept terms and conditions"
-              checked={form.values.terms}
-              onChange={(event) =>
-                form.setFieldValue("terms", event.currentTarget.checked)
-              }
-            />
-          )} */}
+            {type === "register" && (
+              <>
+                <TextInput
+                  required
+                  label="이름"
+                  placeholder="홍길동"
+                  value={form.values.name}
+                  onChange={(event) =>
+                    form.setFieldValue("name", event.currentTarget.value)
+                  }
+                  error={form.errors.name && "Invalid name"}
+                  radius="md"
+                />
+                <TextInput
+                  required
+                  label="전공"
+                  placeholder="컴퓨터공학과"
+                  value={form.values.major}
+                  onChange={(event) =>
+                    form.setFieldValue("major", event.currentTarget.value)
+                  }
+                  error={form.errors.major && "Invalid major"}
+                  radius="md"
+                />
+              </>
+
+              // <Checkbox
+              //   label="I accept terms and conditions"
+              //   checked={form.values.terms}
+              //   onChange={(event) =>
+              //     form.setFieldValue("terms", event.currentTarget.checked)
+              //   }
+              // />
+            )}
           </Stack>
 
           <Group position="apart" mt="xl">
