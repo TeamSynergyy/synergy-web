@@ -53,9 +53,9 @@ export function ChatUserButton({ userId, icon, ...others }: UserButtonProps) {
             {username}
           </Text>
 
-          <Text color="dimmed" size="xs" lineClamp={1}>
+          {/* <Text color="dimmed" size="xs" lineClamp={1}>
             최근 메세지 들어갈 자리
-          </Text>
+          </Text> */}
         </div>
 
         {icon || <IconChevronRight size="0.9rem" stroke={1.5} />}

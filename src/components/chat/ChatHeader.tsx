@@ -3,15 +3,15 @@ import { IconArrowLeft, IconDots, IconTrash } from "@tabler/icons-react";
 import { api } from "app/api";
 import { Link } from "react-router-dom";
 
-export function ChatHeader({ roomId }: { roomId: number }) {
+export function ChatHeader({ roomId }: { roomId: string }) {
   const { data } = api.useGetMyInfoQuery(null);
   const { data: chatRooms } = api.useGetMyChatRoomsQuery(null);
 
   const chatRoom = chatRooms?.find(
-    (chatRoom: { roomId: number }) => chatRoom.roomId === roomId
+    (chatRoom: { roomId: string }) => chatRoom.roomId === roomId
   );
 
-  const partnerId = chatRoom?.participantIds.find((id) => id !== data?.userId);
+  const partnerId = chatRoom?.userIds.find((id) => id !== data?.userId);
 
   const { data: partnerData } = api.useGetUserQuery(partnerId || ""); // ""은 임시값. 차후 수정 필요
 

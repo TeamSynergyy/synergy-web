@@ -11,13 +11,16 @@ import { IconSend } from "@tabler/icons-react";
 import { useForm } from "@mantine/form";
 import { api } from "app/api";
 import dayjs from "dayjs";
-import { SocketContext } from "app/SocketContext";
-import { selectCurrentToken } from "app/authSlice";
-import { useSelector } from "react-redux";
+import { ChatMessage } from "types";
 
-export function ChatInput({ roomId }: { roomId: number }) {
+export function ChatInput({
+  roomId,
+  ws,
+}: {
+  roomId: string;
+  ws: WebSocket | null;
+}) {
   const { data } = api.useGetMyInfoQuery(null);
-  const token = useSelector(selectCurrentToken);
   const theme = useMantineTheme();
 
   const form = useForm({
@@ -26,41 +29,39 @@ export function ChatInput({ roomId }: { roomId: number }) {
     },
   });
 
-  const socket = useContext(SocketContext);
-
   // const handleSend = (text: string) => {
   //   if (text !== "") {
   //     const message = {
   //       type: "TALK",
   //       roomId,
   //       text,
-  //       senderId: data?.userId,
-  //       sendTime: dayjs().toISOString(),
+  //       userId: data?.userId,
+  //       createAt: dayjs().toISOString(),
   //     };
 
-  //     if (!socket) return console.error("WebSocket is not connected");
+  //     if (!ws) return console.error("WebSocket is not connected");
 
-  //     socket.publish({
+  //     ws.publish({
   //       destination: "/pub/chat/room/" + String(roomId),
   //       body: JSON.stringify(message),
   //     });
   //   }
   // };
+  if (!data) return <div>Error! please refresh and try again</div>;
 
   const handleSend = (inputText: string) => {
     if (inputText !== "") {
-      const msg = {
-        type: "TALK",
-        roomId,
+      const msg: Omit<ChatMessage, "id"> = {
+        chatType: "TEXT",
+        chatRoomId: roomId,
         message: inputText,
-        senderId: data?.userId,
-        sendTime: dayjs().toISOString(),
-        token,
+        userId: data.userId,
+        createAt: dayjs().toISOString(),
       };
 
-      if (!socket) return console.error("Socket is not connected");
+      if (!ws) return console.error("Socket is not connected");
 
-      socket.emit("chat message", msg);
+      ws.send(JSON.stringify(msg));
     }
   };
 

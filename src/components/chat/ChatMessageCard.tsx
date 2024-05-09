@@ -7,9 +7,9 @@ const ChatMessageCard: React.FC<{
   message: string;
   fromMe?: boolean;
   isLast?: boolean;
-  senderId?: string;
-}> = ({ message, fromMe = false, isLast = false, senderId }) => {
-  const { data } = senderId ? api.useGetUserQuery(senderId) : { data: null };
+  userId?: string;
+}> = ({ message, fromMe = false, isLast = false, userId }) => {
+  const { data } = userId ? api.useGetUserQuery(userId) : { data: null };
 
   return (
     <Group spacing="xs">

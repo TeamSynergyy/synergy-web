@@ -14,16 +14,17 @@ import {
   ProjectSchedule,
   ProjectPeerRating,
   ProjectTask,
+  ChatMessage,
 } from "types";
 import { RootState } from "./store";
 import { setAccessToken } from "./authSlice";
 import axios from "axios";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: import.meta.env.DEV
-    ? "/api/v1"
-    : import.meta.env.VITE_API_URL + "/api/v1",
-
+  // baseUrl: import.meta.env.DEV
+  //   ? "/api/v1"
+  //   : import.meta.env.VITE_API_URL + "/api/v1",
+  baseUrl: import.meta.env.VITE_API_URL + "/api/v1",
   prepareHeaders: (headers, { getState }) => {
     headers.set("Credentials", "include");
 
@@ -150,7 +151,7 @@ export const api = createApi({
     }),
 
     getMyChatRooms: build.query<ChatRoom[], null>({
-      query: () => "/users/me/chatrooms",
+      query: () => "/users/me/rooms",
       providesTags: (result, error, arg) =>
         result
           ? [
@@ -161,6 +162,10 @@ export const api = createApi({
               { type: "ChatRoom", id: "LIST" },
             ]
           : [{ type: "ChatRoom", id: "LIST" }],
+    }),
+
+    getChatMessages: build.query<ChatMessage[], string>({
+      query: (roomId) => `/chat/${roomId}`,
     }),
 
     likePost: build.mutation<void, [number, "post_like" | "post_unlike"]>({
