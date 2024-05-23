@@ -151,7 +151,7 @@ export const api = createApi({
     }),
 
     getMyChatRooms: build.query<ChatRoom[], null>({
-      query: () => "/users/me/rooms",
+      query: () => "/rooms",
       providesTags: (result, error, arg) =>
         result
           ? [
@@ -162,6 +162,16 @@ export const api = createApi({
               { type: "ChatRoom", id: "LIST" },
             ]
           : [{ type: "ChatRoom", id: "LIST" }],
+    }),
+
+    createChatRoom: build.mutation<void, string>({
+      query: (userId) => ({
+        url: `/rooms/${userId}`,
+        method: "POST",
+      }),
+      invalidatesTags: (result, error, arg) => [
+        { type: "ChatRoom", id: "LIST" },
+      ],
     }),
 
     getChatMessages: build.query<ChatMessage[], string>({
@@ -219,16 +229,6 @@ export const api = createApi({
       transformResponse: (response: { userIds: string[] }) => response.userIds,
       providesTags: (result, error, arg) => [
         { type: "MyFollowings", id: "LIST" },
-      ],
-    }),
-
-    createChatRoom: build.mutation<void, string>({
-      query: (userId) => ({
-        url: `/chat-rooms/${userId}`,
-        method: "POST",
-      }),
-      invalidatesTags: (result, error, arg) => [
-        { type: "ChatRoom", id: "LIST" },
       ],
     }),
 
