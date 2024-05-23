@@ -36,7 +36,7 @@ pnpm -v
 1. **리포지토리 클론**
 
    ```sh
-   git clone https://github.com/your-username/synergy-web.git
+   git clone https://github.com/TeamSynergyy/synergy-web.git
    cd synergy-web
    ```
 
