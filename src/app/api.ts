@@ -155,9 +155,9 @@ export const api = createApi({
       providesTags: (result, error, arg) =>
         result
           ? [
-              ...result.map(({ roomId }) => ({
+              ...result.map(({ chatRoomId }) => ({
                 type: "ChatRoom" as const,
-                id: String(roomId),
+                id: String(chatRoomId),
               })),
               { type: "ChatRoom", id: "LIST" },
             ]

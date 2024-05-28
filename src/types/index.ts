@@ -92,7 +92,7 @@ interface Comment {
 }
 
 interface ChatRoom {
-  roomId: string;
+  chatRoomId: string;
   userIds: string[];
 }
 

@@ -8,7 +8,7 @@ export function ChatHeader({ roomId }: { roomId: string }) {
   const { data: chatRooms } = api.useGetMyChatRoomsQuery(null);
 
   const chatRoom = chatRooms?.find(
-    (chatRoom: { roomId: string }) => chatRoom.roomId === roomId
+    (chatRoom) => chatRoom.chatRoomId === roomId
   );
 
   const partnerId = chatRoom?.userIds.find((id) => id !== data?.userId);
