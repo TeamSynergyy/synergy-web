@@ -50,12 +50,9 @@ export default function ChatRoom() {
     };
 
     ws.onmessage = (event) => {
-      if (typeof event.data === "string") {
-        const { text } = JSON.parse(event.data);
-        const message = JSON.parse(text);
-        if (message.chatType !== "TEXT") return;
-        dispatch(messageReceived(message));
-      }
+      const message = event.data;
+      if (message.chatType !== "TEXT") return;
+      dispatch(messageReceived(message));
     };
 
     ws.onerror = (error) => {
