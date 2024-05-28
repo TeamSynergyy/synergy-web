@@ -4,6 +4,7 @@ import { api } from "app/api";
 import { useState } from "react";
 
 const NewChatButton = () => {
+  const { data: myInfo } = api.useGetMyInfoQuery(null);
   const [opened, { open, close }] = useDisclosure(false);
   const [userId, setUserId] = useState<string | null>(null);
   const createNewChat = api.useCreateChatRoomMutation()[0];
@@ -23,8 +24,8 @@ const NewChatButton = () => {
 
           <Button
             onClick={() => {
-              if (userId) {
-                createNewChat(userId);
+              if (myInfo && userId) {
+                createNewChat([myInfo.userId, userId]);
               }
               close();
             }}

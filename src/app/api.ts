@@ -164,10 +164,15 @@ export const api = createApi({
           : [{ type: "ChatRoom", id: "LIST" }],
     }),
 
-    createChatRoom: build.mutation<void, string>({
-      query: (userId) => ({
-        url: `/rooms/${userId}`,
+    createChatRoom: build.mutation<void, string[]>({
+      query: ([myId, userId]) => ({
+        url: `/rooms`,
         method: "POST",
+        body: {
+          createUserId: myId,
+          attendUserId: userId,
+          roomName: `${myId}-${userId}`,
+        },
       }),
       invalidatesTags: (result, error, arg) => [
         { type: "ChatRoom", id: "LIST" },
