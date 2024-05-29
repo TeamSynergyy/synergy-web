@@ -15,7 +15,7 @@ export function ChatHeader({ roomId }: { roomId: string }) {
 
   const { data: partnerData } = api.useGetUserQuery(partnerId || ""); // ""은 임시값. 차후 수정 필요
 
-  const name = partnerData?.username || "대화 상대방";
+  const name = partnerData?.name || "대화 상대방";
 
   return (
     <MediaQuery

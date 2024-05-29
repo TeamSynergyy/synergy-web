@@ -92,7 +92,7 @@ const UserRatingCollapse = ({ userId }: { userId: string }) => {
   }
   if (!data || !myInfo) return <p>사용자의 데이터를 불러오지 못했습니다.</p>;
 
-  const { username, profileImageUrl } = data;
+  const { name, profileImageUrl } = data;
 
   return (
     <Paper w="100%" p="xs" my="md">
@@ -100,7 +100,7 @@ const UserRatingCollapse = ({ userId }: { userId: string }) => {
         <Avatar src={profileImageUrl} radius="xl" />
         <div style={{ flex: 1 }}>
           <Text size="sm" weight={500}>
-            {username}
+            {name}
           </Text>
         </div>
         <Button onClick={toggle} disabled={opened}>

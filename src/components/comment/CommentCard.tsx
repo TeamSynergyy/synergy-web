@@ -18,7 +18,7 @@ export default function CommentCard({ userId, comment, updateAt }: Comment) {
         <Avatar src={user?.profileImageUrl} radius="xl" alt="avatar" />
         <Stack spacing="xs">
           <Group>
-            <Text weight={600}>{user?.username}</Text>
+            <Text weight={600}>{user?.name}</Text>
             <Text>{fromNow}</Text>
           </Group>
 

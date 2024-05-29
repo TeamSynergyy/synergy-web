@@ -23,7 +23,7 @@ export default function ApplicantBar({
           <Avatar size={40} src={user.profileImageUrl} radius={40} />
           <div>
             <Text fz="sm" fw={500}>
-              {user.username}
+              {user.name}
             </Text>
             <Text c="dimmed" fz="xs">
               {user.major}

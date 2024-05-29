@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 interface UserCardProps {
   userId: string;
   profileImageUrl: string;
-  username: string;
+  name: string;
   email: string;
   major: string;
   minor?: string;
@@ -13,7 +13,7 @@ interface UserCardProps {
 export default function UserCard({
   userId,
   profileImageUrl,
-  username,
+  name,
   email,
   major,
   minor,
@@ -30,7 +30,7 @@ export default function UserCard({
     >
       <Avatar src={profileImageUrl} size={120} radius={120} mx="auto" />
       <Text ta="center" fz="lg" weight={500} mt="md">
-        {username}
+        {name}
       </Text>
       <Text ta="center" c="dimmed" fz="sm">
         {email} • {major}

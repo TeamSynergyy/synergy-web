@@ -42,7 +42,7 @@ export function ChatUserButton({ userId, icon, ...others }: UserButtonProps) {
   }
   if (!data) return <p>대화 상대방의 데이터를 불러오지 못했습니다.</p>;
 
-  const { username, profileImageUrl } = data;
+  const { name, profileImageUrl } = data;
 
   return (
     <UnstyledButton className={classes.user} {...others}>
@@ -50,7 +50,7 @@ export function ChatUserButton({ userId, icon, ...others }: UserButtonProps) {
         <Avatar src={profileImageUrl} radius="xl" />
         <div style={{ flex: 1 }}>
           <Text size="sm" weight={500}>
-            {username}
+            {name}
           </Text>
 
           {/* <Text color="dimmed" size="xs" lineClamp={1}>

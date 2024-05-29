@@ -47,7 +47,7 @@ export default function NotificationCard({
   useEffect(() => {
     switch (type) {
       case "FOLLOW":
-        setNotificationInfo(userData?.username || ""); // Replace 'name' with the actual user name field
+        setNotificationInfo(userData?.name || ""); // Replace 'name' with the actual user name field
         break;
       case "PROJECT_APPLY":
       case "PROJECT_ACCEPT":

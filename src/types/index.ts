@@ -70,7 +70,7 @@ interface ProjectTask {
 
 interface User {
   userId: string;
-  username: string;
+  name: string;
   email: string;
   profileImageUrl: string;
   backImage: string;

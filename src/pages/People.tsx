@@ -39,7 +39,7 @@ export default function People() {
     <Stack>
       {lastVisitedProfileUser && (
         <UserGrid
-          title={`${lastVisitedProfileUser.username}와 비슷한 사람들`}
+          title={`${lastVisitedProfileUser.name}와 비슷한 사람들`}
           users={similarToLastVisitedProfileUsersQuery.data || []}
         />
       )}

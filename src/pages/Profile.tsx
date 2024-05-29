@@ -51,7 +51,7 @@ export default function Profile() {
         </Tabs>
         {similarUsers && (
           <UserGrid
-            title={`${user.username}님과 비슷한 사람들`}
+            title={`${user.name}님과 비슷한 사람들`}
             users={similarUsers || []}
           />
         )}

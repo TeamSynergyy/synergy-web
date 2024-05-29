@@ -11,12 +11,12 @@ export default function UserAvatarName({ userId }: { userId: string }) {
   }
   if (!data) return <p>사용자의 데이터를 불러오지 못했습니다.</p>;
 
-  const { username, profileImageUrl } = data;
+  const { name, profileImageUrl } = data;
 
   return (
     <Group spacing={2}>
       <Avatar src={profileImageUrl} radius="xl" size="sm" />
-      <Text size="xs">{username}</Text>
+      <Text size="xs">{name}</Text>
     </Group>
   );
 }

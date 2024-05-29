@@ -39,7 +39,7 @@ interface UserCardImageProps {
   userId: string;
   backImage: string;
   profileImageUrl: string;
-  username: string;
+  name: string;
   major: string;
   temperature: number;
   bio: string;
@@ -49,7 +49,7 @@ export default function UserProfileCard({
   userId,
   backImage,
   profileImageUrl,
-  username,
+  name,
   major,
   temperature,
   bio,
@@ -80,7 +80,7 @@ export default function UserProfileCard({
     initialValues: myInfo,
 
     validate: {
-      username: (value) =>
+      name: (value) =>
         value && value.trim().length > 0 ? null : "필수입니다.",
     },
   });
@@ -97,7 +97,7 @@ export default function UserProfileCard({
             mt={-30}
             className={classes.avatar}
           />
-          <Title mt="sm">{username}</Title>
+          <Title mt="sm">{name}</Title>
           <Text fz="sm" c="dimmed">
             {major}
           </Text>

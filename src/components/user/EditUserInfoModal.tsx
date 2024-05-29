@@ -29,7 +29,7 @@ export function EditUserInfoModal({
     initialValues: myInfo && { ...myInfo },
 
     validate: {
-      username: (value) =>
+      name: (value) =>
         value && value.trim().length > 0 ? null : "필수입니다.",
       organization: (value) =>
         value && value.trim().length > 0 ? null : "필수입니다.",
@@ -60,7 +60,7 @@ export function EditUserInfoModal({
             label="이름"
             placeholder="사용할 이름을 입력하세요"
             withAsterisk
-            {...form.getInputProps("username")}
+            {...form.getInputProps("name")}
           />
           <Select
             label="소속"
