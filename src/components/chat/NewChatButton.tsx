@@ -1,5 +1,6 @@
-import { Button, Center, Group, Input, Modal } from "@mantine/core";
+import { ActionIcon, Button, Center, Group, Input, Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import { IconPlus } from "@tabler/icons-react";
 import { api } from "app/api";
 import { useState } from "react";
 
@@ -36,7 +37,9 @@ const NewChatButton = () => {
       </Modal>
 
       <Group position="center">
-        <Button onClick={open}>새 채팅방 만들기</Button>
+        <Button variant="default" size="lg" onClick={open}>
+          <IconPlus /> 새 채팅방 생성
+        </Button>
       </Group>
     </>
   );

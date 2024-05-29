@@ -3,6 +3,7 @@ import { api } from "app/api";
 
 import { Link } from "react-router-dom";
 import { ChatUserButton } from "./ChatUserButton";
+import NewChatButton from "./NewChatButton";
 
 const ChatNavbar = () => {
   const { data } = api.useGetMyInfoQuery(null);
@@ -39,7 +40,12 @@ const ChatNavbar = () => {
     });
   }
 
-  return <Stack>{content}</Stack>;
+  return (
+    <Stack>
+      {content}
+      <NewChatButton />
+    </Stack>
+  );
 };
 
 export default ChatNavbar;
