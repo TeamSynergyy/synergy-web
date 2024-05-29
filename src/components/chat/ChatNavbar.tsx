@@ -37,12 +37,6 @@ const ChatNavbar = () => {
         </Link>
       );
     });
-    // fot test
-    content.push(
-      <Link key="new" to="/chat/new" style={{ textDecoration: "none" }}>
-        <ChatUserButton userId="new" />
-      </Link>
-    );
   }
 
   return <Stack>{content}</Stack>;

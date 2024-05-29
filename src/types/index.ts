@@ -97,7 +97,7 @@ interface ChatRoom {
 }
 
 interface ChatMessage {
-  id: number;
+  id: string;
   chatType: string;
   chatRoomId: string;
   message: string;

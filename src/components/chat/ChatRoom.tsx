@@ -83,7 +83,16 @@ export default function ChatRoom() {
   useEffect(scrollToBottom, [newMessages]);
 
   const allMessages = [...(oldMessages ?? []), ...newMessages];
-  const content = allMessages
+  const removeDuplicates = (arr: ChatMessage[]) => {
+    const map = new Map<string, ChatMessage>();
+    arr.forEach((item) => {
+      map.set(item.id, item);
+    });
+    return Array.from(map.values());
+  };
+
+  const content = removeDuplicates(allMessages)
+    .toSorted((a, b) => dayjs(a.createAt).diff(dayjs(b.createAt)))
     .map((msg, i) => {
       const next = allMessages[i + 1];
       const { message, userId, createAt } = msg;
