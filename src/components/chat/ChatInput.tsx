@@ -56,7 +56,7 @@ export function ChatInput({
         chatRoomId: roomId,
         message: inputText,
         userId: data.userId,
-        createAt: dayjs().format("YYYY-MM-DD HH:mm"),
+        createAt: dayjs().format("YYYY-MM-DD HH:mm:ss"),
       };
 
       if (!ws) return console.error("Socket is not connected");
