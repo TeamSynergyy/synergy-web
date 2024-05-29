@@ -17,8 +17,13 @@ export default function ChatRoom() {
     redirect("/chat");
   }
   const { data: myInfo } = api.useGetMyInfoQuery(null);
-  const { data, isSuccess, isError, error, refetch } =
-    api.useGetChatMessagesQuery(id as string);
+  const {
+    data: oldMessages,
+    isSuccess,
+    isError,
+    error,
+    refetch,
+  } = api.useGetChatMessagesQuery(id as string);
 
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
 
@@ -67,15 +72,6 @@ export default function ChatRoom() {
     };
   }, [myInfo, id]);
 
-  const [oldMessages, setOldMessages] = useState<ChatMessage[]>([]);
-  useEffect(() => {
-    if (isSuccess) {
-      setOldMessages([...data]);
-    } else if (isError) {
-      console.error(error);
-    }
-  }, [isSuccess, data, id, isError, error]);
-
   const newMessages = useSelector(
     (state: RootState) => state.socket.messages
   ).filter((message) => message.chatRoomId === id);
@@ -86,7 +82,7 @@ export default function ChatRoom() {
 
   useEffect(scrollToBottom, [newMessages]);
 
-  const allMessages = [...oldMessages, ...newMessages];
+  const allMessages = [...(oldMessages ?? []), ...newMessages];
   const content = allMessages
     .map((msg, i) => {
       const next = allMessages[i + 1];
